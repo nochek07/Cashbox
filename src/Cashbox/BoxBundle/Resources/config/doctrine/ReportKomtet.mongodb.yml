@@ -1,0 +1,19 @@
+# src/Cashbox/BoxBundle/Resources/config/doctrine/ReportKomtet.mongodb.yml
+Cashbox\BoxBundle\Document\ReportKomtet:
+    fields:
+        id:
+            id:  true
+        datetime:
+            type: date
+        type:
+            type: string
+        state:
+            type: string
+        uuid:
+            type: string
+        action:
+            type: string
+        dataKomtet:
+            type: hash
+        dataPost:
+            type: hash

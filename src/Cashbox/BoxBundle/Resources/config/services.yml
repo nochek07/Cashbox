@@ -1,0 +1,8 @@
+services:
+#    yandex_box.example:
+#        class: Cashbox\BoxBundle\Example
+#        arguments: ["@service_id", "plain_value", %parameter%]
+
+    mongodb.cashbox:
+        class: Cashbox\BoxBundle\Services\MongoDB
+        arguments: ["@doctrine_mongodb"]

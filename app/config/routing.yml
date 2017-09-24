@@ -1,0 +1,8 @@
+yandex_box:
+    resource: "@BoxBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+app:
+    resource: "@AppBundle/Controller/"
+    type:     annotation

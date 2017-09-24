@@ -1,0 +1,60 @@
+# This file is a "template" of what your parameters.yml file should look like
+# Set parameters here that may be different on each deployment target of the app, e.g. development, staging, production.
+# http://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration
+parameters:
+    database_host:     127.0.0.1
+    database_port:     ~
+    database_name:     symfony
+    database_user:     root
+    database_password: ~
+    # You should uncomment this if you want use pdo_sqlite
+    # database_path: "%kernel.root_dir%/data.db3"
+
+    # Swiftmailer
+    mailer_transport:  smtp
+    mailer_host:       127.0.0.1
+    mailer_port:       ~
+    mailer_user:       ~
+    mailer_password:   ~
+    mailer_encryption: ssl
+
+    # A secret key that's used to generate certain security-related tokens
+    secret:            ThisTokenIsNotSoSecretChangeIt
+
+    # Перенаправление для главной страницы
+    redirect_url: ~
+
+    #Сервер mongodb
+    mongodb_server: ~
+
+    # Yandex
+    shop_yandex_id: ~
+    shop_yandex_secret: ~
+
+    # Komtet
+    komtet_shop_id: ~
+    komtet_secret: ~
+    komtet_cashbox_id: ~
+    komtet_cashbox_name: ~
+
+    # Cashbox
+    # Отменять платеж при недоступности кассы, в случае с 1с доступность кассы всегда проверяется
+    cancel_action: false
+    # Система налогообложения
+    # ОСН - 0
+    # УСН (доходы) - 1
+    # УСН (доходы - расходы) - 2
+    # ЕНВД - 3
+    # Единый социальный налог - 4
+    # Патент - 5
+    system_vat: 0
+    # НДС ("no", "0", "10", "18", "110", "118")
+    vat: "18"
+    nomenclature: "Товар по счету №%s"
+    admin_email: ~
+
+    # 1C
+    # ИНН организации
+    INN: ~
+    # Секретное слово для 1С
+    handling_secret: ~
