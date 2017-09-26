@@ -28,26 +28,20 @@ class DefaultController extends Controller
     private $manager = null;
 
     /**
-     * @Route("/test")
+     * @Route("/test", schemes={"https"})
      * @param  \Symfony\Component\HttpFoundation\Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function testAction(Request $request) {
-
-        $repository = $this->get('doctrine_mongodb')
-            ->getManager()
-            ->getRepository('BoxBundle:ReportKomtet');
-
-        $report = $repository->findOneBy(
-            array(
-                'type'   => 'site'
+        /*$message = \Swift_Message::newInstance()
+            ->setSubject('Hello Email')
+            ->setFrom('nochek07@yandex.ru')
+            ->setTo('nochek07@list.ru')
+            ->setBody(
+                'Проверка'
             )
-        );
-
-        echo '<pre>';
-        print_r($report);
-        echo '</pre>';
-
+        ;
+        $this->get('mailer')->send($message);*/
 
         return new Response('qqq');
     }

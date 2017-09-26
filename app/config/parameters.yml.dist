@@ -26,9 +26,6 @@ parameters:
 
     #Сервер mongodb
     mongodb_server: ~
-    mongodb_username: ~
-    mongodb_password: ~
-    mongodb_db: ~
 
     # Yandex
     shop_yandex_id: ~
