@@ -64,8 +64,11 @@ doctrine_mongodb:
     connections:
         default:
             server: "%mongodb_server%"
-            options: {}
-    default_database: cashbox
+            options:
+                username: "%mongodb_username%"
+                password: "%mongodb_password%"
+                authSource: "%mongodb_db%"
+    default_database: "%mongodb_db%"
     document_managers:
         default:
             auto_mapping: true
