@@ -1,0 +1,9 @@
+# src/Cashbox/UserBundle/Resources/config/doctrine/User.mongodb.yml
+Cashbox\UserBundle\Document\User:
+    fields:
+        id:
+            id:  true
+        email:
+            type: string
+        password:
+            type: string

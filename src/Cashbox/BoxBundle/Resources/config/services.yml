@@ -3,6 +3,18 @@ services:
 #        class: Cashbox\BoxBundle\Example
 #        arguments: ["@service_id", "plain_value", %parameter%]
 
+    admin.yandex:
+        class: Cashbox\BoxBundle\Admin\YandexTransactionAdmin
+        arguments: [~, Cashbox\BoxBundle\Document\YandexTransaction, ~]
+        tags:
+            - { name: sonata.admin, manager_type: doctrine_mongodb, group: "Транзакции", label: "Yandex Transaction", show_mosaic_button: false }
+
+    admin.komtet:
+            class: Cashbox\BoxBundle\Admin\ReportKomtetAdmin
+            arguments: [~, Cashbox\BoxBundle\Document\ReportKomtet, ~]
+            tags:
+                - { name: sonata.admin, manager_type: doctrine_mongodb, group: "Транзакции", label: "Komtet Report", show_mosaic_button: false }
+
     mongodb.cashbox:
         class: Cashbox\BoxBundle\Services\MongoDB
         arguments: ["@doctrine_mongodb"]

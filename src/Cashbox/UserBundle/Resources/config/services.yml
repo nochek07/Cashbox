@@ -1,0 +1,4 @@
+services:
+#    cashbox_user.example:
+#        class: CashboxUserBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]

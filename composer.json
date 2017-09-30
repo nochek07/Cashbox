@@ -1,7 +1,8 @@
 {
-    "name": "kirill/Cashbox",
+    "name": "nochek/Cashbox",
     "license": "proprietary",
     "type": "project",
+    "version": "1.1",
     "autoload": {
         "psr-4": {
             "": "src/"
@@ -24,13 +25,16 @@
         "doctrine/mongodb-odm": "^1.0",
         "doctrine/mongodb-odm-bundle": "^3.0",
         "doctrine/orm": "^2.5",
+        "friendsofsymfony/user-bundle": "~2.0",
         "incenteev/composer-parameter-handler": "^2.0",
         "komtet/kassa-sdk": "^0.3",
         "sensio/distribution-bundle": "^5.0",
         "sensio/framework-extra-bundle": "^3.0.2",
+        "sonata-project/admin-bundle": "^3.23",
+        "sonata-project/doctrine-mongodb-admin-bundle": "3.x-dev",
         "symfony/monolog-bundle": "^3.0.2",
         "symfony/swiftmailer-bundle": "^2.3",
-        "symfony/symfony": "3.2.*"
+        "symfony/symfony": "3.3.*"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",
