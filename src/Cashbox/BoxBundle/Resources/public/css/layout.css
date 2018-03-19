@@ -1,3 +1,36 @@
+body{
+    background: #f1f1f1;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    color: #72777c;
+}
+
 .wrapper {
-    margin-top: 40px;
+    padding: 14% 0 0;
+    margin: auto;
+}
+
+.wrapper .container-fluid {
+    width: 300px;
+    background: #ffffff;
+    padding: 20px;
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,.13);
+    box-shadow: 0 1px 3px rgba(0,0,0,.13);
+}
+
+.wrapper .container-fluid .btn-default {
+    background: #0085ba;
+    border-color: #0073aa #006799 #006799;
+    -webkit-box-shadow: 0 1px 0 #006799;
+    box-shadow: 0 1px 0 #006799;
+    color: #fff;
+    text-decoration: none;
+    text-shadow: 0 -1px 1px #006799, 1px 0 1px #006799, 0 1px 1px #006799, -1px 0 1px #006799;
+}
+
+.wrapper .container-fluid .btn-default:hover {
+    background: #008ec2;
+    border-color: #006799;
+    color: #fff;
 }

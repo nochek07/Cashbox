@@ -1,0 +1,29 @@
+{#
+
+This file is part of the Sonata package.
+
+(c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+
+#}
+{% macro render_array(value, inline, emsp) %}
+    {% import _self as self %}
+
+    {% set emsp1 = emsp ~ '&emsp;'  %}
+
+    {% for key, val in value %}
+        {% if val is iterable %}
+            {{ emsp | raw }}[{{ key }} =><br>
+                {{ self.render_array(val, inline, emsp1) }}<br>
+            {{ emsp | raw }}]
+        {%  else %}
+            {{ emsp | raw }}[{{ key }} => {{ val }}]
+        {%  endif %}
+
+        {% if not loop.last and not inline %}
+            <br>
+        {% endif %}
+    {% endfor %}
+{% endmacro %}

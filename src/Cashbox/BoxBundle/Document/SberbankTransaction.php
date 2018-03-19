@@ -17,7 +17,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations\date;
  * @MongoDB/Document
  *
  */
-class YandexTransaction
+class SberbankTransaction
 {
     /**
      * @MongoDB\Id(strategy="INCREMENT")
@@ -28,11 +28,6 @@ class YandexTransaction
      * @MongoDB\Field(type="date")
      */
     protected $datetime;
-
-    /**
-     * @MongoDB\Field(type="string")
-     */
-    protected $action;
 
     /**
      * @MongoDB\Field(type="float")
@@ -83,28 +78,6 @@ class YandexTransaction
     public function getDatetime()
     {
         return $this->datetime;
-    }
-
-    /**
-     * Set action
-     *
-     * @param string $action
-     * @return $this
-     */
-    public function setAction($action)
-    {
-        $this->action = $action;
-        return $this;
-    }
-
-    /**
-     * Get action
-     *
-     * @return string $action
-     */
-    public function getAction()
-    {
-        return $this->action;
     }
 
     /**

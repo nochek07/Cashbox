@@ -26,35 +26,45 @@ parameters:
 
     #Сервер mongodb
     mongodb_server: ~
+    mongodb_username: ~
+    mongodb_password: ~
+    mongodb_db: ~
 
     # Yandex
     shop_yandex_id: ~
     shop_yandex_secret: ~
 
-    # Komtet
-    komtet_shop_id: ~
-    komtet_secret: ~
-    komtet_cashbox_id: ~
-    komtet_cashbox_name: ~
+    # Sberbank
+    sberbank_username: ~
+    sberbank_password: ~
+    sberbank_secret: ~
 
-    # Cashbox
-    # Отменять платеж при недоступности кассы, в случае с 1с доступность кассы всегда проверяется
-    cancel_action: false
-    # Система налогообложения
-    # ОСН - 0
-    # УСН (доходы) - 1
-    # УСН (доходы - расходы) - 2
-    # ЕНВД - 3
-    # Единый социальный налог - 4
-    # Патент - 5
-    system_vat: 0
-    # НДС ("no", "0", "10", "18", "110", "118")
-    vat: "18"
-    nomenclature: "Товар по счету №%s"
-    admin_email: ~
-
-    # 1C
-    # ИНН организации
-    INN: ~
-    # Секретное слово для 1С
+    # Секретное слово
     handling_secret: ~
+
+    # Komtet
+    komtet:
+        komtet_shop_id: ~
+        komtet_secret: ~
+        komtet_cashbox_id: ~
+        komtet_cashbox_name: ~
+
+        # Cashbox
+        # Отменять платеж при недоступности кассы, в случае с 1с доступность кассы всегда проверяется
+        cancel_action: false
+        # Система налогообложения
+        # ОСН - 0
+        # УСН (доходы) - 1
+        # УСН (доходы - расходы) - 2
+        # ЕНВД - 3
+        # Единый социальный налог - 4
+        # Патент - 5
+        system_vat: 0
+        # НДС ("no", "0", "10", "18", "110", "118")
+        vat: "18"
+        nomenclature: "Товар по счету №%s"
+        admin_email: ~
+
+        # 1C
+        # ИНН организации
+        INN: ~

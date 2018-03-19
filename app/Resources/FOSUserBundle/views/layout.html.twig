@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="UTF-8">
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <link rel="stylesheet" type="text/css" href="{{ asset('bundles/sonatacore/vendor/bootstrap/dist/css/bootstrap.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('bundles/box/css/layout.css') }}">
+    <title>Авторизация</title>
 </head>
 <body>
 <div class="wrapper">
@@ -17,9 +20,9 @@
         {% endfor %}
     {% endif %}
 
-    <div class="container">
+    <div class="container-fluid">
         <div class="content row">
-            <div class="col-xs-3 col-xs-push-4 center-block">
+            <div class="col-xs-12 center-block">
                 {% block fos_user_content %}
                 {% endblock fos_user_content %}
             </div>

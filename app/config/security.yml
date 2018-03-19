@@ -44,9 +44,7 @@ security:
             logout:
                 path: /admin/logout
                 target: /admin
-
-            logout:       true
-            anonymous:    true
+            anonymous: ~
 
     access_control:
         - { path: ^/admin/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }

@@ -9,7 +9,7 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 
-class YandexTransactionAdmin extends Admin
+class SberbankTransactionAdmin extends Admin
 {
 
     protected function configureListFields(ListMapper $listMapper)
@@ -17,7 +17,6 @@ class YandexTransactionAdmin extends Admin
         $listMapper
             ->addIdentifier('id')
             ->add('datetime')
-            ->add('action')
             ->add('Sum')
             ->add('customerNumber')
             ->add('email');
@@ -33,7 +32,6 @@ class YandexTransactionAdmin extends Admin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('action')
             ->add('customerNumber')
             ->add('datetime');
     }
@@ -43,11 +41,10 @@ class YandexTransactionAdmin extends Admin
         $showMapper
            ->add('id')
            ->add('datetime')
-           ->add('action')
            ->add('Sum')
            ->add('customerNumber')
            ->add('email')
-           ->add('dataPost');
+           ->add('dataPost', null, ['template' => 'BoxBundle:MongoDB:show_hash.html.twig']);
        ;
     }
 }    

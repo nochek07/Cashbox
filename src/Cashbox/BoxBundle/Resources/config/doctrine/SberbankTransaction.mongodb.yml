@@ -1,12 +1,10 @@
-# src/Cashbox/BoxBundle/Resources/config/doctrine/YandexTransaction.mongodb.yml
-Cashbox\BoxBundle\Document\YandexTransaction:
+# src/Cashbox/BoxBundle/Resources/config/doctrine/SberbankTransaction.mongodb.yml
+Cashbox\BoxBundle\Document\SberbankTransaction:
     fields:
         id:
             id:  true
         datetime:
             type: date
-        action:
-            type: string
         Sum:
             type: float
         customerNumber:
