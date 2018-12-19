@@ -2,16 +2,17 @@
 
 namespace Cashbox\BoxBundle\Admin;
 
-use Sonata\AdminBundle\Admin\Admin;
-use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 
-class YandexTransactionAdmin extends Admin
+class YandexTransactionAdmin extends AbstractAdmin
 {
-
+    /**
+     * @param ListMapper $listMapper
+     */
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper
@@ -20,9 +21,13 @@ class YandexTransactionAdmin extends Admin
             ->add('action')
             ->add('Sum')
             ->add('customerNumber')
-            ->add('email');
+            ->add('email')
+        ;
     }
 
+    /**
+     * @param RouteCollection $collection
+     */
     protected function configureRoutes(RouteCollection $collection)
     {
         $collection->remove('edit');
@@ -35,9 +40,13 @@ class YandexTransactionAdmin extends Admin
         $datagridMapper
             ->add('action')
             ->add('customerNumber')
-            ->add('datetime');
+            ->add('datetime')
+        ;
     }
 
+    /**
+     * @param ShowMapper $showMapper
+     */
     protected function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
@@ -48,6 +57,6 @@ class YandexTransactionAdmin extends Admin
            ->add('customerNumber')
            ->add('email')
            ->add('dataPost');
-       ;
+        ;
     }
 }    

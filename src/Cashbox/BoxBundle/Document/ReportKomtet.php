@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kirill
- * Date: 02.09.17
- * Time: 21:01
- */
 
 namespace Cashbox\BoxBundle\Document;
 
@@ -72,7 +66,7 @@ class ReportKomtet
     /**
      * Set datetime
      *
-     * @return $this
+     * @return self
      */
     public function setDatetime()
     {
@@ -94,7 +88,7 @@ class ReportKomtet
      * Set state
      *
      * @param string $state
-     * @return $this
+     * @return self
      */
     public function setState($state)
     {
@@ -116,7 +110,7 @@ class ReportKomtet
      * Set type
      *
      * @param string $type
-     * @return $this
+     * @return self
      */
     public function setType($type)
     {
@@ -138,7 +132,7 @@ class ReportKomtet
      * Set uuid
      *
      * @param string $uuid
-     * @return $this
+     * @return self
      */
     public function setUuid($uuid)
     {
@@ -160,7 +154,7 @@ class ReportKomtet
      * Set action
      *
      * @param string $action
-     * @return $this
+     * @return self
      */
     public function setAction($action)
     {
@@ -182,7 +176,7 @@ class ReportKomtet
      * Set dataKomtet
      *
      * @param array $dataKomtet
-     * @return $this
+     * @return self
      */
     public function setDataKomtet($dataKomtet)
     {
@@ -204,7 +198,7 @@ class ReportKomtet
      * Set dataPost
      *
      * @param array $dataPost
-     * @return $this
+     * @return self
      */
     public function setDataPost($dataPost)
     {

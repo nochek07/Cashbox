@@ -20,13 +20,14 @@ class SberbankController extends Controller
 
     /**
      * @Route("/restSberbank", schemes={"https"})
-     * @param  \Symfony\Component\HttpFoundation\Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param  Request $request
+     * @return Response
      */
     public function restSberbankAction(Request $request) {
         $failUrl      = $this->getSiteUrl($request, 0);
         $redirect_url = $failUrl;
         if($request->isMethod(Request::METHOD_POST)) {
+
             if (Komtet::otherCheckMD5($request, $this->getParameter('handling_secret'))) {
 
                 $komtet = $this->getParameter('komtet');
@@ -52,6 +53,7 @@ class SberbankController extends Controller
                 );
 
                 $answer = $this->gateway('register.do', $data);
+
                 if(isset($answer['errorCode']) && ($answer['errorCode']==0 || $answer['errorCode']==1)) {
                     //Заказ уже существует
                     $data = array(
@@ -70,6 +72,8 @@ class SberbankController extends Controller
                             $redirect_url = self::FORM_URL.'?mdOrder='.$id;
                         }
                     }
+
+                    echo $redirect_url;
                 }elseif(isset($answer['formUrl'])) {
                     $redirect_url = $answer['formUrl'];
                 }
@@ -81,8 +85,8 @@ class SberbankController extends Controller
 
     /**
      * @Route("/callbackSberbank", schemes={"https"})
-     * @param  \Symfony\Component\HttpFoundation\Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param  Request $request
+     * @return Response
      */
     public function callbackSberbankAction(Request $request)
     {
@@ -148,9 +152,11 @@ class SberbankController extends Controller
         return new Response('');
     }
 
-    /**  Основная функция работы со сбербанком
-     * @param $method
-     * @param $data
+    /**
+     * Основная функция работы со сбербанком
+     *
+     * @param string $method
+     * @param array $data
      * @return mixed
      */
     private function gateway($method, $data) {
@@ -170,7 +176,7 @@ class SberbankController extends Controller
     }
 
     /**
-     * @param $Sum
+     * @param string $Sum
      * @return string
      */
     private function replaceSum($Sum){
@@ -186,7 +192,7 @@ class SberbankController extends Controller
     }
 
     /**
-     * @param  \Symfony\Component\HttpFoundation\Request $request
+     * @param  Request $request
      * @param int $success
      * @return string
      */
@@ -201,7 +207,7 @@ class SberbankController extends Controller
     }
 
     /**
-     * @param  \Symfony\Component\HttpFoundation\Request $request
+     * @param  Request $request
      * @return bool
      */
     private function checkCallback(Request $request){

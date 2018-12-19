@@ -2,16 +2,17 @@
 
 namespace Cashbox\BoxBundle\Admin;
 
-use Sonata\AdminBundle\Admin\Admin;
-use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 
-class SberbankTransactionAdmin extends Admin
+class SberbankTransactionAdmin extends AbstractAdmin
 {
-
+    /**
+     * @param ListMapper $listMapper
+     */
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper
@@ -19,9 +20,13 @@ class SberbankTransactionAdmin extends Admin
             ->add('datetime')
             ->add('Sum')
             ->add('customerNumber')
-            ->add('email');
+            ->add('email')
+        ;
     }
 
+    /**
+     * @param RouteCollection $collection
+     */
     protected function configureRoutes(RouteCollection $collection)
     {
         $collection->remove('edit');
@@ -29,13 +34,20 @@ class SberbankTransactionAdmin extends Admin
         $collection->remove('create');
     }
 
+    /**
+     * @param DatagridMapper $datagridMapper
+     */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
             ->add('customerNumber')
-            ->add('datetime');
+            ->add('datetime')
+        ;
     }
 
+    /**
+     * @param ShowMapper $showMapper
+     */
     protected function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
@@ -44,7 +56,7 @@ class SberbankTransactionAdmin extends Admin
            ->add('Sum')
            ->add('customerNumber')
            ->add('email')
-           ->add('dataPost', null, ['template' => 'BoxBundle:MongoDB:show_hash.html.twig']);
-       ;
+           ->add('dataPost', null, ['template' => 'BoxBundle:MongoDB:show_hash.html.twig'])
+        ;
     }
 }    

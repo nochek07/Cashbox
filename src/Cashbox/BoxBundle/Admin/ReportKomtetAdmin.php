@@ -2,16 +2,17 @@
 
 namespace Cashbox\BoxBundle\Admin;
 
-use Sonata\AdminBundle\Admin\Admin;
-use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 
-class ReportKomtetAdmin extends Admin
+class ReportKomtetAdmin extends AbstractAdmin
 {
-
+    /**
+     * @param ListMapper $listMapper
+     */
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper
@@ -19,9 +20,13 @@ class ReportKomtetAdmin extends Admin
             ->add('datetime')
             ->add('action')
             ->add('type')
-            ->add('state');
+            ->add('state')
+        ;
     }
 
+    /**
+     * @param RouteCollection $collection
+     */
     protected function configureRoutes(RouteCollection $collection)
     {
         $collection->remove('edit');
@@ -29,14 +34,21 @@ class ReportKomtetAdmin extends Admin
         $collection->remove('create');
     }
 
+    /**
+     * @param DatagridMapper $datagridMapper
+     */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
             ->add('action')
             ->add('datetime')
-            ->add('type');
+            ->add('type')
+        ;
     }
 
+    /**
+     * @param ShowMapper $showMapper
+     */
     protected function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
@@ -47,7 +59,7 @@ class ReportKomtetAdmin extends Admin
            ->add('state')
            ->add('uuid')
            ->add('dataKomtet')
-           ->add('dataPost');
-       ;
+           ->add('dataPost')
+        ;
     }
 }    

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kirill
- * Date: 02.09.17
- * Time: 21:01
- */
 
 namespace Cashbox\BoxBundle\Document;
 
@@ -62,7 +56,7 @@ class SberbankTransaction
     /**
      * Set datetime
      *
-     * @return $this
+     * @return self
      */
     public function setDatetime()
     {
@@ -84,7 +78,7 @@ class SberbankTransaction
      * Set Sum
      *
      * @param float $Sum
-     * @return $this
+     * @return self
      */
     public function setSum($Sum)
     {
@@ -106,7 +100,7 @@ class SberbankTransaction
      * Set customerNumber
      *
      * @param string $customerNumber
-     * @return $this
+     * @return self
      */
     public function setCustomerNumber($customerNumber)
     {
@@ -128,7 +122,7 @@ class SberbankTransaction
      * Set email
      *
      * @param string $email
-     * @return $this
+     * @return self
      */
     public function setEmail($email)
     {
@@ -150,7 +144,7 @@ class SberbankTransaction
      * Set dataPost
      *
      * @param array $dataPost
-     * @return $this
+     * @return self
      */
     public function setDataPost($dataPost)
     {

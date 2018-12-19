@@ -29,6 +29,7 @@ class MongoDB
 
     /**
      * Запись транзакции в БД (Яндекс)
+     *
      * @param $action - вид транзакции
      * @param $Sum - сумма
      * @param $customerNumber - номер заказа
@@ -52,6 +53,7 @@ class MongoDB
 
     /**
      * Запись транзакции в БД (Сбербанк)
+     *
      * @param $Sum - сумма
      * @param $customerNumber - номер заказа
      * @param $email - email
@@ -73,6 +75,7 @@ class MongoDB
 
     /**
      * Запись ошибки в БД (Комтет)
+     *
      * @param $type
      * @param $state
      * @param array $dataKomtet - Результирующий массив после фискализации
@@ -100,6 +103,7 @@ class MongoDB
 
     /**
      * Поиск заказа по идентификатору $uuid
+     *
      * @param $action
      * @param $uuid
      * @return ReportKomtet|null|object

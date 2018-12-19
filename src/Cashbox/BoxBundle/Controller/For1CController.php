@@ -12,12 +12,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 class For1CController extends Controller
 {
-
     /**
      * Отправка чека из 1С
+     *
      * @Route("/send1c", schemes={"https"})
-     * @param  \Symfony\Component\HttpFoundation\Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param Request $request
+     * @return Response
      */
     public function send1cAction(Request $request)
     {
@@ -64,9 +64,10 @@ class For1CController extends Controller
 
     /**
      * Проверка сайта/очереди из 1С
+     *
      * @Route("/chek1c", schemes={"https"})
-     * @param  \Symfony\Component\HttpFoundation\Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param  Request $request
+     * @return Response
      */
     public function chek1cAction(Request $request)
     {
@@ -88,6 +89,7 @@ class For1CController extends Controller
 
     /**
      * Checking the MD5 sign.
+     *
      * @param  array $data payment parameters
      * @return bool true if MD5 hash is correct
      */

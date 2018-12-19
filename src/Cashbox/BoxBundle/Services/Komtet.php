@@ -54,6 +54,7 @@ class Komtet
 
     /**
      * Отправка данных на кассу через Komtet
+     *
      * @param array $data - массив с данными
      * [
      *      "order"  => "1224",
@@ -142,6 +143,7 @@ class Komtet
 
     /**
      * Отправка данных на электронную почту администратора
+     *
      * @param array $data - массив с данными
      * @param $from - источник чека
      */
@@ -183,6 +185,7 @@ class Komtet
 
     /**
      * Проверка очереди комтет-кассы
+     *
      * @param $name - имя очереди
      * @return bool
      */
@@ -192,6 +195,7 @@ class Komtet
 
     /**
      * Building XML response.
+     *
      * @param  string $functionName  "checkOrder" or "paymentAviso" string
      * @param  string $invoiceId     transaction number
      * @param  string $result_code   result code
@@ -213,6 +217,7 @@ class Komtet
 
     /**
      * Форматирование даты
+     *
      * @param \DateTime $date
      * @return string
      */
@@ -222,6 +227,7 @@ class Komtet
 
     /**
      * Дополнительная проверка
+     *
      * @param Request $request
      * @param String $handling_secret
      * @return bool

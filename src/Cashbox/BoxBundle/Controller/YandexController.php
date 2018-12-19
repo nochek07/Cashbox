@@ -14,8 +14,8 @@ class YandexController extends Controller
 {
     /**
      * @Route("/aviso", schemes={"https"})
-     * @param  \Symfony\Component\HttpFoundation\Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param  Request $request
+     * @return Response
      */
     public function avisoAction(Request $request)
     {
@@ -69,8 +69,8 @@ class YandexController extends Controller
 
     /**
      * @Route("/check", schemes={"https"})
-     * @param  \Symfony\Component\HttpFoundation\Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param  Request $request
+     * @return Response
      */
     public function checkAction(Request $request)
     {
@@ -106,8 +106,8 @@ class YandexController extends Controller
     }
 
     /**
-     * @param  \Symfony\Component\HttpFoundation\Request $request payment parameters
-     * @return string prepared XML response
+     * @param Request $request
+     * @return string
      */
     private function getAnswer(Request $request) {
         return Komtet::buildResponse($request->get('action'), $request->get('invoiceId'), 0, $this->getParameter('shop_yandex_id'));
@@ -115,8 +115,9 @@ class YandexController extends Controller
 
     /**
      * Handles "checkOrder" and "paymentAviso" requests.
-     * @param  \Symfony\Component\HttpFoundation\Request $request payment parameters
-     * @return string prepared XML response
+     *
+     * @param  Request $request
+     * @return string
      */
     public function processRequest(Request $request) {
         //Проверка
@@ -128,8 +129,9 @@ class YandexController extends Controller
 
     /**
      * Checking the MD5 sign.
-     * @param  Request $request payment parameters
-     * @return bool true if MD5 hash is correct
+     *
+     * @param  Request $request
+     * @return bool (true if MD5 hash is correct)
      */
     private function checkMD5(Request $request) {
         $str = $request->get('action') . ";" .

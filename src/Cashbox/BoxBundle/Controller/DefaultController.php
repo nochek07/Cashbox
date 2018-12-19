@@ -12,8 +12,8 @@ class DefaultController extends Controller
 
     /**
      * @Route("/test")
-     * @param  \Symfony\Component\HttpFoundation\Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param  Request $request
+     * @return Response
      */
     public function testAction(Request $request)
     {
@@ -22,6 +22,7 @@ class DefaultController extends Controller
 
     /**
      * @Route("/")
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function indexAction()
     {

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kirill
- * Date: 02.09.17
- * Time: 21:01
- */
 
 namespace Cashbox\BoxBundle\Document;
 
@@ -67,7 +61,7 @@ class YandexTransaction
     /**
      * Set datetime
      *
-     * @return $this
+     * @return self
      */
     public function setDatetime()
     {
@@ -89,7 +83,7 @@ class YandexTransaction
      * Set action
      *
      * @param string $action
-     * @return $this
+     * @return self
      */
     public function setAction($action)
     {
@@ -111,7 +105,7 @@ class YandexTransaction
      * Set Sum
      *
      * @param float $Sum
-     * @return $this
+     * @return self
      */
     public function setSum($Sum)
     {
@@ -133,7 +127,7 @@ class YandexTransaction
      * Set customerNumber
      *
      * @param string $customerNumber
-     * @return $this
+     * @return self
      */
     public function setCustomerNumber($customerNumber)
     {
@@ -155,7 +149,7 @@ class YandexTransaction
      * Set email
      *
      * @param string $email
-     * @return $this
+     * @return self
      */
     public function setEmail($email)
     {
@@ -177,7 +171,7 @@ class YandexTransaction
      * Set dataPost
      *
      * @param array $dataPost
-     * @return $this
+     * @return self
      */
     public function setDataPost($dataPost)
     {
