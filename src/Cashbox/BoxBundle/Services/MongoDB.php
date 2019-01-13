@@ -30,21 +30,18 @@ class MongoDB
     /**
      * Запись транзакции в БД (Яндекс)
      *
-     * @param $action - вид транзакции
-     * @param $Sum - сумма
-     * @param $customerNumber - номер заказа
-     * @param $email - email
-     * @param $data - полные данные транзакции
+     * @param array $params
      */
-    public function setYandexTransaction($action, $Sum, $customerNumber, $email, $data)
+    public function setYandexTransaction(array $params)
     {
         $transaction = new YandexTransaction();
         $transaction->setDatetime();
-        $transaction->setAction($action);
-        $transaction->setSum($Sum);
-        $transaction->setCustomerNumber($customerNumber);
-        $transaction->setEmail($email);
-        $transaction->setDataPost($data);
+        $transaction->setAction($params['action']);
+        $transaction->setSum($params['orderSum']);
+        $transaction->setCustomerNumber($params['customerNumber']);
+        $transaction->setEmail($params['email']);
+        $transaction->setDataPost($params['data']);
+        $transaction->setInn($params['inn']);
 
         $dm = $this->doctrine_mongodb->getManager();
         $dm->persist($transaction);
@@ -54,19 +51,17 @@ class MongoDB
     /**
      * Запись транзакции в БД (Сбербанк)
      *
-     * @param $Sum - сумма
-     * @param $customerNumber - номер заказа
-     * @param $email - email
-     * @param $data - полные данные транзакции
+     * @param array $params
      */
-    public function setSberbankTransaction($Sum, $customerNumber, $email, $data)
+    public function setSberbankTransaction(array $params)
     {
         $transaction = new SberbankTransaction();
         $transaction->setDatetime();
-        $transaction->setSum($Sum);
-        $transaction->setCustomerNumber($customerNumber);
-        $transaction->setEmail($email);
-        $transaction->setDataPost($data);
+        $transaction->setSum($params['orderSum']);
+        $transaction->setCustomerNumber($params['customerNumber']);
+        $transaction->setEmail($params['email']);
+        $transaction->setDataPost($params['data']);
+        $transaction->setInn($params['inn']);
 
         $dm = $this->doctrine_mongodb->getManager();
         $dm->persist($transaction);
@@ -74,51 +69,38 @@ class MongoDB
     }
 
     /**
-     * Запись ошибки в БД (Комтет)
+     * Запись в БД (Комтет)
      *
-     * @param $type
-     * @param $state
-     * @param array $dataKomtet - Результирующий массив после фискализации
-     * @param array $dataPost   - Массив входящих данных
+     * @param array $params
      */
-    public function setErrorSuccess($type, $state, $dataKomtet = array(), $dataPost = array())
+    public function setReportKomtet(array $params)
     {
         $Report = new ReportKomtet();
         $Report->setDatetime();
-        $Report->setType($type);
-        $Report->setState($state);
-        $Report->setDataKomtet($dataKomtet);
-        $Report->setDataPost($dataPost);
+        $Report->setType($params['type']);
+        $Report->setState($params['state']);
+        $Report->setInn($params['inn']);
 
-        if(isset($dataPost["uuid"]))
-            $Report->setUuid($dataPost["uuid"]);
+        if(isset($params['dataKomtet'])) {
+            $Report->setDataKomtet($params['dataKomtet']);
+        } else {
+            $Report->setDataKomtet([]);
+        }
 
-        if(isset($dataPost["action"]))
-            $Report->setAction($dataPost["action"]);
+        if(isset($params['dataPost'])) {
+            $Report->setDataPost($params['dataPost']);
+
+            if (isset($dataPost["uuid"]))
+                $Report->setUuid($params['dataPost']["uuid"]);
+
+            if (isset($dataPost["action"]))
+                $Report->setAction($params['dataPost']["action"]);
+        } else {
+            $Report->setDataPost([]);
+        }
 
         $dm = $this->doctrine_mongodb->getManager();
         $dm->persist($Report);
         $dm->flush();
-    }
-
-    /**
-     * Поиск заказа по идентификатору $uuid
-     *
-     * @param $action
-     * @param $uuid
-     * @return ReportKomtet|null|object
-     */
-    public function find1cReport($action, $uuid){
-        $repository = $this->doctrine_mongodb
-            ->getManager()
-            ->getRepository('BoxBundle:ReportKomtet');
-
-        return $repository->findOneBy(
-            array(
-                'type'   => self::ERROR_FROM_1C,
-                'action' => $action,
-                'uuid'   => $uuid
-            )
-        );
     }
 }

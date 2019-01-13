@@ -25,8 +25,8 @@ security:
             security: false
 
         main:
-            #anonymous: ~
             # activate different ways to authenticate
+            anonymous: ~
 
             # http_basic: ~
             # http://symfony.com/doc/current/book/security.html#a-configuring-how-your-users-will-authenticate
@@ -44,11 +44,10 @@ security:
             logout:
                 path: /admin/logout
                 target: /admin
-            anonymous: ~
 
     access_control:
         - { path: ^/admin/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         #- { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         #- { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/admin/, role: ROLE_USER }
+        - { path: ^/admin/, role: IS_AUTHENTICATED_FULLY }
         #- { path: ^/admin, role: IS_AUTHENTICATED_ANONYMOUSLY }

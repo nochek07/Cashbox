@@ -1,5 +1,6 @@
 <?php
 
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
@@ -16,15 +17,16 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
-            new Cashbox\BoxBundle\BoxBundle(),
-            new FOS\UserBundle\FOSUserBundle(),
             // Add your dependencies
             new Sonata\CoreBundle\SonataCoreBundle(),
             new Sonata\BlockBundle\SonataBlockBundle(),
             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
+            new Sonata\AdminBundle\SonataAdminBundle(),
             new Sonata\DoctrineMongoDBAdminBundle\SonataDoctrineMongoDBAdminBundle(),
             // Then add SonataAdminBundle
-            new Sonata\AdminBundle\SonataAdminBundle(),
+
+            new Cashbox\BoxBundle\BoxBundle(),
+            new FOS\UserBundle\FOSUserBundle(),
             new Cashbox\UserBundle\UserBundle(),
         ];
 
@@ -59,6 +61,12 @@ class AppKernel extends Kernel
 
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
+        $loader->load(function (ContainerBuilder $container) {
+            $container->setParameter('container.autowiring.strict_mode', true);
+            $container->setParameter('container.dumper.inline_class_loader', true);
+
+            $container->addObjectResource($this);
+        });
         $loader->load($this->getRootDir().'/config/config_'.$this->getEnvironment().'.yml');
     }
 }

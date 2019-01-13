@@ -4,14 +4,16 @@ namespace Cashbox\BoxBundle\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\date;
 
 /**
- * @MongoDB\Document(collection="YandexTransaction")
+ * @Annotation
+ * @MongoDB/Document
  */
 class YandexTransaction
 {
     /**
-     * @MongoDB\Id(strategy="AUTO")
+     * @MongoDB\Id(strategy="INCREMENT")
      */
     protected $id;
 
@@ -46,11 +48,6 @@ class YandexTransaction
     protected $dataPost;
 
     /**
-     * @MongoDB\Field(type="int")
-     */
-    protected $inn;
-
-    /**
      * Get id
      *
      * @return id $id
@@ -74,7 +71,7 @@ class YandexTransaction
     /**
      * Get Sum
      *
-     * @return \DateTime $datetime
+     * @return date $datetime
      */
     public function getDatetime()
     {
@@ -189,27 +186,5 @@ class YandexTransaction
     public function getDataPost()
     {
         return $this->dataPost;
-    }
-
-    /**
-     * Set inn
-     *
-     * @param integer $inn
-     * @return self
-     */
-    public function setInn($inn)
-    {
-        $this->inn = $inn;
-        return $this;
-    }
-
-    /**
-     * Get inn
-     *
-     * @return integer $inn
-     */
-    public function getInn()
-    {
-        return $this->inn;
     }
 }

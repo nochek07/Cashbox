@@ -2,7 +2,7 @@
     "name": "nochek/Cashbox",
     "license": "proprietary",
     "type": "project",
-    "version": "1.2",
+    "version": "1.3",
     "autoload": {
         "psr-4": {
             "": "src/"
@@ -18,23 +18,23 @@
         }
     },
     "require": {
-        "php": ">=5.5.9",
+        "php": ">=7.0",
         "alcaeus/mongo-php-adapter": "^1.1",
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/doctrine-cache-bundle": "^1.2",
-        "doctrine/mongodb-odm": "^1.0",
-        "doctrine/mongodb-odm-bundle": "^3.0",
+        "doctrine/mongodb-odm": "^1.2",
+        "doctrine/mongodb-odm-bundle": "^3.4",
         "doctrine/orm": "^2.5",
         "friendsofsymfony/user-bundle": "~2.0",
         "incenteev/composer-parameter-handler": "^2.0",
-        "komtet/kassa-sdk": "^0.3",
+        "komtet/kassa-sdk": "^1.2",
         "sensio/distribution-bundle": "^5.0",
         "sensio/framework-extra-bundle": "^3.0.2",
-        "sonata-project/admin-bundle": "^3.23",
-        "sonata-project/doctrine-mongodb-admin-bundle": "3.x-dev",
-        "symfony/monolog-bundle": "^3.0.2",
-        "symfony/swiftmailer-bundle": "^2.3",
-        "symfony/symfony": "3.3.*"
+        "sonata-project/admin-bundle": "~3.33",
+        "sonata-project/doctrine-mongodb-admin-bundle": "^3.1",
+        "symfony/monolog-bundle": "^3.1.0",
+        "symfony/swiftmailer-bundle": "^2.6",
+        "symfony/symfony": "3.4.*"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",

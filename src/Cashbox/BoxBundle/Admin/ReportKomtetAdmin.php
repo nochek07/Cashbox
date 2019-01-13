@@ -17,7 +17,10 @@ class ReportKomtetAdmin extends AbstractAdmin
     {
         $listMapper
             ->addIdentifier('id')
-            ->add('datetime')
+            ->add('inn')
+            ->add('datetime', 'datetime', [
+                'format' => 'd.m.Y H:i:s'
+            ])
             ->add('action')
             ->add('type')
             ->add('state')
@@ -43,6 +46,8 @@ class ReportKomtetAdmin extends AbstractAdmin
             ->add('action')
             ->add('datetime')
             ->add('type')
+            ->add('inn')
+            ->add('state')
         ;
     }
 
@@ -53,6 +58,7 @@ class ReportKomtetAdmin extends AbstractAdmin
     {
         $showMapper
            ->add('id')
+           ->add('inn')
            ->add('datetime')
            ->add('action')
            ->add('type')

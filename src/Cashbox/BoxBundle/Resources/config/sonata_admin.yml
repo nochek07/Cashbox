@@ -1,5 +1,6 @@
 sonata_admin:
     title: Касса
+    search: false
     templates:
         # default global templates
         layout:  BoxBundle:Admin:standard_layout.html.twig

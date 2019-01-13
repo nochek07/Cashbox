@@ -1,7 +1,8 @@
 <?php
 
-namespace Cashbox\BoxBundle\Services;
+namespace Cashbox\BoxBundle\Models;
 
+use Cashbox\BoxBundle\Document\Organization;
 use Komtet\KassaSdk\Check;
 use Komtet\KassaSdk\Client;
 use Komtet\KassaSdk\Payment;
@@ -24,32 +25,36 @@ class Komtet
      */
     private $manager = null;
 
-    private $mailer;
-    private $templating;
-    private $cashbox_mongodb;
+    /**
+     * @var array $komtet
+     */
+    protected $komtet = [];
 
-    protected $komtet_params = array();
-    protected $mailer_user;
+    /**
+     * @var ContainerInterface $container
+     */
+    private $container;
+
+    /**
+     * @var Organization $organization
+     */
+    private $organization;
 
     /**
      * Komtet constructor.
-     * @param $komtet_params
-     * @param $mailer_user
+     * @param Organization $organization
      * @param ContainerInterface $container
      */
-    public function __construct($komtet_params, $mailer_user, ContainerInterface $container)
+    public function __construct(Organization $organization, ContainerInterface $container)
     {
-        $this->komtet_params   = $komtet_params;
-        $this->mailer_user     = $mailer_user;
+        $this->organization = $organization;
+        $this->container = $container;
+        $this->komtet = $organization->getDataKomtet();
         if(is_null($this->manager)) {
-            $client = new Client($this->komtet_params['komtet_shop_id'], $this->komtet_params['komtet_secret']);
+            $client = new Client($this->komtet['shop_id'], $this->komtet['secret']);
             $this->manager = new QueueManager($client);
-            $this->manager->registerQueue($this->komtet_params['komtet_cashbox_name'], $this->komtet_params['komtet_cashbox_id']);
+            $this->manager->registerQueue($this->komtet['queue_name'], $this->komtet['queue_id']);
         }
-
-        $this->mailer          = $container->get('mailer');
-        $this->templating      = $container->get('templating');
-        $this->cashbox_mongodb = $container->get('mongodb.cashbox');
     }
 
     /**
@@ -81,24 +86,23 @@ class Komtet
      */
     public function sendKKM($data, $from)
     {
-        $komtet_cashbox_name = $this->komtet_params['komtet_cashbox_name'];
-        $this->manager->setDefaultQueue($komtet_cashbox_name);
+        $this->manager->setDefaultQueue($this->komtet['queue_name']);
 
-        $system_vat = $this->komtet_params['system_vat'];
+        $tax_system = $this->komtet['tax_system'];
         $check = null;
         switch ($data["action"]) {
             case "sale":
-                $check = Check::createSell($data["order"], $data["email"], $system_vat);
+                $check = Check::createSell($data["order"], $data["email"], $tax_system);
                 break;
             case "refund":
-                $check = Check::createSellReturn($data["order"], $data["email"], $system_vat);
+                $check = Check::createSellReturn($data["order"], $data["email"], $tax_system);
                 break;
         }
 
         // Говорим, что чек нужно распечатать
         $check->setShouldPrint(true);
 
-        $vat = new Vat($this->komtet_params['vat']);
+        $vat = new Vat($this->komtet['vat']);
 
         foreach ($data["kkm"]["positions"] as $value) {
             // Позиция в чеке: имя, цена, кол-во, общая стоимость, скидка, налог
@@ -108,34 +112,47 @@ class Komtet
 
         // Итоговая сумма расчёта
         if(isset($data["kkm"]["payment"]["card"])) {
-            $payment = Payment::createCard((float)$data["kkm"]["payment"]["card"]);
+            $payment = new Payment(Payment::TYPE_CARD, (float)$data["kkm"]["payment"]["card"]);
             $check->addPayment($payment);
         }
         if(isset($data["kkm"]["payment"]["cash"])) {
-            $payment = Payment::createCash((float)$data["kkm"]["payment"]["cash"]);
+            $payment = new Payment(Payment::TYPE_CASH, (float)$data["kkm"]["payment"]["cash"]);
             $check->addPayment($payment);
         }
+
+        $cashbox_mongodb = $this->container->get('mongodb.cashbox');
 
         // Добавляем чек в очередь.
         try {
             $res = $this->manager->putCheck($check);
             if(isset($res['state'])) {
-                $this->cashbox_mongodb->setErrorSuccess($from, $res['state'], $res, $data);
+                $cashbox_mongodb->setReportKomtet([
+                    'type' => $from,
+                    'state' => $res['state'],
+                    'dataKomtet' => $res,
+                    'dataPost' => $data,
+                    'inn' => $this->organization->getINN()
+                ]);
+
                 $this->sendReport($data, $from);
                 return '';
             } else {
-                $this->cashbox_mongodb->setErrorSuccess($from, 'otherError', $res);
+                $cashbox_mongodb->setReportKomtet([
+                    'type' => $from,
+                    'state' => 'otherError',
+                    'dataKomtet' => $res,
+                    'inn' => $this->organization->getINN()
+                ]);
             }
-        } catch (\Exception $e) {
-            $this->cashbox_mongodb->setErrorSuccess(
-                $from,
-                'error',
-                array(
-                    "error_description" => $e->getMessage()
-                )
-            );
+        } catch (\Exception $error) {
+            $cashbox_mongodb->setReportKomtet([
+                'type' => $from,
+                'state' => 'error',
+                'dataKomtet' => ["error_description" => $error->getMessage()],
+                'inn' => $this->organization->getINN()
+            ]);
 
-            return $e->getMessage();
+            return $error->getMessage();
         }
 
         return 'otherError';
@@ -148,38 +165,40 @@ class Komtet
      * @param $from - источник чека
      */
     private function sendReport($data, $from) {
-        if(isset($data["kkm"]["payment"]["card"])) {
-            $card = (float)$data["kkm"]["payment"]["card"];
-        } else {
-            $card = 0;
-        }
-        if(isset($data["kkm"]["payment"]["cash"])) {
-            $cash = (float)$data["kkm"]["payment"]["cash"];
-        } else {
-            $cash = 0;
-        }
+        $email = $this->organization->getAdminEmail();
+        if (trim($email)!=='') {
+            if (isset($data["kkm"]["payment"]["card"])) {
+                $card = (float)$data["kkm"]["payment"]["card"];
+            } else {
+                $card = 0;
+            }
+            if (isset($data["kkm"]["payment"]["cash"])) {
+                $cash = (float)$data["kkm"]["payment"]["cash"];
+            } else {
+                $cash = 0;
+            }
 
-        try {
-            $message = \Swift_Message::newInstance()
-                ->setSubject('Кассовая операция')
-                ->setFrom($this->mailer_user)
-                ->setTo($this->komtet_params['admin_email'])
-                ->setBody(
-                    $this->templating->render(
-                        'BoxBundle:Default:email.text.twig',
-                        array(
-                            'action' => $data['action'],
-                            'type'   => $from,
-                            'email'  => $data['email'],
-                            'order'  => $data['order'],
-                            'cash'   => $cash,
-                            'cart'   => $card,
+            try {
+                $message = \Swift_Message::newInstance()
+                    ->setSubject('Кассовая операция')
+                    ->setFrom($this->container->getParameter("mailer_user"))
+                    ->setTo($email)
+                    ->setBody(
+                        $this->container->get('templating')->render(
+                            'BoxBundle:Default:email.text.twig',
+                            [
+                                'action' => $data['action'],
+                                'type' => $from,
+                                'email' => $data['email'],
+                                'order' => $data['order'],
+                                'cash' => $cash,
+                                'cart' => $card,
+                            ]
                         )
-                    )
-                )
-            ;
-            $this->mailer->send($message);
-        } catch (\Exception $e) {
+                    );
+                $this->container->get('mailer')->send($message);
+            } catch (\Exception $error) {
+            }
         }
     }
 
@@ -209,7 +228,7 @@ class Komtet
             $response = '<?xml version="1.0" encoding="UTF-8"?><' . $functionName . 'Response performedDatetime="' . $performedDatetime .
                 '" code="' . $result_code . '" ' . ($message != null ? 'message="' . $message . '"' : "") . ' invoiceId="' . $invoiceId . '" shopId="' . $shopId . '"/>';
             return $response;
-        } catch (\Exception $e) {
+        } catch (\Exception $error) {
 
         }
         return '';
@@ -233,6 +252,6 @@ class Komtet
      * @return bool
      */
     public static function otherCheckMD5(Request $request, $handling_secret){
-        return ( $request->get('h') != md5($request->get('customerNumber')."_".$request->get('orderSumAmount')."_".$handling_secret) );
+        return ( $request->get('h') != md5($request->get('customerNumber') . "_" . $request->get('orderSumAmount') . "_" . $handling_secret) );
     }
 }

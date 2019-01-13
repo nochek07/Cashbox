@@ -31,6 +31,20 @@ file that was distributed with this source code.
             <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
         {% endblock %}
 
+        <meta data-sonata-admin='{{ {
+            config: {
+                CONFIRM_EXIT: sonata_admin.adminPool.getOption('confirm_exit'),
+                USE_SELECT2: sonata_admin.adminPool.getOption('use_select2'),
+                USE_ICHECK: sonata_admin.adminPool.getOption('use_icheck'),
+                USE_STICKYFORMS: sonata_admin.adminPool.getOption('use_stickyforms'),
+                DEBUG: sonata_admin.adminPool.getOption('js_debug'),
+            },
+            translations: {
+                CONFIRM_EXIT: 'confirm_exit'|trans({}, 'SonataAdminBundle'),
+            },
+        }|json_encode()|raw }}'
+        >
+
         {% block stylesheets %}
             {% for stylesheet in sonata_admin.adminPool.getOption('stylesheets', []) %}
                 <link rel="stylesheet" href="{{ asset(stylesheet) }}">
@@ -39,83 +53,70 @@ file that was distributed with this source code.
 
         {% block javascripts %}
             {% block sonata_javascript_config %}
-                <script>
-                    window.SONATA_CONFIG = {
-                        CONFIRM_EXIT: {% if sonata_admin.adminPool.getOption('confirm_exit') %}true{% else %}false{% endif %},
-                        USE_SELECT2: {% if sonata_admin.adminPool.getOption('use_select2') %}true{% else %}false{% endif %},
-                        USE_ICHECK: {% if sonata_admin.adminPool.getOption('use_icheck') %}true{% else %}false{% endif %},
-                        USE_STICKYFORMS: {% if sonata_admin.adminPool.getOption('use_stickyforms') %}true{% else %}false{% endif %}
-                    };
-                    window.SONATA_TRANSLATIONS = {
-                        CONFIRM_EXIT: '{{ 'confirm_exit'|trans({}, 'SonataAdminBundle')|escape('js') }}'
-                    };
-
-                    // http://getbootstrap.com/getting-started/#support-ie10-width
-                    if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
-                        var msViewportStyle = document.createElement('style');
-                        msViewportStyle.appendChild(document.createTextNode('@-ms-viewport{width:auto!important}'));
-                        document.querySelector('head').appendChild(msViewportStyle);
-                    }
-                </script>
             {% endblock %}
 
-            {% block sonata_javascript_pool %}
-                {% for javascript in sonata_admin.adminPool.getOption('javascripts', []) %}
-                    <script src="{{ asset(javascript) }}"></script>
-                {% endfor %}
-            {% endblock %}
+        {% block sonata_javascript_pool %}
+            {% for javascript in sonata_admin.adminPool.getOption('javascripts', []) %}
+            <script src="{{ asset(javascript) }}"></script>
+            {% endfor %}
+        {% endblock %}
 
-            {% set locale = app.request.locale %}
             {# localize moment #}
-            {% if locale[:2] != 'en' %}
-                <script src="{{ asset(
-                    'bundles/sonatacore/vendor/moment/locale/' ~
-                    locale|lower|replace({'_':'-'}) ~
-                    '.js'
-                ) }}"></script>
+            {% set localeForMoment = canonicalize_locale_for_moment() %}
+            {% if localeForMoment %}
+            <script src="{{ asset(
+            'bundles/sonatacore/vendor/moment/locale/' ~
+            localeForMoment ~
+            '.js'
+            ) }}"></script>
             {% endif %}
 
             {# localize select2 #}
             {% if sonata_admin.adminPool.getOption('use_select2') %}
-                {% if locale == 'pt' %}{% set locale = 'pt_PT' %}{% endif %}
-
-                {# omit default EN locale #}
-                {% if locale[:2] != 'en' %}
-                    <script src="{{ asset('bundles/sonatacore/vendor/select2/select2_locale_' ~ locale|replace({'_':'-'}) ~ '.js') }}"></script>
-                {% endif %}
+            {% set localeForSelect2 = canonicalize_locale_for_select2() %}
+            {% if localeForSelect2 %}
+            <script src="{{ asset('bundles/sonatacore/vendor/select2/select2_locale_' ~ localeForSelect2 ~ '.js') }}"></script>
+            {% endif %}
             {% endif %}
         {% endblock %}
 
         <title>
-        {% block sonata_head_title %}
-            {{ 'Admin'|trans({}, 'SonataAdminBundle') }}
+            {% block sonata_head_title %}
+                {{ 'Admin'|trans({}, 'SonataAdminBundle') }}
 
-            {% if _title is not empty %}
-                {{ _title|striptags|raw }}
-            {% else %}
-                {% if action is defined %}
-                    -
-                    {% for menu in breadcrumbs_builder.breadcrumbs(admin, action) %}
-                        {% if not loop.first %}
-                            {% if loop.index != 2 %}
-                                &gt;
+                {% if _title is not empty %}
+                    {{ _title|striptags|raw }}
+                {% else %}
+                    {% if action is defined %}
+                        -
+                        {% for menu in breadcrumbs_builder.breadcrumbs(admin, action) %}
+                            {% if not loop.first %}
+                                {% if loop.index != 2 %}
+                                    &gt;
+                                {% endif %}
+
+                                {%- set translation_domain = menu.extra('translation_domain', 'messages') -%}
+                                {%- set label = menu.label -%}
+                                {%- if translation_domain is not same as(false) -%}
+                                    {%- set label = label|trans(menu.extra('translation_params', {}), translation_domain) -%}
+                                {%- endif -%}
+
+                                {{ label }}
                             {% endif %}
-
-                            {%- set translation_domain = menu.extra('translation_domain', 'messages') -%}
-                            {%- set label = menu.label -%}
-                            {%- if translation_domain is not same as(false) -%}
-                                {%- set label = label|trans(menu.extra('translation_params', {}), translation_domain) -%}
-                            {%- endif -%}
-
-                            {{ label }}
-                        {% endif %}
-                    {% endfor %}
+                        {% endfor %}
+                    {% endif %}
                 {% endif %}
-            {% endif %}
-        {% endblock %}
+            {% endblock %}
         </title>
     </head>
-    <body {% block body_attributes %}class="sonata-bc skin-black fixed"{% endblock %}>
+    <body
+            {% block body_attributes -%}
+                class="sonata-bc skin-black fixed
+                {% if app.request.cookies.get('sonata_sidebar_hide') -%}
+                    sidebar-collapse
+                {%- endif -%}"
+            {%- endblock -%}
+    >
 
     <div class="wrapper">
 
@@ -215,16 +216,18 @@ file that was distributed with this source code.
                     <section class="sidebar">
                         {% block sonata_side_nav %}
                             {% block sonata_sidebar_search %}
-                                <form action="{{ path('sonata_admin_search') }}" method="GET" class="sidebar-form" role="search">
-                                    <div class="input-group custom-search-form">
-                                        <input type="text" name="q" value="{{ app.request.get('q') }}" class="form-control" placeholder="{{ 'search_placeholder'|trans({}, 'SonataAdminBundle') }}">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-flat" type="submit">
-                                                <i class="fa fa-search" aria-hidden="true"></i>
-                                            </button>
-                                        </span>
-                                    </div>
-                                </form>
+                                {% if sonata_admin.adminPool.getOption('search') %}
+                                    <form action="{{ path('sonata_admin_search') }}" method="GET" class="sidebar-form" role="search">
+                                        <div class="input-group custom-search-form">
+                                            <input type="text" name="q" value="{{ app.request.get('q') }}" class="form-control" placeholder="{{ 'search_placeholder'|trans({}, 'SonataAdminBundle') }}">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-flat" type="submit">
+                                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </form>
+                                {% endif %}
                             {% endblock sonata_sidebar_search %}
 
                             {% block side_bar_before_nav %} {% endblock %}

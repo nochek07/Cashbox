@@ -17,7 +17,10 @@ class YandexTransactionAdmin extends AbstractAdmin
     {
         $listMapper
             ->addIdentifier('id')
-            ->add('datetime')
+            ->add('inn')
+            ->add('datetime', 'datetime', [
+                'format' => 'd.m.Y H:i:s'
+            ])
             ->add('action')
             ->add('Sum')
             ->add('customerNumber')
@@ -41,6 +44,7 @@ class YandexTransactionAdmin extends AbstractAdmin
             ->add('action')
             ->add('customerNumber')
             ->add('datetime')
+            ->add('inn')
         ;
     }
 
@@ -51,6 +55,7 @@ class YandexTransactionAdmin extends AbstractAdmin
     {
         $showMapper
            ->add('id')
+           ->add('inn')
            ->add('datetime')
            ->add('action')
            ->add('Sum')

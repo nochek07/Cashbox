@@ -4,14 +4,16 @@ namespace Cashbox\BoxBundle\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\date;
 
 /**
- * @MongoDB\Document(collection="YandexTransaction")
+ * @Annotation
+ * @MongoDB/Document
  */
-class YandexTransaction
+class SberbankTransaction
 {
     /**
-     * @MongoDB\Id(strategy="AUTO")
+     * @MongoDB\Id(strategy="INCREMENT")
      */
     protected $id;
 
@@ -19,11 +21,6 @@ class YandexTransaction
      * @MongoDB\Field(type="date")
      */
     protected $datetime;
-
-    /**
-     * @MongoDB\Field(type="string")
-     */
-    protected $action;
 
     /**
      * @MongoDB\Field(type="float")
@@ -44,11 +41,6 @@ class YandexTransaction
      * @MongoDB\Field(type="hash")
      */
     protected $dataPost;
-
-    /**
-     * @MongoDB\Field(type="int")
-     */
-    protected $inn;
 
     /**
      * Get id
@@ -74,33 +66,11 @@ class YandexTransaction
     /**
      * Get Sum
      *
-     * @return \DateTime $datetime
+     * @return date $datetime
      */
     public function getDatetime()
     {
         return $this->datetime;
-    }
-
-    /**
-     * Set action
-     *
-     * @param string $action
-     * @return self
-     */
-    public function setAction($action)
-    {
-        $this->action = $action;
-        return $this;
-    }
-
-    /**
-     * Get action
-     *
-     * @return string $action
-     */
-    public function getAction()
-    {
-        return $this->action;
     }
 
     /**
@@ -189,27 +159,5 @@ class YandexTransaction
     public function getDataPost()
     {
         return $this->dataPost;
-    }
-
-    /**
-     * Set inn
-     *
-     * @param integer $inn
-     * @return self
-     */
-    public function setInn($inn)
-    {
-        $this->inn = $inn;
-        return $this;
-    }
-
-    /**
-     * Get inn
-     *
-     * @return integer $inn
-     */
-    public function getInn()
-    {
-        return $this->inn;
     }
 }

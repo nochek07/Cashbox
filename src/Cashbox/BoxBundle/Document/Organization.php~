@@ -1,0 +1,53 @@
+<?php
+
+namespace Cashbox\BoxBundle\Document;
+
+use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
+
+/**
+ * @Annotation
+ * @MongoDB/Document
+ */
+class Organization
+{
+    /**
+     * @MongoDB\Id(strategy="INCREMENT")
+     */
+    protected $id;
+
+    /**
+     * @MongoDB\Field(type="string")
+     */
+    protected $name;
+
+    /**
+     * @MongoDB\Field(type="integer")
+     */
+    protected $INN;
+
+    /**
+     * @MongoDB\Field(type="string")
+     */
+    protected $adminEmail;
+
+    /**
+     * @MongoDB\Field(type="string")
+     */
+    protected $patternNomenclature;
+
+    /**
+     * @MongoDB\Field(type="hash")
+     */
+    protected $dataKomtet;
+
+    /**
+     * @MongoDB\Field(type="hash")
+     */
+    protected $dataSberbank;
+
+    /**
+     * @MongoDB\Field(type="hash")
+     */
+    protected $dataYandex;
+}

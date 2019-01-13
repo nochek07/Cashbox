@@ -4,17 +4,14 @@ namespace Cashbox\BoxBundle\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\date;
 
 /**
- * @Annotation
- * @MongoDB/Document
- *
+ * @MongoDB\Document(collection="SberbankTransaction")
  */
 class SberbankTransaction
 {
     /**
-     * @MongoDB\Id(strategy="INCREMENT")
+     * @MongoDB\Id(strategy="AUTO")
      */
     protected $id;
 
@@ -44,6 +41,11 @@ class SberbankTransaction
     protected $dataPost;
 
     /**
+     * @MongoDB\Field(type="int")
+     */
+    protected $inn;
+
+    /**
      * Get id
      *
      * @return id $id
@@ -67,7 +69,7 @@ class SberbankTransaction
     /**
      * Get Sum
      *
-     * @return date $datetime
+     * @return \DateTime $datetime
      */
     public function getDatetime()
     {
@@ -160,5 +162,27 @@ class SberbankTransaction
     public function getDataPost()
     {
         return $this->dataPost;
+    }
+
+    /**
+     * Set inn
+     *
+     * @param integer $inn
+     * @return self
+     */
+    public function setInn($inn)
+    {
+        $this->inn = $inn;
+        return $this;
+    }
+
+    /**
+     * Get inn
+     *
+     * @return integer $inn
+     */
+    public function getInn()
+    {
+        return $this->inn;
     }
 }

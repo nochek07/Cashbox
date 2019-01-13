@@ -2,7 +2,9 @@
 
 namespace Cashbox\BoxBundle\Controller;
 
-use Cashbox\BoxBundle\Services\Komtet;
+use Cashbox\BoxBundle\Document\Organization;
+use Cashbox\BoxBundle\Models\Komtet;
+use Cashbox\BoxBundle\Models\OrganizationModel;
 use Cashbox\BoxBundle\Services\MongoDB;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -27,60 +29,72 @@ class SberbankController extends Controller
         $failUrl      = $this->getSiteUrl($request, 0);
         $redirect_url = $failUrl;
         if($request->isMethod(Request::METHOD_POST)) {
+            /**
+             * @var Organization $Organization
+             */
+            $Organization = OrganizationModel::getOrganization($request, $this->get('doctrine_mongodb'));
+            if (!is_null($Organization)) {
 
-            if (Komtet::otherCheckMD5($request, $this->getParameter('handling_secret'))) {
+                if (Komtet::otherCheckMD5($request, $Organization->getSecret())) {
+                    $komtet = $Organization->getDataKomtet();
 
-                $komtet = $this->getParameter('komtet');
-                if($komtet['cancel_action']) {
-                    $manager = $this->get("komtet.cashbox");
+                    if ($komtet['cancel_action']==1) {
+                        $KomtetObj = new Komtet($Organization, $this->get('service_container'));
 
-                    if (!$manager->isQueueActive($komtet['komtet_cashbox_name'])) {
-                        return $this->redirect($failUrl);
-                    }
-                }
-
-                $successUrl = $this->getSiteUrl($request, 1);
-
-                $data = array(
-                    'userName' => $this->getParameter('sberbank_username'),
-                    'password' => $this->getParameter('sberbank_password'),
-                    'orderNumber' => $request->get('customerNumber'),
-                    'amount' => $this->replaceSum($request->get('Sum')),
-                    'returnUrl' => $successUrl,
-                    'failUrl' => $failUrl,
-                    'jsonParams' => '{"email": "'.$request->get('email').'"}',
-                    'expirationDate' => date("Y-m-d\TH:i:s", strtotime('+'.self::ORDER_DAY.' day'))
-                );
-
-                $answer = $this->gateway('register.do', $data);
-
-                if(isset($answer['errorCode']) && ($answer['errorCode']==0 || $answer['errorCode']==1)) {
-                    //Заказ уже существует
-                    $data = array(
-                        'userName' => $this->getParameter('sberbank_username'),
-                        'password' => $this->getParameter('sberbank_password'),
-                        'orderNumber' => $request->get('customerNumber')
-                    );
-                    $response = $this->gateway('getOrderStatusExtended.do', $data);
-
-                    if($response['errorCode']==0) {
-                        // Произведена полная оплата
-                        if($response['orderStatus']==2) {
-                            $redirect_url = $successUrl;
-                        } else {
-                            $id = $response['attributes'][0]['value'];
-                            $redirect_url = self::FORM_URL.'?mdOrder='.$id;
+                        if (!$KomtetObj->isQueueActive($komtet['queue_name'])) {
+                            return $this->redirect($failUrl);
                         }
                     }
 
-                    echo $redirect_url;
-                }elseif(isset($answer['formUrl'])) {
-                    $redirect_url = $answer['formUrl'];
+                    $successUrl = $this->getSiteUrl($request, 1);
+
+                    $sberbank = $Organization->getDataSberbank();
+                    $data = array(
+                        'userName' => $sberbank['sberbank_username'],
+                        'password' => $sberbank['sberbank_password'],
+                        'orderNumber' => $request->get('customerNumber'),
+                        'amount' => $this->replaceSum($request->get('Sum')),
+                        'returnUrl' => $successUrl,
+                        'failUrl' => $failUrl,
+                        'jsonParams' => '{"email": "' . $request->get('email') . '"}',
+                        'expirationDate' => date("Y-m-d\TH:i:s", strtotime('+' . self::ORDER_DAY . ' day'))
+                    );
+
+                    $answer = $this->gateway('register.do', $data);
+
+//                    echo '<pre>';
+//                    print_r($answer);
+//                    echo '</pre>';
+
+                    if (isset($answer['errorCode']) && ($answer['errorCode'] == 0 || $answer['errorCode'] == 1)) {
+                        //Заказ уже существует
+                        $data = array(
+                            'userName' => $sberbank['sberbank_username'],
+                            'password' => $sberbank['sberbank_password'],
+                            'orderNumber' => $request->get('customerNumber')
+                        );
+                        $response = $this->gateway('getOrderStatusExtended.do', $data);
+
+                        if ($response['errorCode'] == 0) {
+                            // Произведена полная оплата
+                            if ($response['orderStatus'] == 2) {
+                                $redirect_url = $successUrl;
+                            } else {
+                                $id = $response['attributes'][0]['value'];
+                                $redirect_url = self::FORM_URL . '?mdOrder=' . $id;
+                            }
+                        }
+
+                        echo $redirect_url;
+                    } elseif (isset($answer['formUrl'])) {
+                        $redirect_url = $answer['formUrl'];
+                    }
                 }
             }
         }
 
         return $this->redirect($redirect_url);
+        //return new Response('');
     }
 
     /**
@@ -91,60 +105,66 @@ class SberbankController extends Controller
     public function callbackSberbankAction(Request $request)
     {
         if($request->isMethod(Request::METHOD_GET)) {
-            if ($this->checkCallback($request)) {
+            /**
+             * @var Organization $Organization
+             */
+            $Organization = OrganizationModel::getOrganization($request, $this->get('doctrine_mongodb'));
+            if (!is_null($Organization)) {
+                $sberbank = $Organization->getDataSberbank();
+                if ($this->checkCallback($request, $sberbank)) {
+                    $customerNumber = $request->query->get('orderNumber');
+                    $data = [
+                        'userName' => $sberbank['sberbank_username'],
+                        'password' => $sberbank['sberbank_password'],
+                        'orderNumber' => $customerNumber
+                    ];
+                    $response = $this->gateway('getOrderStatusExtended.do', $data);
+                    if (isset($response['errorCode']) && $response['errorCode'] == 0 && $response['actionCode'] == 0) {
 
-                $customerNumber = $request->query->get('orderNumber');
-                $data = array(
-                    'userName' => $this->getParameter('sberbank_username'),
-                    'password' => $this->getParameter('sberbank_password'),
-                    'orderNumber' => $customerNumber
-                );
-                $response = $this->gateway('getOrderStatusExtended.do', $data);
-                if(isset($response['errorCode']) && $response['errorCode']==0 && $response['actionCode']==0) {
-
-                    $email = '';
-                    if(sizeof($response['merchantOrderParams'])) {
-                        foreach ($response['merchantOrderParams'] as $param) {
-                            if ($param['name']=='email'){
-                                $email = $param['value'];
-                                break;
+                        $email = '';
+                        if (sizeof($response['merchantOrderParams'])) {
+                            foreach ($response['merchantOrderParams'] as $param) {
+                                if ($param['name'] == 'email') {
+                                    $email = $param['value'];
+                                    break;
+                                }
                             }
                         }
-                    }
 
-                    $orderSum = ((float)$response['amount']) / 100;
+                        $orderSum = ((float)$response['amount']) / 100;
 
-                    $mongodb_cashbox = $this->get("mongodb.cashbox");
-                    $mongodb_cashbox->setSberbankTransaction(
-                        $orderSum,
-                        $customerNumber,
-                        $email,
-                        $response
-                    );
-					
-					$komtet = $this->getParameter('komtet');
+                        $mongodb_cashbox = $this->get("mongodb.cashbox");
+                        $mongodb_cashbox->setSberbankTransaction([
+                            'orderSum' => $orderSum,
+                            'customerNumber' => $customerNumber,
+                            'email' => $email,
+                            'inn' => $Organization->getINN(),
+                            'data' => $response
+                        ]);
 
-                    $data = [
-                        "order"  => $customerNumber,
-                        "email"  => $email,
-                        "action" => 'sale',
-                        "kkm" => [
-                            "positions" => [
-                                0 => [
-                                    "name"     => sprintf($komtet['nomenclature'], $customerNumber),
-                                    "price"    => $orderSum,
-                                    "quantity" => 1,
-                                    "orderSum" => $orderSum,
-                                    "discount" => 0
+                        $data = [
+                            "order" => $customerNumber,
+                            "email" => $email,
+                            "action" => 'sale',
+                            "kkm" => [
+                                "positions" => [
+                                    0 => [
+                                        "name" => sprintf($Organization->getPatternNomenclature(), $customerNumber),
+                                        "price" => $orderSum,
+                                        "quantity" => 1,
+                                        "orderSum" => $orderSum,
+                                        "discount" => 0
+                                    ]
+                                ],
+                                "payment" => [
+                                    "card" => $orderSum
                                 ]
-                            ],
-                            "payment" => [
-                                "card" => $orderSum
                             ]
-                        ]
-                    ];
-                    $manager = $this->get("komtet.cashbox");
-                    $manager->sendKKM($data, MongoDB::ERROR_FROM_SBER);
+                        ];
+
+                        $KomtetObj = new Komtet($Organization, $this->get('service_container'));
+                        $KomtetObj->sendKKM($data, MongoDB::ERROR_FROM_SBER);
+                    }
                 }
             }
         }
@@ -207,22 +227,23 @@ class SberbankController extends Controller
     }
 
     /**
-     * @param  Request $request
+     * @param Request $request
+     * @param array $param
      * @return bool
      */
-    private function checkCallback(Request $request){
+    private function checkCallback(Request $request, array $param){
         $params = $request->query->all();
         ksort($params);
         reset($params);
         $str = '';
         foreach ($params as $key => $value) {
-            if($key!=='checksum') {
+            if($key!=='checksum' && $key!=='inn') {
                 $str .= $key.';'.$value.';';
             }
         }
 
         if($str!==''){
-            if (strtolower(hash_hmac ( 'sha256' , $str , $this->getParameter('sberbank_secret') )) == strtolower($params['checksum']))
+            if (strtolower(hash_hmac ( 'sha256' , $str , $param['secret'] )) == strtolower($params['checksum']))
                 return true;
         }
         return false;

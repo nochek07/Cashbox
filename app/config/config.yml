@@ -3,7 +3,7 @@ imports:
     - { resource: security.yml }
     - { resource: services.yml }
     - { resource: "@BoxBundle/Resources/config/services.yml" }
-    - { resource: "@BoxBundle/Resources/config/admin.yml" }
+    - { resource: "@BoxBundle/Resources/config/sonata_admin.yml" }
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
@@ -15,7 +15,7 @@ framework:
     translator:      { fallbacks: ["%locale%"] }
     secret:          "%secret%"
     router:
-        resource: "%kernel.root_dir%/config/routing.yml"
+        resource: '%kernel.project_dir%/app/config/routing.yml'
         strict_requirements: ~
     form:            ~
     csrf_protection: ~
@@ -25,7 +25,6 @@ framework:
         engines: ['twig']
     default_locale:  "%locale%"
     trusted_hosts:   ~
-    trusted_proxies: ~
     session:
         # http://symfony.com/doc/current/reference/configuration/framework.html#handler-id
         handler_id:  session.handler.native_file
@@ -72,7 +71,17 @@ doctrine_mongodb:
     default_database: "%mongodb_db%"
     document_managers:
         default:
-            auto_mapping: true
+#            auto_mapping: true
+             mappings:
+                 BoxBundle:
+                     type: annotation
+                     dir: Document/
+                     prefix: 'Cashbox\BoxBundle\Document\'
+
+                 UserBundle:
+                      type: annotation
+                      dir: Document/
+                      prefix: 'Cashbox\UserBundle\Document\'
 
  #fos user with mongo db
 fos_user:
@@ -94,8 +103,8 @@ swiftmailer:
     spool:      { type: memory }
 
 sonata_block:
-    default_contexts: [cms]
+    default_contexts: [admin]
     blocks:
         # enable the SonataAdminBundle block
         sonata.admin.block.admin_list:
-            contexts:   [admin]
+            contexts: [admin]

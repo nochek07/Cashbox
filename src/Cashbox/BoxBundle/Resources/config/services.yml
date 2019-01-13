@@ -3,28 +3,60 @@ services:
 #        class: Cashbox\BoxBundle\Example
 #        arguments: ["@service_id", "plain_value", %parameter%]
 
+    admin.organization:
+        class: Cashbox\BoxBundle\Admin\OrganizationAdmin
+        arguments:
+            - ~
+            - Cashbox\BoxBundle\Document\Organization
+            - ~
+        tags:
+            - name: sonata.admin
+              manager_type: doctrine_mongodb
+              group: "Настройки"
+              label: "Организации"
+              show_mosaic_button: false
+        public: true
+
     admin.yandex:
         class: Cashbox\BoxBundle\Admin\YandexTransactionAdmin
-        arguments: [~, Cashbox\BoxBundle\Document\YandexTransaction, ~]
+        arguments:
+            - ~
+            - Cashbox\BoxBundle\Document\YandexTransaction
+            - ~
         tags:
-            - { name: sonata.admin, manager_type: doctrine_mongodb, group: "Транзакции", label: "Yandex Transactions", show_mosaic_button: false }
+            - name: sonata.admin
+              manager_type: doctrine_mongodb
+              group: "Транзакции"
+              label: "Yandex Transactions"
+              show_mosaic_button: false
 
     admin.sberbank:
         class: Cashbox\BoxBundle\Admin\SberbankTransactionAdmin
-        arguments: [~, Cashbox\BoxBundle\Document\SberbankTransaction, ~]
+        arguments:
+            - ~
+            - Cashbox\BoxBundle\Document\SberbankTransaction
+            - ~
         tags:
-            - { name: sonata.admin, manager_type: doctrine_mongodb, group: "Транзакции", label: "Sberbank Transactions", show_mosaic_button: false }
+            - name: sonata.admin
+              manager_type: doctrine_mongodb
+              group: "Транзакции"
+              label: "Sberbank Transactions"
+              show_mosaic_button: false 
 
     admin.komtet:
         class: Cashbox\BoxBundle\Admin\ReportKomtetAdmin
-        arguments: [~, Cashbox\BoxBundle\Document\ReportKomtet, ~]
+        arguments:
+            - ~
+            - Cashbox\BoxBundle\Document\ReportKomtet
+            - ~
         tags:
-            - { name: sonata.admin, manager_type: doctrine_mongodb, group: "Komtet", label: "Komtet Report", show_mosaic_button: false }
-
+            - name: sonata.admin
+              manager_type: doctrine_mongodb
+              group: "Komtet"
+              label: "Komtet Report"
+              show_mosaic_button: false 
+        public: true
+        
     mongodb.cashbox:
         class: Cashbox\BoxBundle\Services\MongoDB
         arguments: ["@doctrine_mongodb"]
-
-    komtet.cashbox:
-        class: Cashbox\BoxBundle\Services\Komtet
-        arguments: ["%komtet%", "%mailer_user%", "@service_container"]
