@@ -10,16 +10,22 @@ use Sonata\AdminBundle\Route\RouteCollection;
 
 class SberbankTransactionAdmin extends AbstractAdmin
 {
+    protected $translationDomain = 'BoxBundle';
+
     /**
      * @param ListMapper $listMapper
      */
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper
-            ->addIdentifier('id')
-            ->add('inn')
+            ->addIdentifier('id', null, [
+                'label' => 'ID'
+            ])
             ->add('datetime', 'datetime', [
                 'format' => 'd.m.Y H:i:s'
+            ])
+            ->add('inn', null, [
+                'label' => 'INN'
             ])
             ->add('Sum')
             ->add('customerNumber')
@@ -45,7 +51,9 @@ class SberbankTransactionAdmin extends AbstractAdmin
         $datagridMapper
             ->add('customerNumber')
             ->add('datetime')
-            ->add('inn')
+            ->add('inn', null, [
+                'label' => 'INN'
+            ])
         ;
     }
 
@@ -55,9 +63,15 @@ class SberbankTransactionAdmin extends AbstractAdmin
     protected function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
-           ->add('id')
-           ->add('inn')
-           ->add('datetime')
+           ->add('id', null, [
+               'label' => 'ID'
+           ])
+           ->add('datetime', 'datetime', [
+               'format' => 'd.m.Y H:i:s'
+           ])
+           ->add('inn', null, [
+               'label' => 'INN'
+           ])
            ->add('Sum')
            ->add('customerNumber')
            ->add('email')

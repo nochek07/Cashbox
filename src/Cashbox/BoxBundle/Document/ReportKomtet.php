@@ -239,4 +239,12 @@ class ReportKomtet
     {
         return $this->inn;
     }
+
+    /**
+     * @return Id|string
+     */
+    public function __toString()
+    {
+        return $this->getId() ?? '-';
+    }
 }

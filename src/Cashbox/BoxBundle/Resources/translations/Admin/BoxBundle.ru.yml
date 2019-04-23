@@ -1,0 +1,61 @@
+label.organization: Организации
+label.yandex.transactions: Транзакции Яндекс.Кассы
+label.sberbank.transactions: Транзакции Сбербанка
+label.komtet.report: Сообщения Komtet
+
+Organization Create: Создать Организацию
+
+tax.commom: ОСНО
+tax.simplified.in: УСН (Доходы)
+tax.simplified.in.out: УСН (Доходы-Расходы)
+tax.utoii: ЕНВД
+tax.ust: ЕСН
+tax.patent: Патент
+
+rate.no: Без НДС
+rate.0: 0%
+rate.10: 10%
+rate.18: 18%
+rate.20: 20%
+
+Organization List: Организации
+Yandex Transaction List: Транзакции Яндекс.Кассы
+Sberbank Transaction List: Транзакции Сбербанка
+Report Komtet List: Сообщения Komtet
+
+ID: ID
+Name: Наименование
+INN: ИНН
+
+Basic: Основные настройки
+Sberbank: Сбербанк
+Yandex: Яндекс.Касса
+Komtet: Komtet
+
+Pattern Nomenclature: Шаблон номенклатуры
+Secret: Секретное слово
+Admin Email: Email администратора
+
+Username: Логин
+Password: Пароль
+
+ID Yandex: ID
+
+Shop ID: ID магазина
+Queue name: Имя очереди
+Queue ID: ID очереди
+Tax system: Налоговая система
+Vat: НДС
+Cancel action: Прерывать при неактивной очереди?
+
+Datetime: Дата
+Action: Действие
+Sum: Сумма
+Customer Number: Номер счета
+Email: Email
+Data Post: Данные отправки
+
+Type: Тип
+State: Статус
+UUID: UUID
+Data Komtet: Данные Komtet

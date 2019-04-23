@@ -1,6 +1,6 @@
 <?php
 
-namespace Cashbox\BoxBundle\Models;
+namespace Cashbox\BoxBundle\Model;
 
 use Cashbox\BoxBundle\Document\Organization;
 use Komtet\KassaSdk\Check;
@@ -10,16 +10,9 @@ use Komtet\KassaSdk\Position;
 use Komtet\KassaSdk\QueueManager;
 use Komtet\KassaSdk\Vat;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 class Komtet
 {
-    CONST MSG_CASHBOX_UNAV = "Касса не доступна";
-    CONST MSG_ERROR        = "Ошибка";
-    CONST MSG_ERROR_HASH   = "Ошибка в контрольнной сумме";
-    CONST MSG_ERROR_INN    = "Неправильно выбрана организация";
-    CONST MSG_ERROR_CHECK  = "Чек уже был пробит ранее";
-
     /**
      * @var QueueManager $manager
      */
@@ -42,6 +35,7 @@ class Komtet
 
     /**
      * Komtet constructor.
+     *
      * @param Organization $organization
      * @param ContainerInterface $container
      */
@@ -106,7 +100,13 @@ class Komtet
 
         foreach ($data["kkm"]["positions"] as $value) {
             // Позиция в чеке: имя, цена, кол-во, общая стоимость, скидка, налог
-            $position = new Position($value["name"], (float)$value["price"], (int)$value["quantity"], (float)$value["orderSum"], (float)$value["discount"], $vat);
+            $position = new Position(
+                $value["name"],
+                (float)$value["price"],
+                (int)$value["quantity"],
+                (float)$value["orderSum"],
+                (float)$value["discount"], $vat
+            );
             $check->addPosition($position);
         }
 
@@ -163,6 +163,7 @@ class Komtet
      *
      * @param array $data - массив с данными
      * @param $from - источник чека
+     * @return bool
      */
     private function sendReport($data, $from) {
         $email = $this->organization->getAdminEmail();
@@ -185,8 +186,7 @@ class Komtet
                     ->setTo($email)
                     ->setBody(
                         $this->container->get('templating')->render(
-                            'BoxBundle:Default:email.text.twig',
-                            [
+                            'BoxBundle:Default:email.text.twig', [
                                 'action' => $data['action'],
                                 'type' => $from,
                                 'email' => $data['email'],
@@ -195,11 +195,17 @@ class Komtet
                                 'cart' => $card,
                             ]
                         )
-                    );
+                    )
+                ;
                 $this->container->get('mailer')->send($message);
             } catch (\Exception $error) {
+                return false;
             }
+
+            return true;
         }
+
+        return false;
     }
 
     /**
@@ -211,47 +217,4 @@ class Komtet
 	public function isQueueActive($name){
 		return $this->manager->isQueueActive($name);
 	}
-
-    /**
-     * Building XML response.
-     *
-     * @param  string $functionName  "checkOrder" or "paymentAviso" string
-     * @param  string $invoiceId     transaction number
-     * @param  string $result_code   result code
-     * @param  string $shopId        shop Id
-     * @param  string $message       error message. May be null.
-     * @return string                prepared XML response
-     */
-    public static function buildResponse($functionName, $invoiceId, $result_code, $shopId = null, $message = null) {
-        try {
-            $performedDatetime = self::formatDate(new \DateTime());
-            $response = '<?xml version="1.0" encoding="UTF-8"?><' . $functionName . 'Response performedDatetime="' . $performedDatetime .
-                '" code="' . $result_code . '" ' . ($message != null ? 'message="' . $message . '"' : "") . ' invoiceId="' . $invoiceId . '" shopId="' . $shopId . '"/>';
-            return $response;
-        } catch (\Exception $error) {
-
-        }
-        return '';
-    }
-
-    /**
-     * Форматирование даты
-     *
-     * @param \DateTime $date
-     * @return string
-     */
-    public static function formatDate(\DateTime $date) {
-        return $date->format("Y-m-d") . "T" . $date->format("H:i:s") . ".000" . $date->format("P");
-    }
-
-    /**
-     * Дополнительная проверка
-     *
-     * @param Request $request
-     * @param String $handling_secret
-     * @return bool
-     */
-    public static function otherCheckMD5(Request $request, $handling_secret){
-        return ( $request->get('h') != md5($request->get('customerNumber') . "_" . $request->get('orderSumAmount') . "_" . $handling_secret) );
-    }
 }

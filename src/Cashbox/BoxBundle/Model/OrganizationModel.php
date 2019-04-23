@@ -1,6 +1,6 @@
 <?php
 
-namespace Cashbox\BoxBundle\Models;
+namespace Cashbox\BoxBundle\Model;
 
 use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
@@ -9,13 +9,9 @@ use Cashbox\BoxBundle\Document\Organization;
 class OrganizationModel
 {
     /**
-     * @param Request $request
-     * @return null|Organization
-     */
-    /**
      * @param Request|array $request
      * @param ManagerRegistry $managerMongoDB
-     * @return null|object
+     * @return null|Organization
      */
     public static function getOrganization($request, ManagerRegistry $managerMongoDB)
     {

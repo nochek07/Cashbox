@@ -2,16 +2,21 @@
 
 namespace Cashbox\BoxBundle\Admin;
 
-use Cashbox\BoxBundle\Models\TaxSystem;
-use Cashbox\BoxBundle\Models\Vat;
+use Cashbox\BoxBundle\Model\TaxSystem;
+use Cashbox\BoxBundle\Model\Vat;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\Form\Type\BooleanType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class OrganizationAdmin extends AbstractAdmin
 {
+    protected $translationDomain = 'BoxBundle';
+
     protected $listModes = [];
     
     /**
@@ -38,13 +43,43 @@ class OrganizationAdmin extends AbstractAdmin
                 ->add('dataKomtet', 'sonata_type_immutable_array', [
                     'label' => false,
                     'keys' => [
-                        'shop_id' => ['shop_id', 'text', ['required' => true, 'label' => 'Shop ID']],
-                        'secret' => ['secret', 'text', ['required' => true, 'label' => 'Secret']],
-                        'queue_name' => ['queue_name', 'text', ['required' => true, 'label' => 'Queue name']],
-                        'queue_id' => ['queue_id', 'integer', ['required' => true, 'label' => 'Queue ID']],
-                        'tax_system' => ['tax_system', 'choice', ['required' => true, 'label' => 'Tax system', 'choices' => TaxSystem::$choices]],
-                        'vat' => ['vat', 'choice', ['required' => true, 'label' => 'Vat', 'choices' => Vat::$choices]],
-                        'cancel_action' => ['cancel_action', BooleanType::class, ['required' => true, 'label' => 'Cancel action']],
+                        'shop_id' => ['shop_id', TextType::class, [
+                            'required' => true,
+                            'label' => 'Shop ID',
+                            'translation_domain' => $this->translationDomain
+                        ]],
+                        'secret' => ['secret', TextType::class, [
+                            'required' => true,
+                            'label' => 'Secret',
+                            'translation_domain' => $this->translationDomain
+                        ]],
+                        'queue_name' => ['queue_name', TextType::class, [
+                            'required' => true,
+                            'label' => 'Queue name',
+                            'translation_domain' => $this->translationDomain
+                        ]],
+                        'queue_id' => ['queue_id', IntegerType::class, [
+                            'required' => true,
+                            'label' => 'Queue ID',
+                            'translation_domain' => $this->translationDomain
+                        ]],
+                        'tax_system' => ['tax_system', ChoiceType::class, [
+                            'required' => true,
+                            'label' => 'Tax system',
+                            'choices' => TaxSystem::$choices,
+                            'translation_domain' => $this->translationDomain
+                        ]],
+                        'vat' => ['vat', ChoiceType::class, [
+                            'required' => true,
+                            'label' => 'Vat',
+                            'choices' => Vat::$choices,
+                            'translation_domain' => $this->translationDomain
+                        ]],
+                        'cancel_action' => ['cancel_action', BooleanType::class, [
+                            'required' => true,
+                            'label' => 'Cancel action',
+                            'translation_domain' => $this->translationDomain
+                        ]],
                     ]
                 ])
             ->end()
@@ -52,9 +87,21 @@ class OrganizationAdmin extends AbstractAdmin
                 ->add('dataSberbank', 'sonata_type_immutable_array', [
                     'label' => false,
                     'keys' => [
-                        'sberbank_username' => ['sberbank_username', 'text', ['required' => true, 'label' => 'Username']],
-                        'sberbank_password' => ['sberbank_password', 'text', ['required' => true, 'label' => 'Password']],
-                        'secret' => ['secret', 'text', ['required' => true, 'label' => 'Secret']],
+                        'sberbank_username' => ['sberbank_username', TextType::class, [
+                            'required' => true,
+                            'label' => 'Username',
+                            'translation_domain' => $this->translationDomain
+                        ]],
+                        'sberbank_password' => ['sberbank_password', TextType::class, [
+                            'required' => true,
+                            'label' => 'Password',
+                            'translation_domain' => $this->translationDomain
+                        ]],
+                        'secret' => ['secret', TextType::class, [
+                            'required' => true,
+                            'label' => 'Secret',
+                            'translation_domain' => $this->translationDomain
+                        ]],
                     ]
                 ])
             ->end()
@@ -62,8 +109,16 @@ class OrganizationAdmin extends AbstractAdmin
                 ->add('dataYandex', 'sonata_type_immutable_array', [
                     'label' => false,
                     'keys' => [
-                        'yandex_id' => ['yandex_id', 'integer', ['required' => true, 'label' => 'ID']],
-                        'secret' => ['secret', 'text', ['required' => true, 'label' => 'Secret']],
+                        'yandex_id' => ['yandex_id', IntegerType::class, [
+                            'required' => true,
+                            'label' => 'ID Yandex',
+                            'translation_domain' => $this->translationDomain
+                        ]],
+                        'secret' => ['secret', TextType::class, [
+                            'required' => true,
+                            'label' => 'Secret',
+                            'translation_domain' => $this->translationDomain
+                        ]],
                     ]
                 ])
             ->end()
@@ -78,6 +133,7 @@ class OrganizationAdmin extends AbstractAdmin
         $listMapper
             ->addIdentifier('id', null, [
                 'route' => ['name' => 'edit'],
+                'label' => 'ID',
                 'editable' => true
             ])
             ->addIdentifier('name', null, [

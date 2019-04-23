@@ -10,16 +10,22 @@ use Sonata\AdminBundle\Route\RouteCollection;
 
 class YandexTransactionAdmin extends AbstractAdmin
 {
+    protected $translationDomain = 'BoxBundle';
+
     /**
      * @param ListMapper $listMapper
      */
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper
-            ->addIdentifier('id')
-            ->add('inn')
+            ->addIdentifier('id', null, [
+                'label' => 'ID'
+            ])
             ->add('datetime', 'datetime', [
                 'format' => 'd.m.Y H:i:s'
+            ])
+            ->add('inn', null, [
+                'label' => 'INN'
             ])
             ->add('action')
             ->add('Sum')
@@ -44,7 +50,9 @@ class YandexTransactionAdmin extends AbstractAdmin
             ->add('action')
             ->add('customerNumber')
             ->add('datetime')
-            ->add('inn')
+            ->add('inn', null, [
+                'label' => 'INN'
+            ])
         ;
     }
 
@@ -54,9 +62,15 @@ class YandexTransactionAdmin extends AbstractAdmin
     protected function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
-           ->add('id')
-           ->add('inn')
-           ->add('datetime')
+           ->add('id', null, [
+                'label' => 'ID'
+            ])
+           ->add('datetime', 'datetime', [
+               'format' => 'd.m.Y H:i:s'
+           ])
+           ->add('inn', null, [
+                'label' => 'INN'
+            ])
            ->add('action')
            ->add('Sum')
            ->add('customerNumber')

@@ -10,16 +10,22 @@ use Sonata\AdminBundle\Route\RouteCollection;
 
 class ReportKomtetAdmin extends AbstractAdmin
 {
+    protected $translationDomain = 'BoxBundle';
+
     /**
      * @param ListMapper $listMapper
      */
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper
-            ->addIdentifier('id')
-            ->add('inn')
+            ->addIdentifier('id', null, [
+                'label' => 'ID'
+            ])
             ->add('datetime', 'datetime', [
                 'format' => 'd.m.Y H:i:s'
+            ])
+            ->add('inn', null, [
+                'label' => 'INN'
             ])
             ->add('action')
             ->add('type')
@@ -46,7 +52,9 @@ class ReportKomtetAdmin extends AbstractAdmin
             ->add('action')
             ->add('datetime')
             ->add('type')
-            ->add('inn')
+            ->add('inn', null, [
+                'label' => 'INN'
+            ])
             ->add('state')
         ;
     }
@@ -57,13 +65,21 @@ class ReportKomtetAdmin extends AbstractAdmin
     protected function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
-           ->add('id')
-           ->add('inn')
-           ->add('datetime')
+           ->add('id', null, [
+               'label' => 'ID'
+           ])
+           ->add('datetime', 'datetime', [
+               'format' => 'd.m.Y H:i:s'
+           ])
+           ->add('inn', null, [
+               'label' => 'INN'
+           ])
            ->add('action')
            ->add('type')
            ->add('state')
-           ->add('uuid')
+           ->add('uuid', null, [
+               'label' => 'UUID'
+           ])
            ->add('dataKomtet')
            ->add('dataPost')
         ;
