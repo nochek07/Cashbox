@@ -2,16 +2,13 @@
 
 namespace Cashbox\BoxBundle\Admin;
 
-use Cashbox\BoxBundle\Model\TaxSystem;
-use Cashbox\BoxBundle\Model\Vat;
+use Cashbox\BoxBundle\Model\{TaxSystem, Vat};
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\Form\Type\BooleanType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\{ChoiceType, IntegerType, TextType};
 
 class OrganizationAdmin extends AbstractAdmin
 {

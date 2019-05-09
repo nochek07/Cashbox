@@ -67,7 +67,7 @@ class SberbankTransaction
     }
 
     /**
-     * Get Sum
+     * Get datetime
      *
      * @return \DateTime $datetime
      */
@@ -165,7 +165,7 @@ class SberbankTransaction
     }
 
     /**
-     * Set inn
+     * Set INN
      *
      * @param integer $inn
      * @return self
@@ -177,7 +177,7 @@ class SberbankTransaction
     }
 
     /**
-     * Get inn
+     * Get INN
      *
      * @return integer $inn
      */

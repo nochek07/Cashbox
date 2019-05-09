@@ -3,12 +3,9 @@
 namespace Cashbox\BoxBundle\Model\Payment;
 
 use Cashbox\BoxBundle\Document\Organization;
-use Cashbox\BoxBundle\Model\Komtet;
-use Cashbox\BoxBundle\Model\OrganizationModel;
-use Cashbox\BoxBundle\Services\MongoDB;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Cashbox\BoxBundle\Model\KKM\{KKMInterface, KKMMessages};
+use Cashbox\BoxBundle\Model\Report\YandexReport;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Используется устаревший API Яндекса
@@ -20,83 +17,42 @@ use Symfony\Component\HttpFoundation\Response;
 class YandexPayment extends PaymentAbstract
 {
     /**
-     * @var ContainerInterface
-     */
-    private $container;
-
-    /**
-     * SberbankPayment constructor.
-     * @param ContainerInterface $container
-     */
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
-
-    /**
-     * @return ContainerInterface
-     */
-    public function getContainer()
-    {
-        return $this->container;
-    }
-
-    /**
      * @param Request $request
+     * @param Organization $Organization
+     * @param KKMInterface|null $kkm
      * @return string
      */
-    public function send(Request $request)
+    public function send(Request $request, Organization $Organization, $kkm = null)
     {
-        $responseText = '';
-        if($request->isMethod(Request::METHOD_POST)) {
-            /**
-             * @var Organization $Organization
-             */
-            $Organization = OrganizationModel::getOrganization($request, $this->container->get('doctrine_mongodb'));
-            if (!is_null($Organization)) {
-                $yandex = $Organization->getDataYandex();
-                $responseText = $this->processRequest($request, $yandex, $Organization->getSecret());
-                if ($responseText == '') {
-                    $email = $request->get('email');
-                    $orderSum = (float)$request->get('orderSumAmount');
-                    $order = $request->get('customerNumber');
+        $yandex = $Organization->getDataYandex();
+        $responseText = $this->processRequest($request, $yandex, $Organization->getSecret());
+        if ($responseText == '') {
+            $email = $request->get('email');
+            $orderSum = (float)$request->get('orderSumAmount');
+            $order = $request->get('customerNumber');
 
-                    $mongodb_cashbox = $this->container->get("mongodb.cashbox");
-                    $mongodb_cashbox->setYandexTransaction([
-                        'action' => $request->get('action'),
-                        'orderSum' => $orderSum,
-                        'customerNumber' => $order,
-                        'email' => $email,
-                        'inn' => $Organization->getINN(),
-                        'data' => $request->request->all()
-                    ]);
+            $YandexReport = new YandexReport($this->manager);
+            $YandexReport->create([
+                'action' => $request->get('action'),
+                'orderSum' => $orderSum,
+                'customerNumber' => $order,
+                'email' => $email,
+                'inn' => $Organization->getINN(),
+                'data' => $request->request->all()
+            ]);
 
-                    $data = [
+            if($kkm instanceof KKMInterface) {
+                if($kkm->connect()) {
+                    $dataKKM = $kkm->buildData([
                         "order" => $order,
                         "email" => $email,
-                        "action" => 'sale',
-                        "kkm" => [
-                            "positions" => [
-                                0 => [
-                                    "name" => sprintf($Organization->getPatternNomenclature(), $order),
-                                    "price" => $orderSum,
-                                    "quantity" => 1,
-                                    "orderSum" => $orderSum,
-                                    "discount" => 0
-                                ]
-                            ],
-                            "payment" => [
-                                "card" => $orderSum
-                            ]
-                        ]
-                    ];
-
-                    $KomtetObj = new Komtet($Organization, $this->container);
-                    $KomtetObj->sendKKM($data, MongoDB::ERROR_FROM_SITE);
-
-                    $responseText = $this->getAnswer($request, $yandex);
+                        "orderSum" => $orderSum
+                    ]);
+                    $kkm->send($dataKKM, PaymentTypes::PAYMENT_TYPE_YANDEX);
                 }
             }
+
+            $responseText = $this->getAnswer($request, $yandex);
         }
 
         return $responseText;
@@ -104,41 +60,37 @@ class YandexPayment extends PaymentAbstract
 
     /**
      * @param Request $request
+     * @param Organization $Organization
+     * @param KKMInterface|null $kkm
      * @return string
      */
-    public function check(Request $request)
+    public function check(Request $request, Organization $Organization, $kkm = null)
     {
-        $responseText = '';
-        if($request->isMethod(Request::METHOD_POST)) {
-            /**
-             * @var Organization $Organization
-             */
-            $Organization = OrganizationModel::getOrganization($request, $this->container->get('doctrine_mongodb'));
-            if (!is_null($Organization)) {
-                $yandex = $Organization->getDataYandex();
-                $responseText = $this->processRequest($request, $yandex, $Organization->getSecret());
-                if ($responseText == '') {
-                    $komtet = $Organization->getDataKomtet();
-                    if ($komtet['cancel_action']==1) {
-                        $KomtetObj = new Komtet($Organization, $this->container);
-                        if (!$KomtetObj->isQueueActive($komtet['queue_name'])) {
-                            return new Response($this->buildResponse($request->get('action'), $request->get('invoiceId'), 100, $yandex['shop_yandex_id'], Komtet::MSG_CASHBOX_UNAV));
-                        }
+        $yandex = $Organization->getDataYandex();
+        $responseText = $this->processRequest($request, $yandex, $Organization->getSecret());
+        if ($responseText == '') {
+            $komtet = $Organization->getDataKomtet();
+            if ($komtet['cancel_action']==1 && $kkm instanceof KKMInterface) {
+                if($kkm->connect()) {
+                    if (!$kkm->isQueueActive($komtet['queue_name'])) {
+                        return $this->buildResponse($request->get('action'), $request->get('invoiceId'), 100, $yandex['shop_yandex_id'], KKMMessages::MSG_CASHBOX_UNAV);
                     }
-
-                    $mongodb_cashbox = $this->container->get("mongodb.cashbox");
-                    $mongodb_cashbox->setYandexTransaction([
-                        'action' => $request->get('action'),
-                        'orderSum' => (float)$request->get('orderSumAmount'),
-                        'customerNumber' => $request->get('customerNumber'),
-                        'email' => $request->get('email'),
-                        'inn' => $Organization->getINN(),
-                        'data' => $request->request->all()
-                    ]);
-
-                    $responseText = $this->getAnswer($request, $yandex);
+                } else {
+                    return $this->buildResponse($request->get('action'), $request->get('invoiceId'), 100, $yandex['shop_yandex_id'], KKMMessages::MSG_CASHBOX_UNAV);
                 }
             }
+
+            $YandexReport = new YandexReport($this->manager);
+            $YandexReport->create([
+                'action' => $request->get('action'),
+                'orderSum' => (float)$request->get('orderSumAmount'),
+                'customerNumber' => $request->get('customerNumber'),
+                'email' => $request->get('email'),
+                'inn' => $Organization->getINN(),
+                'data' => $request->request->all()
+            ]);
+
+            $responseText = $this->getAnswer($request, $yandex);
         }
 
         return $responseText;

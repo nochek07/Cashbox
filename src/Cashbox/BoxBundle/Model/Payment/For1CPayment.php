@@ -3,100 +3,85 @@
 namespace Cashbox\BoxBundle\Model\Payment;
 
 use Cashbox\BoxBundle\Document\Organization;
-use Cashbox\BoxBundle\Model\Komtet;
-use Cashbox\BoxBundle\Model\KomtetMessages;
-use Cashbox\BoxBundle\Model\OrganizationModel;
-use Cashbox\BoxBundle\Services\MongoDB;
+use Cashbox\BoxBundle\Model\KKM\{KKMInterface, KKMMessages};
 use Symfony\Component\HttpFoundation\Request;
 
 class For1CPayment extends YandexPayment
 {
+    private $dataJSON = [];
+
     /**
      * @param Request $request
+     * @param Organization $Organization
+     * @param KKMInterface|null $kkm
      * @return string
      */
-    public function send(Request $request)
+    public function send(Request $request, Organization $Organization, $kkm = null)
     {
-        if($request->isMethod(Request::METHOD_POST)) {
-            if($request->getContentType()==='json') {
-                $postData = file_get_contents('php://input');
-                $data     = json_decode($postData, true);
-                if (!is_null($data)) {
-                    /**
-                     * @var Organization $Organization
-                     */
-                    $Organization = OrganizationModel::getOrganization($data, $this->getContainer()->get('doctrine_mongodb'));
-                    if (!is_null($Organization)) {
-                        $komtet = $Organization->getDataKomtet();
-
-                        if ($this->check1cMD5($data, $Organization->getSecret())) {
-
-                            $KomtetObj = new Komtet($Organization, $this->getContainer());
-
-                            if (!$KomtetObj->isQueueActive($komtet['queue_name'])) {
-                                return $this->buildResponse('For1C', 0, 100, null, KomtetMessages::MSG_CASHBOX_UNAV);
-                            } else {
-                                $repository = $this->getContainer()->get("doctrine_mongodb")->getManager()
-                                    ->getRepository('BoxBundle:ReportKomtet');
-                                $report = $repository->findOneBy([
-                                        'type'   => MongoDB::ERROR_FROM_1C,
-                                        'action' => $data["action"],
-                                        'uuid'   => $data["uuid"]
-                                    ]
-                                );
-
-                                if (is_null($report)) {
-                                    $error = $KomtetObj->sendKKM($data, MongoDB::ERROR_FROM_1C);
-                                    if ($error === '')
-                                        return $this->buildResponse('For1C', 0, 0, null, null);
-                                } else {
-                                    $error = KomtetMessages::MSG_ERROR_CHECK;
-                                }
-
-                                return $this->buildResponse('For1C', 0, 100, null, $error);
-                            }
-                        } else {
-                            return $this->buildResponse('For1C', 0, 100, null, KomtetMessages::MSG_ERROR_HASH);
-                        }
-                    } else {
-                        return $this->buildResponse('For1C', 0, 100, null, KomtetMessages::MSG_ERROR_INN);
+        $komtet = $Organization->getDataKomtet();
+        if ($this->check1cMD5($this->dataJSON, $Organization->getSecret())) {
+            if($kkm instanceof KKMInterface) {
+                if($kkm->connect()){
+                    if(!$kkm->isQueueActive($komtet['queue_name'])) {
+                        return $this->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_CASHBOX_UNAV);
                     }
+                } else {
+                    return $this->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_CASHBOX_UNAV);
                 }
             }
-        }
 
-        return $this->buildResponse('For1C', 0, 100, null, KomtetMessages::MSG_ERROR);
+            $repository = $this->manager->getManager()
+                ->getRepository('BoxBundle:ReportKomtet');
+            $report = $repository->findOneBy([
+                'type'   => PaymentTypes::PAYMENT_TYPE_1C,
+                'action' => $this->dataJSON["action"],
+                'uuid'   => $this->dataJSON["uuid"]
+            ]);
+
+            if (is_null($report) && $kkm instanceof KKMInterface) {
+                $error = $kkm->send($this->dataJSON, PaymentTypes::PAYMENT_TYPE_1C);
+                if ($error === '')
+                    return $this->buildResponse('For1C', 0, 0, null, null);
+            } else {
+                $error = KKMMessages::MSG_ERROR_CHECK;
+            }
+
+            return $this->buildResponse('For1C', 0, 100, null, $error);
+        } else {
+            return $this->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR_HASH);
+        }
     }
 
     /**
      * @param Request $request
+     * @param Organization $Organization
+     * @param KKMInterface|null $kkm
      * @return string
      */
-    public function check(Request $request)
+    public function check(Request $request, Organization $Organization, $kkm = null)
     {
-        if($request->isMethod(Request::METHOD_POST)) {
-            if($request->getContentType()==='json') {
-                $postData = file_get_contents('php://input');
-                $data     = json_decode($postData, true);
-                if (!is_null($data)) {
-                    /**
-                     * @var Organization $Organization
-                     */
-                    $Organization = OrganizationModel::getOrganization($data, $this->getContainer()->get('doctrine_mongodb'));
-                    if (!is_null($Organization)) {
-                        $KomtetObj = new Komtet($Organization, $this->getContainer()->get('service_container'));
-
-                        $komtet = $Organization->getDataKomtet();
-                        if (!$KomtetObj->isQueueActive($komtet['queue_name'])) {
-                            return $this->buildResponse('For1C', 0, 100, null, KomtetMessages::MSG_CASHBOX_UNAV);
-                        } else {
-                            return $this->buildResponse('For1C', 0, 0, null, null);
-                        }
-                    }
+        $komtet = $Organization->getDataKomtet();
+        if ($kkm instanceof KKMInterface) {
+            if($kkm->connect()) {
+                if(!$kkm->isQueueActive($komtet['queue_name'])) {
+                    return $this->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_CASHBOX_UNAV);
                 }
+            } else {
+                return $this->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_CASHBOX_UNAV);
             }
         }
-        return $this->buildResponse('For1C', 0, 100, null, KomtetMessages::MSG_ERROR);
+
+        return $this->buildResponse('For1C', 0, 0, null, null);
+    }
+
+    /**
+     * @param array $data
+     * @return self
+     */
+    public function setDataJSON(array $data)
+    {
+        $this->dataJSON = $data;
+        return $this;
     }
 
     /**

@@ -56,7 +56,11 @@ services:
               label: "label.komtet.report"
               show_mosaic_button: false 
         public: true
-        
-    mongodb.cashbox:
-        class: Cashbox\BoxBundle\Services\MongoDB
-        arguments: ["@doctrine_mongodb"]
+
+    cashbox.mailer:
+        class: 'Cashbox\BoxBundle\DependencyInjection\Mailer'
+        public: true
+        arguments:
+          - '%mailer_user%'
+          - '@templating'
+          - '@mailer'

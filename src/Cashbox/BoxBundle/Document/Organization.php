@@ -69,7 +69,7 @@ class Organization
      * Set name
      *
      * @param string $name
-     * @return $this
+     * @return self
      */
     public function setName($name)
     {
@@ -91,7 +91,7 @@ class Organization
      * Set iNN
      *
      * @param integer $iNN
-     * @return $this
+     * @return self
      */
     public function setINN($iNN)
     {
@@ -100,7 +100,7 @@ class Organization
     }
 
     /**
-     * Get iNN
+     * Get INN
      *
      * @return integer $iNN
      */
@@ -113,7 +113,7 @@ class Organization
      * Set adminEmail
      *
      * @param string $adminEmail
-     * @return $this
+     * @return self
      */
     public function setAdminEmail($adminEmail)
     {
@@ -135,7 +135,7 @@ class Organization
      * Set patternNomenclature
      *
      * @param string $patternNomenclature
-     * @return $this
+     * @return self
      */
     public function setPatternNomenclature($patternNomenclature)
     {
@@ -157,7 +157,7 @@ class Organization
      * Set dataKomtet
      *
      * @param array $dataKomtet
-     * @return $this
+     * @return self
      */
     public function setDataKomtet($dataKomtet)
     {
@@ -179,7 +179,7 @@ class Organization
      * Set dataSberbank
      *
      * @param array $dataSberbank
-     * @return $this
+     * @return self
      */
     public function setDataSberbank($dataSberbank)
     {
@@ -201,7 +201,7 @@ class Organization
      * Set dataYandex
      *
      * @param array $dataYandex
-     * @return $this
+     * @return self
      */
     public function setDataYandex($dataYandex)
     {
@@ -223,7 +223,7 @@ class Organization
      * Set secret
      *
      * @param string $secret
-     * @return $this
+     * @return self
      */
     public function setSecret($secret)
     {
@@ -241,6 +241,9 @@ class Organization
         return $this->secret;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->getName() ?? '-';

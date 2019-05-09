@@ -72,7 +72,7 @@ class YandexTransaction
     }
 
     /**
-     * Get Sum
+     * Get datetime
      *
      * @return \DateTime $datetime
      */
@@ -192,7 +192,7 @@ class YandexTransaction
     }
 
     /**
-     * Set inn
+     * Set INN
      *
      * @param integer $inn
      * @return self
@@ -204,7 +204,7 @@ class YandexTransaction
     }
 
     /**
-     * Get inn
+     * Get INN
      *
      * @return integer $inn
      */

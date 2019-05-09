@@ -2,11 +2,13 @@
 
 namespace Cashbox\BoxBundle\Controller;
 
+use Cashbox\BoxBundle\Document\Organization;
+use Cashbox\BoxBundle\Model\KKM\Komtet;
+use Cashbox\BoxBundle\Model\OrganizationModel;
 use Cashbox\BoxBundle\Model\Payment\YandexPayment;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\{Request, Response};
 
 class YandexController extends Controller
 {
@@ -17,8 +19,21 @@ class YandexController extends Controller
      */
     public function avisoAction(Request $request)
     {
-        $YandexPayment = new YandexPayment($this->get('service_container'));
-        $responseText = $YandexPayment->send($request);
+        $responseText = '';
+        if($request->isMethod(Request::METHOD_POST)) {
+            $manager = $this->get('doctrine_mongodb');
+            /**
+             * @var Organization $Organization
+             */
+            $Organization = OrganizationModel::getOrganization($request, $manager);
+            if (!is_null($Organization)) {
+                $KKM = new Komtet($Organization, $manager);
+                $KKM->setMailer($this->get('cashbox.mailer'));
+
+                $YandexPayment = new YandexPayment($manager);
+                $responseText = $YandexPayment->send($request, $Organization, $KKM);
+            }
+        }
 
         return new Response($responseText);
     }
@@ -30,8 +45,20 @@ class YandexController extends Controller
      */
     public function checkAction(Request $request)
     {
-        $YandexPayment = new YandexPayment($this->get('service_container'));
-        $responseText = $YandexPayment->check($request);
+        $responseText = '';
+        if($request->isMethod(Request::METHOD_POST)) {
+            $manager = $this->get('doctrine_mongodb');
+            /**
+             * @var Organization $Organization
+             */
+            $Organization = OrganizationModel::getOrganization($request, $manager);
+            if (!is_null($Organization)) {
+                $KKM = new Komtet($Organization, $manager);
+
+                $YandexPayment = new YandexPayment($manager);
+                $responseText = $YandexPayment->check($request, $Organization, $KKM);
+            }
+        }
 
         return new Response($responseText);
     }

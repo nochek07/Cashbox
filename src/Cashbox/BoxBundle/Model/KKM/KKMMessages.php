@@ -1,8 +1,8 @@
 <?php
 
-namespace Cashbox\BoxBundle\Model;
+namespace Cashbox\BoxBundle\Model\KKM;
 
-class KomtetMessages
+class KKMMessages
 {
     CONST MSG_CASHBOX_UNAV = "Касса не доступна";
     CONST MSG_ERROR        = "Ошибка";

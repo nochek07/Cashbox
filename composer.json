@@ -19,6 +19,8 @@
     },
     "require": {
         "php": ">=7.0",
+        "ext-json": "*",
+        "ext-curl": "*",
         "alcaeus/mongo-php-adapter": "^1.1",
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/doctrine-cache-bundle": "^1.2",
