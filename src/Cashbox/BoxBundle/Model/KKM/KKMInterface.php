@@ -2,6 +2,10 @@
 
 namespace Cashbox\BoxBundle\Model\KKM;
 
+/**
+ * Interface KKMInterface
+ * @package Cashbox\BoxBundle\Model\KKM
+ */
 interface KKMInterface
 {
     /**

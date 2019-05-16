@@ -2,6 +2,10 @@
 
 namespace Cashbox\BoxBundle\Model\Report;
 
+/**
+ * Interface ReportInterface
+ * @package Cashbox\BoxBundle\Model\Report
+ */
 interface ReportInterface
 {
     /**

@@ -2,6 +2,10 @@
 
 namespace Cashbox\BoxBundle\Model\KKM;
 
+/**
+ * Class KKMMessages
+ * @package Cashbox\BoxBundle\Model\KKM
+ */
 class KKMMessages
 {
     CONST MSG_CASHBOX_UNAV = "Касса не доступна";

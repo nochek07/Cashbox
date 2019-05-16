@@ -4,8 +4,16 @@ namespace Cashbox\BoxBundle\Model\Report;
 
 use Cashbox\BoxBundle\Document\ReportKomtet;
 
+/**
+ * Class KomtetReport
+ * @package Cashbox\BoxBundle\Model\Report
+ */
 class KomtetReport extends ReportAbstract implements ReportInterface
 {
+    /**
+     * @param array $params
+     * @return void
+     */
     public function create(array $params)
     {
         $Report = new ReportKomtet();

@@ -7,6 +7,13 @@ use Cashbox\BoxBundle\Model\Report\KomtetReport;
 use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
 use Komtet\KassaSdk\{Check, Client, Payment, Position, QueueManager, Vat};
 
+/**
+ * Class Komtet
+ *
+ * @package Cashbox\BoxBundle\Model\KKM
+ *
+ * @see https://github.com/Komtet/komtet-kassa-php-sdk
+ */
 class Komtet extends KKMAbstract
 {
     /**
@@ -54,7 +61,9 @@ class Komtet extends KKMAbstract
      * Отправка данных на кассу через Komtet
      *
      * @param array $param
+     *
      * @return array $data - массив с данными
+     * @example
      * [
      *      "order"  => "1224",
      *      "email"  => "1@mail.ru",

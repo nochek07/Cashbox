@@ -3,10 +3,8 @@
 namespace Cashbox\UserBundle\Controller;
 
 use FOS\UserBundle\Controller\SecurityController as BaseController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Core\{Security, Exception\AuthenticationException};
+use Symfony\Component\HttpFoundation\{Request, Response};
 
 class SecurityController extends BaseController
 {

@@ -6,6 +6,10 @@ use Cashbox\BoxBundle\Document\Organization;
 use Cashbox\BoxBundle\Model\KKM\{KKMInterface, KKMMessages};
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Class For1CPayment
+ * @package Cashbox\BoxBundle\Model\Payment
+ */
 class For1CPayment extends YandexPayment
 {
     private $dataJSON = [];

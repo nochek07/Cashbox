@@ -7,6 +7,10 @@ use Cashbox\BoxBundle\Model\KKM\KKMInterface;
 use Cashbox\BoxBundle\Model\Report\SberbankReport;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Class SberbankPayment
+ * @package Cashbox\BoxBundle\Model\Payment
+ */
 class SberbankPayment extends PaymentAbstract
 {
     //CONST GATEWAY_URL = 'https://3dsec.sberbank.ru/payment/rest/';

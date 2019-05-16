@@ -6,6 +6,10 @@ use Cashbox\BoxBundle\Document\Organization;
 use Cashbox\BoxBundle\Model\KKM\KKMInterface;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Interface PaymentInterface
+ * @package Cashbox\BoxBundle\Model\Payment
+ */
 interface PaymentInterface
 {
     /**

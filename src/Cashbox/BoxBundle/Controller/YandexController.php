@@ -3,11 +3,11 @@
 namespace Cashbox\BoxBundle\Controller;
 
 use Cashbox\BoxBundle\Document\Organization;
-use Cashbox\BoxBundle\Model\KKM\Komtet;
 use Cashbox\BoxBundle\Model\OrganizationModel;
+use Cashbox\BoxBundle\Model\KKM\Komtet;
 use Cashbox\BoxBundle\Model\Payment\YandexPayment;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\{Request, Response};
 
 class YandexController extends Controller

@@ -8,11 +8,15 @@ use Cashbox\BoxBundle\Model\Report\YandexReport;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Используется устаревший API Яндекса
+ * Class YandexPayment
+ *
+ * @package Cashbox\BoxBundle\Model\Payment
+ *
+ * @see Используется устаревший API Яндекса
  * https://tech.yandex.ru/money/doc/payment-solution/payment-notifications/payment-notifications-check-docpage/
  *
- * Новый
- * https://kassa.yandex.ru/docs/guides/#bankowskaq-karta
+ * @see Новый API Яндекса
+ * https://tech.yandex.ru/money/doc/payment-solution/payment-notifications/payment-notifications-check-docpage/
  */
 class YandexPayment extends PaymentAbstract
 {

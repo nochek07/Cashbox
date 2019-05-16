@@ -7,6 +7,10 @@ use Cashbox\BoxBundle\Model\KKM\KKMInterface;
 use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Class PaymentAbstract
+ * @package Cashbox\BoxBundle\Model\Payment
+ */
 abstract class PaymentAbstract implements PaymentInterface
 {
     /**

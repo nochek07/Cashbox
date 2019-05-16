@@ -6,6 +6,11 @@ use Cashbox\BoxBundle\DependencyInjection\Mailer;
 use Cashbox\BoxBundle\Document\Organization;
 use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
 
+/**
+ * Class KKMAbstract
+ *
+ * @package Cashbox\BoxBundle\Model\KKM
+ */
 abstract class KKMAbstract implements KKMInterface
 {
     /**
