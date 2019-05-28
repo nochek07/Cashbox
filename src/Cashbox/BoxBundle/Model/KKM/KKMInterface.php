@@ -2,19 +2,19 @@
 
 namespace Cashbox\BoxBundle\Model\KKM;
 
-/**
- * Interface KKMInterface
- * @package Cashbox\BoxBundle\Model\KKM
- */
 interface KKMInterface
 {
     /**
+     * Создания массива данных для фискализации
+     *
      * @param array $param
-     * @return mixed
+     * @return array
      */
     public function buildData(array $param);
 
     /**
+     * Отправка данных
+     *
      * @param array $data
      * @param string $from
      * @return mixed
@@ -22,6 +22,8 @@ interface KKMInterface
     public function send(array $data, string $from);
 
     /**
+     * Отправка чека на почту
+     *
      * @param array $data
      * @param string $from
      * @return bool
@@ -29,11 +31,15 @@ interface KKMInterface
     public function sendMail(array $data, string $from);
 
     /**
+     * Соединение с ККМ
+     *
      * @return bool
      */
     public function connect();
 
     /**
+     * Проверка очереди
+     *
      * @param mixed $id
      * @return mixed
      */

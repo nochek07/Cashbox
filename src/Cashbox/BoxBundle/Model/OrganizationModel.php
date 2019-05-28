@@ -9,13 +9,15 @@ use Cashbox\BoxBundle\Document\Organization;
 class OrganizationModel
 {
     /**
+     * Получение организации по ИНН
+     *
      * @param Request|array $request
      * @param ManagerRegistry $managerMongoDB
      * @return null|Organization
      */
     public static function getOrganization($request, ManagerRegistry $managerMongoDB)
     {
-        if($request instanceof Request ) {
+        if ($request instanceof Request ) {
             if ($request->isMethod(Request::METHOD_POST)) {
                 $INN = $request->get('inn');
             } else {

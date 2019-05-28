@@ -4,15 +4,10 @@ namespace Cashbox\BoxBundle\Model\Report;
 
 use Cashbox\BoxBundle\Document\SberbankTransaction;
 
-/**
- * Class SberbankReport
- * @package Cashbox\BoxBundle\Model\Report
- */
 class SberbankReport extends ReportAbstract implements ReportInterface
 {
     /**
-     * @param array $params
-     * @return void
+     * {@inheritDoc}
      */
     public function create(array $params)
     {

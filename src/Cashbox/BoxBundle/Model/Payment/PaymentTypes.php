@@ -2,10 +2,6 @@
 
 namespace Cashbox\BoxBundle\Model\Payment;
 
-/**
- * Class PaymentTypes
- * @package Cashbox\BoxBundle\Model\Payment
- */
 class PaymentTypes
 {
     CONST PAYMENT_TYPE_YANDEX = "yandex";

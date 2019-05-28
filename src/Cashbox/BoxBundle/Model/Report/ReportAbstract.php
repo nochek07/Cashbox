@@ -4,10 +4,6 @@ namespace Cashbox\BoxBundle\Model\Report;
 
 use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
 
-/**
- * Class ReportAbstract
- * @package Cashbox\BoxBundle\Model\Report
- */
 abstract class ReportAbstract
 {
     /**

@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\{Request, Response};
 class YandexController extends Controller
 {
     /**
+     * Отправка чека
+     *
      * @Route("/aviso", schemes={"https"})
      * @param  Request $request
      * @return Response
@@ -20,7 +22,7 @@ class YandexController extends Controller
     public function avisoAction(Request $request)
     {
         $responseText = '';
-        if($request->isMethod(Request::METHOD_POST)) {
+        if ($request->isMethod(Request::METHOD_POST)) {
             $manager = $this->get('doctrine_mongodb');
             /**
              * @var Organization $Organization
@@ -39,6 +41,8 @@ class YandexController extends Controller
     }
 
     /**
+     * Проверка
+     *
      * @Route("/check", schemes={"https"})
      * @param  Request $request
      * @return Response
@@ -46,7 +50,7 @@ class YandexController extends Controller
     public function checkAction(Request $request)
     {
         $responseText = '';
-        if($request->isMethod(Request::METHOD_POST)) {
+        if ($request->isMethod(Request::METHOD_POST)) {
             $manager = $this->get('doctrine_mongodb');
             /**
              * @var Organization $Organization

@@ -10,8 +10,6 @@ use Komtet\KassaSdk\{Check, Client, Payment, Position, QueueManager, Vat};
 /**
  * Class Komtet
  *
- * @package Cashbox\BoxBundle\Model\KKM
- *
  * @see https://github.com/Komtet/komtet-kassa-php-sdk
  */
 class Komtet extends KKMAbstract
@@ -35,16 +33,15 @@ class Komtet extends KKMAbstract
     public function __construct(Organization $Organization, ManagerRegistry $manager)
     {
         parent::__construct($Organization, $manager);
-        
         $this->komtet = $Organization->getDataKomtet();
     }
 
     /**
-     * @return bool
+     * {@inheritDoc}
      */
     public function connect()
     {
-        if(is_null($this->QueueManager)) {
+        if (is_null($this->QueueManager)) {
             try {
                 $client = new Client($this->komtet['shop_id'], $this->komtet['secret']);
                 $this->QueueManager = new QueueManager($client);
@@ -58,11 +55,9 @@ class Komtet extends KKMAbstract
     }
 
     /**
-     * Отправка данных на кассу через Komtet
+     * Отправка данных на кассу Komtet
      *
-     * @param array $param
-     *
-     * @return array $data - массив с данными
+     * {@inheritDoc}
      * @example
      * [
      *      "order"  => "1224",
@@ -109,11 +104,7 @@ class Komtet extends KKMAbstract
     }
 
     /**
-     * Отправка данных на кассу через Komtet
-     *
-     * @param array $data - массив с данными
-     * @param string $from - источник чека
-     * @return string
+     * {@inheritDoc}
      */
     public function send(array $data, string $from)
     {
@@ -142,17 +133,18 @@ class Komtet extends KKMAbstract
                 (float)$value["price"],
                 (int)$value["quantity"],
                 (float)$value["orderSum"],
-                (float)$value["discount"], $vat
+                (float)$value["discount"],
+                $vat
             );
             $check->addPosition($position);
         }
 
         // Итоговая сумма расчёта
-        if(isset($data["kkm"]["payment"]["card"])) {
+        if (isset($data["kkm"]["payment"]["card"])) {
             $payment = new Payment(Payment::TYPE_CARD, (float)$data["kkm"]["payment"]["card"]);
             $check->addPayment($payment);
         }
-        if(isset($data["kkm"]["payment"]["cash"])) {
+        if (isset($data["kkm"]["payment"]["cash"])) {
             $payment = new Payment(Payment::TYPE_CASH, (float)$data["kkm"]["payment"]["cash"]);
             $check->addPayment($payment);
         }
@@ -163,7 +155,7 @@ class Komtet extends KKMAbstract
         // Добавляем чек в очередь.
         try {
             $request = $this->QueueManager->putCheck($check);
-            if(isset($res['state'])) {
+            if (isset($res['state'])) {
                 $KomtetReport->create([
                     'type' => $from,
                     'state' => $request['state'],
@@ -197,11 +189,7 @@ class Komtet extends KKMAbstract
     }
 
     /**
-     * Отправка данных на электронную почту администратора
-     *
-     * @param array $data - массив с данными
-     * @param string $from - источник чека
-     * @return bool
+     * {@inheritDoc}
      */
     public function sendMail(array $data, string $from)
     {
@@ -231,14 +219,11 @@ class Komtet extends KKMAbstract
     }
 
     /**
-     * Проверка очереди комтет-кассы
-     *
-     * @param string $name - имя очереди
-     * @return bool
+     * {@inheritDoc}
      */
 	public function isQueueActive($name)
     {
-        if(!is_null($this->QueueManager)) {
+        if (!is_null($this->QueueManager)) {
             return $this->QueueManager->isQueueActive($name);
         } else {
             return false;

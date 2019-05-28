@@ -26,7 +26,7 @@ class For1CController extends Controller
 
         $responseText = $For1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR);
 
-        if($request->isMethod(Request::METHOD_POST)) {
+        if ($request->isMethod(Request::METHOD_POST)) {
             if ($request->getContentType() === 'json') {
                 $postData = file_get_contents('php://input');
                 $data = json_decode($postData, true);
@@ -65,7 +65,7 @@ class For1CController extends Controller
 
         $responseText = $For1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR);
 
-        if($request->isMethod(Request::METHOD_POST)) {
+        if ($request->isMethod(Request::METHOD_POST)) {
             if ($request->getContentType() === 'json') {
                 $postData = file_get_contents('php://input');
                 $data = json_decode($postData, true);

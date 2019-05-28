@@ -6,11 +6,6 @@ use Cashbox\BoxBundle\DependencyInjection\Mailer;
 use Cashbox\BoxBundle\Document\Organization;
 use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
 
-/**
- * Class KKMAbstract
- *
- * @package Cashbox\BoxBundle\Model\KKM
- */
 abstract class KKMAbstract implements KKMInterface
 {
     /**
@@ -46,6 +41,8 @@ abstract class KKMAbstract implements KKMInterface
     }
 
     /**
+     * Set Mailer
+     *
      * @param Mailer $mailer
      * @return self
      */
@@ -56,6 +53,8 @@ abstract class KKMAbstract implements KKMInterface
     }
 
     /**
+     * Get Mailer
+     *
      * @return Mailer|null
      */
     public function getMailer()
@@ -64,6 +63,8 @@ abstract class KKMAbstract implements KKMInterface
     }
 
     /**
+     * Get Organization
+     *
      * @return Organization
      */
     public function getOrganization()
@@ -72,6 +73,8 @@ abstract class KKMAbstract implements KKMInterface
     }
 
     /**
+     * Get Manager
+     *
      * @return ManagerRegistry
      */
     public function getManager()
@@ -80,33 +83,27 @@ abstract class KKMAbstract implements KKMInterface
     }
 
     /**
-     * @param array $param
-     * @return mixed
+     * {@inheritDoc}
      */
     abstract function buildData(array $param);
 
     /**
-     * @param array $data
-     * @param string $from
-     * @return mixed
+     * {@inheritDoc}
      */
     abstract function send(array $data, string $from);
 
     /**
-     * @param array $data
-     * @param string $from
-     * @return bool
+     * {@inheritDoc}
      */
     abstract function sendMail(array $data, string $from);
 
     /**
-     * @return bool
+     * {@inheritDoc}
      */
     abstract function connect();
 
     /**
-     * @param mixed $id
-     * @return mixed
+     * {@inheritDoc}
      */
     abstract function isQueueActive($id);
 }

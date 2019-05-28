@@ -2,13 +2,11 @@
 
 namespace Cashbox\BoxBundle\Model\Report;
 
-/**
- * Interface ReportInterface
- * @package Cashbox\BoxBundle\Model\Report
- */
 interface ReportInterface
 {
     /**
+     * Добавление записи
+     *
      * @param array $params
      * @return mixed
      */

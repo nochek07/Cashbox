@@ -88,7 +88,7 @@ class Organization
     }
 
     /**
-     * Set iNN
+     * Set INN
      *
      * @param integer $iNN
      * @return self
@@ -232,7 +232,7 @@ class Organization
     }
 
     /**
-     * Get $secret
+     * Get secret
      *
      * @return string $secret
      */

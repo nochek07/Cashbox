@@ -36,6 +36,13 @@ class Mailer
         $this->mailer = $mailer;
     }
 
+    /**
+     * Отправка на почту
+     *
+     * @param string $email
+     * @param array $data
+     * @return bool
+     */
     public function send(string $email, array $data)
     {
         try {

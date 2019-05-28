@@ -14,6 +14,10 @@ class User extends BaseUser
      * @MongoDB\Id(strategy="auto")
      */
     protected $id;
+
+    /**
+     * User constructor.
+     */
     public function __construct()
     {
         parent::__construct();

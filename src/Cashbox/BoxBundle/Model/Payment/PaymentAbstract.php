@@ -3,14 +3,9 @@
 namespace Cashbox\BoxBundle\Model\Payment;
 
 use Cashbox\BoxBundle\Document\Organization;
-use Cashbox\BoxBundle\Model\KKM\KKMInterface;
 use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- * Class PaymentAbstract
- * @package Cashbox\BoxBundle\Model\Payment
- */
 abstract class PaymentAbstract implements PaymentInterface
 {
     /**
@@ -19,7 +14,7 @@ abstract class PaymentAbstract implements PaymentInterface
     protected $manager;
 
     /**
-     * SberbankPayment constructor.
+     * PaymentAbstract constructor.
      *
      * @param ManagerRegistry $manager
      */
@@ -29,18 +24,12 @@ abstract class PaymentAbstract implements PaymentInterface
     }
 
     /**
-     * @param Request $request
-     * @param Organization $Organization
-     * @param KKMInterface|null $kkm
-     * @return mixed
+     * {@inheritDoc}
      */
     abstract public function send(Request $request, Organization $Organization, $kkm = null);
 
     /**
-     * @param Request $request
-     * @param Organization $Organization
-     * @param KKMInterface|null $kkm
-     * @return mixed
+     * {@inheritDoc}
      */
     abstract public function check(Request $request, Organization $Organization, $kkm = null);
 
@@ -48,7 +37,7 @@ abstract class PaymentAbstract implements PaymentInterface
      * Дополнительная проверка
      *
      * @param Request $request
-     * @param String $handling_secret
+     * @param String $handling_secret - секретное слово
      * @return bool
      */
     public function otherCheckMD5(Request $request, $handling_secret){

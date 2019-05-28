@@ -4,15 +4,10 @@ namespace Cashbox\BoxBundle\Model\Report;
 
 use Cashbox\BoxBundle\Document\YandexTransaction;
 
-/**
- * Class YandexReport
- * @package Cashbox\BoxBundle\Model\Report
- */
 class YandexReport extends ReportAbstract implements ReportInterface
 {
     /**
-     * @param array $params
-     * @return void
+     * {@inheritDoc}
      */
     public function create(array $params)
     {

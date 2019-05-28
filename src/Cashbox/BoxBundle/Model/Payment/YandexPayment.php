@@ -10,8 +10,6 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class YandexPayment
  *
- * @package Cashbox\BoxBundle\Model\Payment
- *
  * @see Используется устаревший API Яндекса
  * https://tech.yandex.ru/money/doc/payment-solution/payment-notifications/payment-notifications-check-docpage/
  *
@@ -21,9 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 class YandexPayment extends PaymentAbstract
 {
     /**
-     * @param Request $request
-     * @param Organization $Organization
-     * @param KKMInterface|null $kkm
+     * {@inheritDoc}
      * @return string
      */
     public function send(Request $request, Organization $Organization, $kkm = null)
@@ -45,8 +41,8 @@ class YandexPayment extends PaymentAbstract
                 'data' => $request->request->all()
             ]);
 
-            if($kkm instanceof KKMInterface) {
-                if($kkm->connect()) {
+            if ($kkm instanceof KKMInterface) {
+                if ($kkm->connect()) {
                     $dataKKM = $kkm->buildData([
                         "order" => $order,
                         "email" => $email,
@@ -63,9 +59,7 @@ class YandexPayment extends PaymentAbstract
     }
 
     /**
-     * @param Request $request
-     * @param Organization $Organization
-     * @param KKMInterface|null $kkm
+     * {@inheritDoc}
      * @return string
      */
     public function check(Request $request, Organization $Organization, $kkm = null)
@@ -101,6 +95,8 @@ class YandexPayment extends PaymentAbstract
     }
 
     /**
+     * Получение ответа
+     * 
      * @param Request $request
      * @param array $param
      * @return string
@@ -143,10 +139,11 @@ class YandexPayment extends PaymentAbstract
             return false;
         }
 
-        if($this->otherCheckMD5($request, $secret))
+        if ($this->otherCheckMD5($request, $secret)) {
             return false;
-        else
+        } else {
             return true;
+        }
     }
 
     /**

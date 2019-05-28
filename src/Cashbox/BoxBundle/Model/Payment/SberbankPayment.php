@@ -7,10 +7,6 @@ use Cashbox\BoxBundle\Model\KKM\KKMInterface;
 use Cashbox\BoxBundle\Model\Report\SberbankReport;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- * Class SberbankPayment
- * @package Cashbox\BoxBundle\Model\Payment
- */
 class SberbankPayment extends PaymentAbstract
 {
     //CONST GATEWAY_URL = 'https://3dsec.sberbank.ru/payment/rest/';
@@ -21,9 +17,7 @@ class SberbankPayment extends PaymentAbstract
     CONST ORDER_DAY   = 7;
 
     /**
-     * @param Request $request
-     * @param Organization $Organization
-     * @param KKMInterface|null $kkm
+     * {@inheritDoc}
      * @return string
      */
     public function send(Request $request, Organization $Organization, $kkm = null)
@@ -60,8 +54,8 @@ class SberbankPayment extends PaymentAbstract
                     'data' => $response
                 ]);
 
-                if($kkm instanceof KKMInterface) {
-                    if($kkm->connect()) {
+                if ($kkm instanceof KKMInterface) {
+                    if ($kkm->connect()) {
                         $dataKKM = $kkm->buildData([
                             "order" => $customerNumber,
                             "email" => $email,
@@ -77,9 +71,7 @@ class SberbankPayment extends PaymentAbstract
     }
 
     /**
-     * @param Request $request
-     * @param Organization $Organization
-     * @param KKMInterface|null $kkm
+     * {@inheritDoc}
      * @return string
      */
     public function check(Request $request, Organization $Organization, $kkm = null)
@@ -88,10 +80,12 @@ class SberbankPayment extends PaymentAbstract
     }
 
     /**
+     * Получение ссылки для перенаправления
+     *
      * @param Request $request
-     * @param Organization $Organization
-     * @param string $failUrl
-     * @param KKMInterface|null $kkm
+     * @param Organization $Organization - организация
+     * @param string $failUrl - ссылка в случае ошибки
+     * @param KKMInterface|null $kkm - касса
      * @return string
      */
     public function getRedirectUrl(Request $request, Organization $Organization, string $failUrl, $kkm = null)
@@ -101,7 +95,7 @@ class SberbankPayment extends PaymentAbstract
             $komtet = $Organization->getDataKomtet();
 
             if ($komtet['cancel_action']==1 && $kkm instanceof KKMInterface) {
-                if($kkm->connect()) {
+                if ($kkm->connect()) {
                     if (!$kkm->isQueueActive($komtet['queue_name'])) {
                         return $redirect_url;
                     }
@@ -128,11 +122,11 @@ class SberbankPayment extends PaymentAbstract
 
             if (isset($answer['errorCode']) && ($answer['errorCode'] == 0 || $answer['errorCode'] == 1)) {
                 //Заказ уже существует
-                $data = array(
+                $data = [
                     'userName' => $sberbank['sberbank_username'],
                     'password' => $sberbank['sberbank_password'],
                     'orderNumber' => $request->get('customerNumber')
-                );
+                ];
                 $response = $this->gateway('getOrderStatusExtended.do', $data);
 
                 if ($response['errorCode'] == 0) {
@@ -176,6 +170,8 @@ class SberbankPayment extends PaymentAbstract
     }
 
     /**
+     * Преоброзование строки с суммой
+     *
      * @param string $Sum
      * @return string
      */
@@ -190,6 +186,8 @@ class SberbankPayment extends PaymentAbstract
     }
 
     /**
+     * Получение ссулки с которой перешел пользователь
+     *
      * @param Request $request
      * @param int $success
      * @return string
@@ -205,6 +203,8 @@ class SberbankPayment extends PaymentAbstract
     }
 
     /**
+     * Вычисление hash-суммы
+     *
      * @param Request $request
      * @param array $param
      * @return bool
@@ -215,13 +215,13 @@ class SberbankPayment extends PaymentAbstract
         reset($params);
         $str = '';
         foreach ($params as $key => $value) {
-            if($key!=='checksum' && $key!=='inn') {
+            if ($key!=='checksum' && $key!=='inn') {
                 $str .= $key.';'.$value.';';
             }
         }
 
-        if($str!==''){
-            if (strtolower(hash_hmac ( 'sha256' , $str , $param['secret'] )) == strtolower($params['checksum']))
+        if ($str!==''){
+            if (strtolower(hash_hmac ('sha256', $str, $param['secret'])) == strtolower($params['checksum']))
                 return true;
         }
         return false;

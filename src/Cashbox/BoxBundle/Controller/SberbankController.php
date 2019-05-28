@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\{Request, Response};
 class SberbankController extends Controller
 {
     /**
+     * Создание заказа и отправка настраницу оплаты в случае успеха
+     *
      * @Route("/restSberbank", schemes={"https"})
      * @param  Request $request
      * @return Response
@@ -24,7 +26,7 @@ class SberbankController extends Controller
         $SberbankPayment = new SberbankPayment($manager);
         $url = $SberbankPayment->getSiteUrl($request, 0);
 
-        if($request->isMethod(Request::METHOD_GET)) {
+        if ($request->isMethod(Request::METHOD_GET)) {
             /**
              * @var Organization $Organization
              */
@@ -39,13 +41,15 @@ class SberbankController extends Controller
     }
 
     /**
+     * Отправка чека по callback
+     *
      * @Route("/callbackSberbank", schemes={"https"})
      * @param  Request $request
      * @return Response
      */
     public function callbackSberbankAction(Request $request)
     {
-        if($request->isMethod(Request::METHOD_GET)) {
+        if ($request->isMethod(Request::METHOD_GET)) {
             $manager = $this->get('doctrine_mongodb');
             /**
              * @var Organization $Organization

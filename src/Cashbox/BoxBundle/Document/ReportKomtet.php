@@ -219,7 +219,7 @@ class ReportKomtet
     }
 
     /**
-     * Set inn
+     * Set INN
      *
      * @param integer $inn
      * @return self
@@ -231,7 +231,7 @@ class ReportKomtet
     }
 
     /**
-     * Get inn
+     * Get INN
      *
      * @return integer $inn
      */
