@@ -5,6 +5,13 @@ namespace Cashbox\BoxBundle\Model\KKM;
 interface KKMInterface
 {
     /**
+     * Соединение с ККМ
+     *
+     * @return bool
+     */
+    public function connect();
+
+    /**
      * Создания массива данных для фискализации
      *
      * @param array $param
@@ -29,13 +36,6 @@ interface KKMInterface
      * @return bool
      */
     public function sendMail(array $data, string $from);
-
-    /**
-     * Соединение с ККМ
-     *
-     * @return bool
-     */
-    public function connect();
 
     /**
      * Проверка очереди

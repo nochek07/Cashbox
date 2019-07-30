@@ -4,17 +4,25 @@ namespace Cashbox\BoxBundle\Model\Payment;
 
 use Cashbox\BoxBundle\Document\Organization;
 use Cashbox\BoxBundle\Model\KKM\KKMInterface;
+use Cashbox\BoxBundle\Model\Payment\Exception\KKMException;
 use Cashbox\BoxBundle\Model\Report\SberbankReport;
 use Symfony\Component\HttpFoundation\Request;
 
 class SberbankPayment extends PaymentAbstract
 {
-    //CONST GATEWAY_URL = 'https://3dsec.sberbank.ru/payment/rest/';
-    //CONST FORM_URL    = 'https://3dsec.sberbank.ru/payment/merchants/{login}/payment_ru.html';
+    /**
+     * Test merchants
+     * @example CONST GATEWAY_URL = 'https://3dsec.sberbank.ru/payment/rest/';
+     * @example CONST FORM_URL    = 'https://3dsec.sberbank.ru/payment/merchants/{login}/payment_ru.html';
+     */
 
     CONST GATEWAY_URL = 'https://securepayments.sberbank.ru/payment/rest/';
     CONST FORM_URL    = 'https://securepayments.sberbank.ru/payment/merchants/sbersafe/payment_ru.html';
-    CONST ORDER_DAY   = 7;
+
+    /**
+     * The number of days valid order
+     */
+    CONST ORDER_DAY = 7;
 
     /**
      * {@inheritDoc}
@@ -80,6 +88,54 @@ class SberbankPayment extends PaymentAbstract
     }
 
     /**
+     * Вычисление hash-суммы
+     *
+     * @param Request $request
+     * @param array $param
+     * @return bool
+     */
+    private function checkCallback(Request $request, array $param){
+        $params = $request->query->all();
+        ksort($params);
+        reset($params);
+        $str = '';
+        foreach ($params as $key => $value) {
+            if ($key!=='checksum' && $key!=='inn') {
+                $str .= $key.';'.$value.';';
+            }
+        }
+
+        if ($str!==''){
+            if (strtolower(hash_hmac ('sha256', $str, $param['secret'])) == strtolower($params['checksum']))
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * Основная функция работы со сбербанком
+     *
+     * @param string $method
+     * @param array $data
+     * @return mixed
+     */
+    private function gateway(string $method, array $data) {
+        $curl = curl_init(); // Инициализируем запрос
+        curl_setopt_array($curl, [
+            CURLOPT_URL => self::GATEWAY_URL . $method, // Полный адрес метода
+            CURLOPT_RETURNTRANSFER => true, // Возвращать ответ
+            CURLOPT_POST => true, // Метод POST
+            CURLOPT_POSTFIELDS => http_build_query($data) // Данные в запросе
+        ]);
+        $response = curl_exec($curl); // Выполненяем запрос
+
+        $response = json_decode($response, true); // Декодируем из JSON в массив
+        curl_close($curl); // Закрываем соединение
+
+        return $response; // Возвращаем ответ
+    }
+
+    /**
      * Получение ссылки для перенаправления
      *
      * @param Request $request
@@ -94,12 +150,10 @@ class SberbankPayment extends PaymentAbstract
         if ($this->otherCheckMD5($request, $Organization->getSecret())) {
             $komtet = $Organization->getDataKomtet();
 
-            if ($komtet['cancel_action']==1 && $kkm instanceof KKMInterface) {
-                if ($kkm->connect()) {
-                    if (!$kkm->isQueueActive($komtet['queue_name'])) {
-                        return $redirect_url;
-                    }
-                } else {
+            if ($komtet['cancel_action']==1) {
+                try {
+                    $this->checkKKM($komtet['queue_name'], $kkm);
+                } catch (KKMException $error) {
                     return $redirect_url;
                 }
             }
@@ -147,45 +201,6 @@ class SberbankPayment extends PaymentAbstract
     }
 
     /**
-     * Основная функция работы со сбербанком
-     *
-     * @param string $method
-     * @param array $data
-     * @return mixed
-     */
-    private function gateway(string $method, array $data) {
-        $curl = curl_init(); // Инициализируем запрос
-        curl_setopt_array($curl, [
-            CURLOPT_URL => self::GATEWAY_URL . $method, // Полный адрес метода
-            CURLOPT_RETURNTRANSFER => true, // Возвращать ответ
-            CURLOPT_POST => true, // Метод POST
-            CURLOPT_POSTFIELDS => http_build_query($data) // Данные в запросе
-        ]);
-        $response = curl_exec($curl); // Выполненяем запрос
-
-        $response = json_decode($response, true); // Декодируем из JSON в массив
-        curl_close($curl); // Закрываем соединение
-
-        return $response; // Возвращаем ответ
-    }
-
-    /**
-     * Преоброзование строки с суммой
-     *
-     * @param string $Sum
-     * @return string
-     */
-    private function replaceSum(string $Sum){
-        $pos1 = strpos($Sum, '.');
-        $pos2 = strpos($Sum, ',');
-        if ($pos1 === false && $pos2 === false) {
-            $Sum .= '00';
-        }
-        $Sum = str_replace(' ', '', str_replace(',', '', str_replace('.', '', $Sum)));
-        return $Sum;
-    }
-
-    /**
      * Получение ссулки с которой перешел пользователь
      *
      * @param Request $request
@@ -203,27 +218,17 @@ class SberbankPayment extends PaymentAbstract
     }
 
     /**
-     * Вычисление hash-суммы
+     * Преоброзование строки с суммой
      *
-     * @param Request $request
-     * @param array $param
-     * @return bool
+     * @param string $Sum
+     * @return string
      */
-    private function checkCallback(Request $request, array $param){
-        $params = $request->query->all();
-        ksort($params);
-        reset($params);
-        $str = '';
-        foreach ($params as $key => $value) {
-            if ($key!=='checksum' && $key!=='inn') {
-                $str .= $key.';'.$value.';';
-            }
+    private function replaceSum(string $Sum){
+        $pos1 = strpos($Sum, '.');
+        $pos2 = strpos($Sum, ',');
+        if ($pos1 === false && $pos2 === false) {
+            $Sum .= '00';
         }
-
-        if ($str!==''){
-            if (strtolower(hash_hmac ('sha256', $str, $param['secret'])) == strtolower($params['checksum']))
-                return true;
-        }
-        return false;
+        return str_replace(' ', '', str_replace(',', '', str_replace('.', '', $Sum)));
     }
 }

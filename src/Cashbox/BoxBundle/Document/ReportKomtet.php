@@ -87,28 +87,6 @@ class ReportKomtet
     }
 
     /**
-     * Set state
-     *
-     * @param string $state
-     * @return self
-     */
-    public function setState($state)
-    {
-        $this->state = $state;
-        return $this;
-    }
-
-    /**
-     * Get state
-     *
-     * @return string $state
-     */
-    public function getState()
-    {
-        return $this->state;
-    }
-
-    /**
      * Set type
      *
      * @param string $type
@@ -128,6 +106,28 @@ class ReportKomtet
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * Set state
+     *
+     * @param string $state
+     * @return self
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
+        return $this;
+    }
+
+    /**
+     * Get state
+     *
+     * @return string $state
+     */
+    public function getState()
+    {
+        return $this->state;
     }
 
     /**

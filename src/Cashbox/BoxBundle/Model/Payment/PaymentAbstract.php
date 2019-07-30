@@ -3,6 +3,8 @@
 namespace Cashbox\BoxBundle\Model\Payment;
 
 use Cashbox\BoxBundle\Document\Organization;
+use Cashbox\BoxBundle\Model\KKM\KKMInterface;
+use Cashbox\BoxBundle\Model\Payment\Exception\KKMException;
 use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -41,6 +43,27 @@ abstract class PaymentAbstract implements PaymentInterface
      * @return bool
      */
     public function otherCheckMD5(Request $request, $handling_secret){
-        return ($request->get('h') != md5($request->get('customerNumber') . "_" . $request->get('orderSumAmount') . "_" . $handling_secret));
+        return ($request->get('h') != md5($request->get('customerNumber') . "_"
+                . $request->get('orderSumAmount') . "_" . $handling_secret));
+    }
+
+    /**
+     * Check KKM
+     *
+     * @param $queueName
+     * @param null $kkm
+     * @throws KKMException
+     */
+    public function checkKKM($queueName, $kkm = null)
+    {
+        if ($kkm instanceof KKMInterface) {
+            if ($kkm->connect()) {
+                if (!$kkm->isQueueActive($queueName)) {
+                    throw new KKMException('KKM error');
+                }
+            } else {
+                throw new KKMException('KKM error');
+            }
+        }
     }
 }

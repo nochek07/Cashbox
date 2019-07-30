@@ -4,6 +4,7 @@ namespace Cashbox\BoxBundle\Model\Payment;
 
 use Cashbox\BoxBundle\Document\Organization;
 use Cashbox\BoxBundle\Model\KKM\{KKMInterface, KKMMessages};
+use Cashbox\BoxBundle\Model\Payment\Exception\KKMException;
 use Symfony\Component\HttpFoundation\Request;
 
 class For1CPayment extends YandexPayment
@@ -21,14 +22,10 @@ class For1CPayment extends YandexPayment
     {
         $komtet = $Organization->getDataKomtet();
         if ($this->check1cMD5($this->dataJSON, $Organization->getSecret())) {
-            if ($kkm instanceof KKMInterface) {
-                if ($kkm->connect()){
-                    if (!$kkm->isQueueActive($komtet['queue_name'])) {
-                        return $this->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_CASHBOX_UNAV);
-                    }
-                } else {
-                    return $this->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_CASHBOX_UNAV);
-                }
+            try {
+                $this->checkKKM($komtet['queue_name'], $kkm);
+            } catch (KKMException $error) {
+                return $this->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_CASHBOX_UNAV);
             }
 
             $repository = $this->manager->getManager()
@@ -41,8 +38,6 @@ class For1CPayment extends YandexPayment
 
             if (is_null($report) && $kkm instanceof KKMInterface) {
                 $error = $kkm->send($this->dataJSON, PaymentTypes::PAYMENT_TYPE_1C);
-                if ($error === '')
-                    return $this->buildResponse('For1C', 0, 0, null, null);
             } else {
                 $error = KKMMessages::MSG_ERROR_CHECK;
             }
@@ -60,29 +55,13 @@ class For1CPayment extends YandexPayment
     public function check(Request $request, Organization $Organization, $kkm = null)
     {
         $komtet = $Organization->getDataKomtet();
-        if ($kkm instanceof KKMInterface) {
-            if ($kkm->connect()) {
-                if (!$kkm->isQueueActive($komtet['queue_name'])) {
-                    return $this->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_CASHBOX_UNAV);
-                }
-            } else {
-                return $this->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_CASHBOX_UNAV);
-            }
+        try {
+            $this->checkKKM($komtet['queue_name'], $kkm);
+        } catch (KKMException $error) {
+            return $this->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_CASHBOX_UNAV);
         }
 
         return $this->buildResponse('For1C', 0, 0, null, null);
-    }
-
-    /**
-     * Set DataJSON
-     *
-     * @param array $data
-     * @return self
-     */
-    public function setDataJSON(array $data)
-    {
-        $this->dataJSON = $data;
-        return $this;
     }
 
     /**
@@ -106,5 +85,17 @@ class For1CPayment extends YandexPayment
             return true;
         else
             return false;
+    }
+
+    /**
+     * Set DataJSON
+     *
+     * @param array $data
+     * @return self
+     */
+    public function setDataJSON(array $data)
+    {
+        $this->dataJSON = $data;
+        return $this;
     }
 }

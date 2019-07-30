@@ -85,6 +85,11 @@ abstract class KKMAbstract implements KKMInterface
     /**
      * {@inheritDoc}
      */
+    abstract function connect();
+
+    /**
+     * {@inheritDoc}
+     */
     abstract function buildData(array $param);
 
     /**
@@ -96,11 +101,6 @@ abstract class KKMAbstract implements KKMInterface
      * {@inheritDoc}
      */
     abstract function sendMail(array $data, string $from);
-
-    /**
-     * {@inheritDoc}
-     */
-    abstract function connect();
 
     /**
      * {@inheritDoc}

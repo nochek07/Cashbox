@@ -1,4 +1,4 @@
-checkout
+Cashbox
 =========
 
-A Symfony project created on September 2, 2017, 12:51 pm.
+A Symfony project.

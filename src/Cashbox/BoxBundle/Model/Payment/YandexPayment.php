@@ -4,6 +4,7 @@ namespace Cashbox\BoxBundle\Model\Payment;
 
 use Cashbox\BoxBundle\Document\Organization;
 use Cashbox\BoxBundle\Model\KKM\{KKMInterface, KKMMessages};
+use Cashbox\BoxBundle\Model\Payment\Exception\KKMException;
 use Cashbox\BoxBundle\Model\Report\YandexReport;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -68,12 +69,10 @@ class YandexPayment extends PaymentAbstract
         $responseText = $this->processRequest($request, $yandex, $Organization->getSecret());
         if ($responseText == '') {
             $komtet = $Organization->getDataKomtet();
-            if ($komtet['cancel_action']==1 && $kkm instanceof KKMInterface) {
-                if($kkm->connect()) {
-                    if (!$kkm->isQueueActive($komtet['queue_name'])) {
-                        return $this->buildResponse($request->get('action'), $request->get('invoiceId'), 100, $yandex['shop_yandex_id'], KKMMessages::MSG_CASHBOX_UNAV);
-                    }
-                } else {
+            if ($komtet['cancel_action']==1) {
+                try {
+                    $this->checkKKM($komtet['queue_name'], $kkm);
+                } catch (KKMException $error) {
                     return $this->buildResponse($request->get('action'), $request->get('invoiceId'), 100, $yandex['shop_yandex_id'], KKMMessages::MSG_CASHBOX_UNAV);
                 }
             }
@@ -95,17 +94,6 @@ class YandexPayment extends PaymentAbstract
     }
 
     /**
-     * Получение ответа
-     * 
-     * @param Request $request
-     * @param array $param
-     * @return string
-     */
-    private function getAnswer(Request $request, array $param) {
-        return $this->buildResponse($request->get('action'), $request->get('invoiceId'), 0, $param['yandex_id']);
-    }
-
-    /**
      * Handles "checkOrder" and "paymentAviso" requests.
      *
      * @param  Request $request
@@ -114,11 +102,22 @@ class YandexPayment extends PaymentAbstract
      * @return string
      */
     private function processRequest(Request $request, array $param, string $secret) {
-        //Проверка
+        // Проверка
         if (!$this->checkMD5($request, $param, $secret)) {
             return $this->buildResponse($request->get('action'), $request->get('invoiceId'), 1, $param['yandex_id']);
         }
         return '';
+    }
+
+    /**
+     * Получение ответа
+     * 
+     * @param Request $request
+     * @param array $param
+     * @return string
+     */
+    private function getAnswer(Request $request, array $param) {
+        return $this->buildResponse($request->get('action'), $request->get('invoiceId'), 0, $param['yandex_id']);
     }
 
     /**
@@ -139,11 +138,7 @@ class YandexPayment extends PaymentAbstract
             return false;
         }
 
-        if ($this->otherCheckMD5($request, $secret)) {
-            return false;
-        } else {
-            return true;
-        }
+        return !$this->otherCheckMD5($request, $secret);
     }
 
     /**
@@ -160,12 +155,12 @@ class YandexPayment extends PaymentAbstract
         try {
             $performedDatetime = self::formatDate(new \DateTime());
             $response = '<?xml version="1.0" encoding="UTF-8"?><' . $functionName . 'Response performedDatetime="' . $performedDatetime .
-                '" code="' . $result_code . '" ' . ($message != null ? 'message="' . $message . '"' : "") . ' invoiceId="' . $invoiceId .
+                '" code="' . $result_code . '" ' . (!is_null($message) ? 'message="' . $message . '"' : "") . ' invoiceId="' . $invoiceId .
                 '" shopId="' . $shopId . '"/>';
             return $response;
         } catch (\Exception $error) {
+            return '';
         }
-        return '';
     }
 
     /**

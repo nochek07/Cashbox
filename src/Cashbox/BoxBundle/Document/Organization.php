@@ -132,6 +132,28 @@ class Organization
     }
 
     /**
+     * Set secret
+     *
+     * @param string $secret
+     * @return self
+     */
+    public function setSecret($secret)
+    {
+        $this->secret = $secret;
+        return $this;
+    }
+
+    /**
+     * Get secret
+     *
+     * @return string $secret
+     */
+    public function getSecret()
+    {
+        return $this->secret;
+    }
+
+    /**
      * Set patternNomenclature
      *
      * @param string $patternNomenclature
@@ -217,28 +239,6 @@ class Organization
     public function getDataYandex()
     {
         return $this->dataYandex;
-    }
-
-    /**
-     * Set secret
-     *
-     * @param string $secret
-     * @return self
-     */
-    public function setSecret($secret)
-    {
-        $this->secret = $secret;
-        return $this;
-    }
-
-    /**
-     * Get secret
-     *
-     * @return string $secret
-     */
-    public function getSecret()
-    {
-        return $this->secret;
     }
 
     /**
