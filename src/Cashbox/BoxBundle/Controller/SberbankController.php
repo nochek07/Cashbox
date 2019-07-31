@@ -3,14 +3,11 @@
 namespace Cashbox\BoxBundle\Controller;
 
 use Cashbox\BoxBundle\Document\Organization;
-use Cashbox\BoxBundle\Model\OrganizationModel;
-use Cashbox\BoxBundle\Model\KKM\Komtet;
 use Cashbox\BoxBundle\Model\Payment\SberbankPayment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\{Request, Response};
 
-class SberbankController extends Controller
+class SberbankController extends PaymentController
 {
     /**
      * Создание заказа и отправка настраницу оплаты в случае успеха
@@ -27,16 +24,14 @@ class SberbankController extends Controller
         $url = $SberbankPayment->getSiteUrl($request, 0);
 
         if ($request->isMethod(Request::METHOD_GET)) {
-            /**
-             * @var Organization $Organization
-             */
-            $Organization = OrganizationModel::getOrganization($request, $manager);
-            if (!is_null($Organization)) {
-                $KKM = new Komtet($Organization, $manager);
-                $url = $SberbankPayment->getRedirectUrl($request, $Organization, $url, $KKM);
+            $this->setOrganization($request);
+            $Organization = $this->getOrganization();
+            if ($Organization instanceof Organization) {
+                $url = $SberbankPayment->getRedirectUrl(
+                    $request, $Organization, $url, $this->getKKM()
+                );
             }
         }
-
         return $this->redirect($url);
     }
 
@@ -50,20 +45,8 @@ class SberbankController extends Controller
     public function callbackSberbankAction(Request $request)
     {
         if ($request->isMethod(Request::METHOD_GET)) {
-            $manager = $this->get('doctrine_mongodb');
-            /**
-             * @var Organization $Organization
-             */
-            $Organization = OrganizationModel::getOrganization($request, $manager);
-            if (!is_null($Organization)) {
-                $KKM = new Komtet($Organization, $manager);
-                $KKM->setMailer($this->get('cashbox.mailer'));
-
-                $SberbankPayment = new SberbankPayment($manager);
-                $SberbankPayment->send($request, $Organization, $KKM);
-            }
+            $this->send($request, new SberbankPayment($this->get('doctrine_mongodb')));
         }
-
         return new Response('');
     }
 }

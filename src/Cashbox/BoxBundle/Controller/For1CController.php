@@ -2,15 +2,12 @@
 
 namespace Cashbox\BoxBundle\Controller;
 
-use Cashbox\BoxBundle\Document\Organization;
-use Cashbox\BoxBundle\Model\OrganizationModel;
-use Cashbox\BoxBundle\Model\KKM\{Komtet, KKMMessages};
+use Cashbox\BoxBundle\Model\KKM\KKMMessages;
 use Cashbox\BoxBundle\Model\Payment\For1CPayment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\{Request, Response};
 
-class For1CController extends Controller
+class For1CController extends PaymentController
 {
     /**
      * Отправка чека из 1С
@@ -33,17 +30,8 @@ class For1CController extends Controller
                 if (!is_null($data)) {
                     $For1CPayment->setDataJSON($data);
 
-                    /**
-                     * @var Organization $Organization
-                     */
-                    $Organization = OrganizationModel::getOrganization($data, $manager);
-                    if (!is_null($Organization)) {
-                        $KKM = new Komtet($Organization, $manager);
-                        $KKM->setMailer($this->get('cashbox.mailer'));
-                        $responseText = $For1CPayment->send($request, $Organization, $KKM);
-                    } else {
-                        $responseText = $For1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR_INN);
-                    }
+                    $this->setOrganizationTextError($For1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR_INN));
+                    $responseText = $this->send($request, $For1CPayment);
                 }
             }
         }
@@ -71,16 +59,9 @@ class For1CController extends Controller
                 $data = json_decode($postData, true);
                 if (!is_null($data)) {
                     $For1CPayment->setDataJSON($data);
-                    /**
-                     * @var Organization $Organization
-                     */
-                    $Organization = OrganizationModel::getOrganization($data, $manager);
-                    if (!is_null($Organization)) {
-                        $KKM = new Komtet($Organization, $manager);
-                        $responseText = $For1CPayment->check($request, $Organization, $KKM);
-                    } else {
-                        $responseText = $For1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR_INN);
-                    }
+
+                    $this->setOrganizationTextError($For1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR_INN));
+                    $responseText = $this->check($request, $For1CPayment);
                 }
             }
         }
