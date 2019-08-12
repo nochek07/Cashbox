@@ -71,7 +71,8 @@ class For1CPayment extends YandexPayment
      * @param string $secret
      * @return bool true if MD5 hash is correct
      */
-    private function check1cMD5(array $data, string $secret) {
+    private function check1cMD5(array $data, string $secret)
+    {
         $hash = $data["action"] . ';' . $secret . ';';
         if (isset($data["kkm"]["payment"]["card"])) {
             $hash .= $data["kkm"]["payment"]["card"] . ';';

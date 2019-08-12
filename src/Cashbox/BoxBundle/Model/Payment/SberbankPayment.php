@@ -94,7 +94,8 @@ class SberbankPayment extends PaymentAbstract
      * @param array $param
      * @return bool
      */
-    private function checkCallback(Request $request, array $param){
+    private function checkCallback(Request $request, array $param)
+    {
         $params = $request->query->all();
         ksort($params);
         reset($params);
@@ -119,7 +120,8 @@ class SberbankPayment extends PaymentAbstract
      * @param array $data
      * @return mixed
      */
-    private function gateway(string $method, array $data) {
+    private function gateway(string $method, array $data)
+    {
         $curl = curl_init(); // Инициализируем запрос
         curl_setopt_array($curl, [
             CURLOPT_URL => self::GATEWAY_URL . $method, // Полный адрес метода
@@ -207,7 +209,8 @@ class SberbankPayment extends PaymentAbstract
      * @param int $success
      * @return string
      */
-    public function getSiteUrl(Request $request, int $success = 0){
+    public function getSiteUrl(Request $request, int $success = 0)
+    {
         $referer = Request::create(
             $request->headers->get('referer'),
             'GET',
@@ -223,7 +226,8 @@ class SberbankPayment extends PaymentAbstract
      * @param string $Sum
      * @return string
      */
-    private function replaceSum(string $Sum){
+    private function replaceSum(string $Sum)
+    {
         $pos1 = strpos($Sum, '.');
         $pos2 = strpos($Sum, ',');
         if ($pos1 === false && $pos2 === false) {

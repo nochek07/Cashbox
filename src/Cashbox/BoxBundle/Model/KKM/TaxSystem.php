@@ -1,6 +1,6 @@
 <?php
 
-namespace Cashbox\BoxBundle\Model;
+namespace Cashbox\BoxBundle\Model\KKM;
 
 class TaxSystem extends \Komtet\KassaSdk\TaxSystem
 {

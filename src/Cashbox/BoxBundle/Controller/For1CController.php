@@ -18,11 +18,9 @@ class For1CController extends PaymentController
      */
     public function send1cAction(Request $request)
     {
-        $manager = $this->get('doctrine_mongodb');
-        $For1CPayment = new For1CPayment($manager);
+        $For1CPayment = new For1CPayment($this->get('doctrine_mongodb'));
 
-        $responseText = $For1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR);
-
+        $responseText = null;
         if ($request->isMethod(Request::METHOD_POST)) {
             if ($request->getContentType() === 'json') {
                 $postData = file_get_contents('php://input');
@@ -36,7 +34,11 @@ class For1CController extends PaymentController
             }
         }
 
-        return new Response($responseText);
+        if (is_null($responseText)) {
+            return new Response($For1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR));
+        } else {
+            return new Response($responseText);
+        }
     }
 
     /**
@@ -48,11 +50,9 @@ class For1CController extends PaymentController
      */
     public function chek1cAction(Request $request)
     {
-        $manager = $this->get('doctrine_mongodb');
-        $For1CPayment = new For1CPayment($manager);
+        $For1CPayment = new For1CPayment($this->get('doctrine_mongodb'));
 
-        $responseText = $For1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR);
-
+        $responseText = null;
         if ($request->isMethod(Request::METHOD_POST)) {
             if ($request->getContentType() === 'json') {
                 $postData = file_get_contents('php://input');
@@ -66,6 +66,10 @@ class For1CController extends PaymentController
             }
         }
 
-        return new Response($responseText);
+        if (is_null($responseText)) {
+            return new Response($For1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR));
+        } else {
+            return new Response($responseText);
+        }
     }
 }

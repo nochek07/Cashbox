@@ -16,11 +16,9 @@ class SberbankController extends PaymentController
      * @param  Request $request
      * @return Response
      */
-    public function restSberbankAction(Request $request) {
-
-        $manager = $this->get('doctrine_mongodb');
-
-        $SberbankPayment = new SberbankPayment($manager);
+    public function restSberbankAction(Request $request)
+    {
+        $SberbankPayment = new SberbankPayment($this->get('doctrine_mongodb'));
         $url = $SberbankPayment->getSiteUrl($request, 0);
 
         if ($request->isMethod(Request::METHOD_GET)) {

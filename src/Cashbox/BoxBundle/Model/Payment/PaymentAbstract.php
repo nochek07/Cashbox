@@ -42,7 +42,8 @@ abstract class PaymentAbstract implements PaymentInterface
      * @param String $handling_secret - секретное слово
      * @return bool
      */
-    public function otherCheckMD5(Request $request, $handling_secret){
+    public function otherCheckMD5(Request $request, $handling_secret)
+    {
         return ($request->get('h') != md5($request->get('customerNumber') . "_"
                 . $request->get('orderSumAmount') . "_" . $handling_secret));
     }

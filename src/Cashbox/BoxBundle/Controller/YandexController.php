@@ -17,11 +17,13 @@ class YandexController extends PaymentController
      */
     public function avisoAction(Request $request)
     {
-        $responseText = '';
         if ($request->isMethod(Request::METHOD_POST)) {
-            $responseText = $this->send($request, new YandexPayment($this->get('doctrine_mongodb')));
+            return new Response(
+                $this->send($request, new YandexPayment($this->get('doctrine_mongodb')))
+            );
+        } else {
+            return new Response('');
         }
-        return new Response($responseText);
     }
 
     /**
@@ -33,10 +35,12 @@ class YandexController extends PaymentController
      */
     public function checkAction(Request $request)
     {
-        $responseText = '';
         if ($request->isMethod(Request::METHOD_POST)) {
-            $responseText = $this->check($request, new YandexPayment($this->get('doctrine_mongodb')));
+            return new Response(
+                $this->check($request, new YandexPayment($this->get('doctrine_mongodb')))
+            );
+        } else {
+            return new Response('');
         }
-        return new Response($responseText);
     }
 }

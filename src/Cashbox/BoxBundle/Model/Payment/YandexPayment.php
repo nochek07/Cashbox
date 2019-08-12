@@ -101,7 +101,8 @@ class YandexPayment extends PaymentAbstract
      * @param  string $secret
      * @return string
      */
-    private function processRequest(Request $request, array $param, string $secret) {
+    private function processRequest(Request $request, array $param, string $secret)
+    {
         // Проверка
         if (!$this->checkMD5($request, $param, $secret)) {
             return $this->buildResponse($request->get('action'), $request->get('invoiceId'), 1, $param['yandex_id']);
@@ -116,7 +117,8 @@ class YandexPayment extends PaymentAbstract
      * @param array $param
      * @return string
      */
-    private function getAnswer(Request $request, array $param) {
+    private function getAnswer(Request $request, array $param)
+    {
         return $this->buildResponse($request->get('action'), $request->get('invoiceId'), 0, $param['yandex_id']);
     }
 
@@ -128,7 +130,8 @@ class YandexPayment extends PaymentAbstract
      * @param  string $secret
      * @return bool (true if MD5 hash is correct)
      */
-    private function checkMD5(Request $request, array $param, string $secret) {
+    private function checkMD5(Request $request, array $param, string $secret)
+    {
         $str = $request->get('action') . ";" .
             $request->get('orderSumAmount') . ";" . $request->get('orderSumCurrencyPaycash') . ";" .
             $request->get('orderSumBankPaycash') . ";" . $request->get('shopId') . ";" .
@@ -151,7 +154,8 @@ class YandexPayment extends PaymentAbstract
      * @param  string $message       error message. May be null.
      * @return string                prepared XML response
      */
-    public function buildResponse($functionName, $invoiceId, $result_code, $shopId = null, $message = null) {
+    public function buildResponse($functionName, $invoiceId, $result_code, $shopId = null, $message = null)
+    {
         try {
             $performedDatetime = self::formatDate(new \DateTime());
             $response = '<?xml version="1.0" encoding="UTF-8"?><' . $functionName . 'Response performedDatetime="' . $performedDatetime .
@@ -169,7 +173,8 @@ class YandexPayment extends PaymentAbstract
      * @param \DateTime $date
      * @return string
      */
-    private function formatDate(\DateTime $date) {
+    private function formatDate(\DateTime $date)
+    {
         return $date->format("Y-m-d") . "T" . $date->format("H:i:s") . ".000" . $date->format("P");
     }
 }

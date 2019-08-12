@@ -2,7 +2,7 @@
 
 namespace Cashbox\BoxBundle\Admin;
 
-use Cashbox\BoxBundle\Model\{TaxSystem, Vat};
+use Cashbox\BoxBundle\Model\KKM\{TaxSystem, Vat};
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
