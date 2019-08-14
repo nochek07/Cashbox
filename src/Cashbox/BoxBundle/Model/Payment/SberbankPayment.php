@@ -12,17 +12,17 @@ class SberbankPayment extends PaymentAbstract
 {
     /**
      * Test merchants
-     * @example CONST GATEWAY_URL = 'https://3dsec.sberbank.ru/payment/rest/';
-     * @example CONST FORM_URL    = 'https://3dsec.sberbank.ru/payment/merchants/{login}/payment_ru.html';
+     * @example const GATEWAY_URL = 'https://3dsec.sberbank.ru/payment/rest/';
+     * @example const FORM_URL    = 'https://3dsec.sberbank.ru/payment/merchants/{login}/payment_ru.html';
      */
 
-    CONST GATEWAY_URL = 'https://securepayments.sberbank.ru/payment/rest/';
-    CONST FORM_URL    = 'https://securepayments.sberbank.ru/payment/merchants/sbersafe/payment_ru.html';
+    const GATEWAY_URL = 'https://securepayments.sberbank.ru/payment/rest/';
+    const FORM_URL    = 'https://securepayments.sberbank.ru/payment/merchants/sbersafe/payment_ru.html';
 
     /**
      * The number of days valid order
      */
-    CONST ORDER_DAY = 7;
+    const ORDER_DAY = 7;
 
     /**
      * {@inheritDoc}
@@ -42,7 +42,7 @@ class SberbankPayment extends PaymentAbstract
             if (isset($response['errorCode']) && $response['errorCode'] == 0 && $response['actionCode'] == 0) {
 
                 $email = '';
-                if (sizeof($response['merchantOrderParams'])) {
+                if (sizeof($response['merchantOrderParams']) > 0) {
                     foreach ($response['merchantOrderParams'] as $param) {
                         if ($param['name'] == 'email') {
                             $email = $param['value'];
@@ -101,14 +101,15 @@ class SberbankPayment extends PaymentAbstract
         reset($params);
         $str = '';
         foreach ($params as $key => $value) {
-            if ($key!=='checksum' && $key!=='inn') {
-                $str .= $key.';'.$value.';';
+            if ($key !== 'checksum' && $key !== 'inn') {
+                $str .= $key . ';' . $value . ';';
             }
         }
 
-        if ($str!==''){
-            if (strtolower(hash_hmac ('sha256', $str, $param['secret'])) == strtolower($params['checksum']))
+        if ($str!=='') {
+            if (strtolower(hash_hmac('sha256', $str, $param['secret'])) == strtolower($params['checksum'])) {
                 return true;
+            }
         }
         return false;
     }
@@ -152,7 +153,7 @@ class SberbankPayment extends PaymentAbstract
         if ($this->otherCheckMD5($request, $Organization->getSecret())) {
             $komtet = $Organization->getDataKomtet();
 
-            if ($komtet['cancel_action']==1) {
+            if ($komtet['cancel_action'] == 1) {
                 try {
                     $this->checkKKM($komtet['queue_name'], $kkm);
                 } catch (KKMException $error) {
@@ -177,7 +178,7 @@ class SberbankPayment extends PaymentAbstract
             $answer = $this->gateway('register.do', $data);
 
             if (isset($answer['errorCode']) && ($answer['errorCode'] == 0 || $answer['errorCode'] == 1)) {
-                //Заказ уже существует
+                // Заказ уже существует
                 $data = [
                     'userName' => $sberbank['sberbank_username'],
                     'password' => $sberbank['sberbank_password'],

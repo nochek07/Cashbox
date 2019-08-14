@@ -150,9 +150,9 @@ class OrganizationAdmin extends AbstractAdmin
      */
     protected function configureRoutes(RouteCollection $collection)
     {
-        //$collection->remove('edit');
+//        $collection->remove('edit');
         $collection->remove('delete');
-        //$collection->remove('create');
+//        $collection->remove('create');
     }
 
     /**
@@ -162,7 +162,6 @@ class OrganizationAdmin extends AbstractAdmin
     {
         $instance = parent::getNewInstance();
         $instance->setPatternNomenclature('Товар по счету №%s');
-
         return $instance;
     }
 }    

@@ -17,20 +17,21 @@ class KomtetReport extends ReportAbstract implements ReportInterface
         $Report->setState($params['state']);
         $Report->setInn($params['inn']);
 
-        if(isset($params['dataKomtet'])) {
+        if (isset($params['dataKomtet'])) {
             $Report->setDataKomtet($params['dataKomtet']);
         } else {
             $Report->setDataKomtet([]);
         }
 
-        if(isset($params['dataPost'])) {
+        if (isset($params['dataPost'])) {
             $Report->setDataPost($params['dataPost']);
 
-            if (isset($dataPost["uuid"]))
+            if (isset($dataPost["uuid"])) {
                 $Report->setUuid($params['dataPost']["uuid"]);
-
-            if (isset($dataPost["action"]))
+            }
+            if (isset($dataPost["action"])) {
                 $Report->setAction($params['dataPost']["action"]);
+            }
         } else {
             $Report->setDataPost([]);
         }

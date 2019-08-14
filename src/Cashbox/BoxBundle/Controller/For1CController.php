@@ -28,17 +28,17 @@ class For1CController extends PaymentController
                 if (!is_null($data)) {
                     $For1CPayment->setDataJSON($data);
 
-                    $this->setOrganizationTextError($For1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR_INN));
+                    $this->setOrganizationTextError(
+                        $For1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR_INN)
+                    );
                     $responseText = $this->send($request, $For1CPayment);
                 }
             }
         }
 
-        if (is_null($responseText)) {
-            return new Response($For1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR));
-        } else {
-            return new Response($responseText);
-        }
+        return new Response(
+            $responseText ?? $For1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR)
+        );
     }
 
     /**
@@ -60,16 +60,16 @@ class For1CController extends PaymentController
                 if (!is_null($data)) {
                     $For1CPayment->setDataJSON($data);
 
-                    $this->setOrganizationTextError($For1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR_INN));
+                    $this->setOrganizationTextError(
+                        $For1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR_INN)
+                    );
                     $responseText = $this->check($request, $For1CPayment);
                 }
             }
         }
 
-        if (is_null($responseText)) {
-            return new Response($For1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR));
-        } else {
-            return new Response($responseText);
-        }
+        return new Response(
+            $responseText ?? $For1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR)
+        );
     }
 }

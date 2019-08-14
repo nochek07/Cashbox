@@ -80,12 +80,13 @@ class For1CPayment extends YandexPayment
         if (isset($data["kkm"]["payment"]["cash"])) {
             $hash .= $data["kkm"]["payment"]["cash"] . ';';
         }
-        $hash .= $data["order"] . ';'.$data["inn"] . ';';
+        $hash .= $data["order"] . ';' . $data["inn"] . ';';
 
-        if(strtolower(md5($hash)) === $data["hash"])
+        if (strtolower(md5($hash)) === $data["hash"]) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
     /**

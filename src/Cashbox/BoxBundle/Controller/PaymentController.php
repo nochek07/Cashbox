@@ -53,7 +53,7 @@ class PaymentController extends Controller
      * @param bool $isSend
      * @return string
      */
-    public function getResponseText(Request $request, PaymentInterface $payment, $isSend = true)
+    public function getResponseText(Request $request, PaymentInterface $payment, bool $isSend = true)
     {
         $this->setOrganization($request);
         if ($this->Organization instanceof Organization) {
@@ -71,7 +71,7 @@ class PaymentController extends Controller
      * @param bool $isSend
      * @return string
      */
-    public function getResponsePayment(Request $request, PaymentInterface $payment, $isSend = true)
+    public function getResponsePayment(Request $request, PaymentInterface $payment, bool $isSend = true)
     {
         $KKM = $this->getKKM($isSend);
         if ($isSend) {

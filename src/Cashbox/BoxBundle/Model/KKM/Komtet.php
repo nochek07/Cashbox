@@ -50,7 +50,6 @@ class Komtet extends KKMAbstract
                 return false;
             }
         }
-
         return true;
     }
 
@@ -111,7 +110,6 @@ class Komtet extends KKMAbstract
         $this->QueueManager->setDefaultQueue($this->komtet['queue_name']);
 
         $tax_system = $this->komtet['tax_system'];
-        $check = null;
         switch ($data["action"]) {
             case "sale":
                 $check = Check::createSell($data["order"], $data["email"], $tax_system);
@@ -119,6 +117,8 @@ class Komtet extends KKMAbstract
             case "refund":
                 $check = Check::createSellReturn($data["order"], $data["email"], $tax_system);
                 break;
+            default:
+                return 'actionError';
         }
 
         // Говорим, что чек нужно распечатать
@@ -210,11 +210,9 @@ class Komtet extends KKMAbstract
                 $data['type'] = $from;
 
                 $mailer->send($email, $data);
-
                 return true;
             }
         }
-
         return false;
     }
 

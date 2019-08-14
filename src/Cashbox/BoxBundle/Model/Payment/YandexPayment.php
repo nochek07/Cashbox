@@ -69,11 +69,17 @@ class YandexPayment extends PaymentAbstract
         $responseText = $this->processRequest($request, $yandex, $Organization->getSecret());
         if ($responseText == '') {
             $komtet = $Organization->getDataKomtet();
-            if ($komtet['cancel_action']==1) {
+            if ($komtet['cancel_action'] == 1) {
                 try {
                     $this->checkKKM($komtet['queue_name'], $kkm);
                 } catch (KKMException $error) {
-                    return $this->buildResponse($request->get('action'), $request->get('invoiceId'), 100, $yandex['shop_yandex_id'], KKMMessages::MSG_CASHBOX_UNAV);
+                    return $this->buildResponse(
+                        $request->get('action'),
+                        $request->get('invoiceId'),
+                        100,
+                        $yandex['shop_yandex_id'],
+                        KKMMessages::MSG_CASHBOX_UNAV
+                    );
                 }
             }
 
