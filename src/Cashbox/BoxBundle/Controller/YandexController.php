@@ -2,24 +2,27 @@
 
 namespace Cashbox\BoxBundle\Controller;
 
+use Cashbox\BoxBundle\DependencyInjection\Box;
 use Cashbox\BoxBundle\Model\Payment\YandexPayment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request, Response};
 
-class YandexController extends PaymentController
+class YandexController extends AbstractController
 {
     /**
      * Отправка чека
      *
      * @Route("/aviso", schemes={"https"})
      * @param Request $request
+     * @param Box $box
      * @return Response
      */
-    public function avisoAction(Request $request)
+    public function avisoAction(Request $request, Box $box)
     {
         if ($request->isMethod(Request::METHOD_POST)) {
             return new Response(
-                $this->send($request, new YandexPayment($this->get('doctrine_mongodb')))
+                $box->send($request, new YandexPayment())
             );
         } else {
             return new Response('');
@@ -31,13 +34,14 @@ class YandexController extends PaymentController
      *
      * @Route("/check", schemes={"https"})
      * @param Request $request
+     * @param Box $box
      * @return Response
      */
-    public function checkAction(Request $request)
+    public function checkAction(Request $request, Box $box)
     {
         if ($request->isMethod(Request::METHOD_POST)) {
             return new Response(
-                $this->check($request, new YandexPayment($this->get('doctrine_mongodb')))
+                $box->check($request, new YandexPayment())
             );
         } else {
             return new Response('');

@@ -3,25 +3,25 @@
 namespace Cashbox\BoxBundle\Model\KKM;
 
 use Cashbox\BoxBundle\DependencyInjection\Mailer;
-use Cashbox\BoxBundle\Document\Organization;
-use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
+use Cashbox\BoxBundle\DependencyInjection\Report;
+use Cashbox\BoxBundle\Document\{Organization, KKM};
 
 abstract class KKMAbstract implements KKMInterface
 {
     /**
-     * @var array $data
+     * @var Organization $organizationDocument
      */
-    protected $data;
+    protected $organizationDocument;
 
     /**
-     * @var ManagerRegistry $manager
+     * @var KKM $kkmDocument
      */
-    private $manager;
+    protected $kkmDocument;
 
     /**
-     * @var Organization $Organization
+     * @var Report $report
      */
-    private $Organization;
+    private $report;
 
     /**
      * @var Mailer|null $mailer
@@ -31,13 +31,35 @@ abstract class KKMAbstract implements KKMInterface
     /**
      * KKMAbstract constructor.
      *
-     * @param Organization $Organization
-     * @param ManagerRegistry $manager
+     * @param Organization $organizationDocument
+     * @param KKM $kkmDocument
      */
-    public function __construct(Organization $Organization, ManagerRegistry $manager)
+    public function __construct(Organization $organizationDocument, KKM $kkmDocument)
     {
-        $this->Organization = $Organization;
-        $this->manager = $manager;
+        $this->organizationDocument = $organizationDocument;
+        $this->kkmDocument = $kkmDocument;
+    }
+
+    /**
+     * Set Report
+     *
+     * @param Report $report
+     * @return self
+     */
+    public function setReport(Report $report)
+    {
+        $this->report = $report;
+        return $this;
+    }
+
+    /**
+     * Get Report
+     *
+     * @return Report
+     */
+    public function getReport()
+    {
+        return $this->report;
     }
 
     /**
@@ -60,26 +82,6 @@ abstract class KKMAbstract implements KKMInterface
     public function getMailer()
     {
         return $this->mailer;
-    }
-
-    /**
-     * Get Organization
-     *
-     * @return Organization
-     */
-    public function getOrganization()
-    {
-        return $this->Organization;
-    }
-
-    /**
-     * Get Manager
-     *
-     * @return ManagerRegistry
-     */
-    public function getManager()
-    {
-        return $this->manager;
     }
 
     /**
@@ -106,4 +108,9 @@ abstract class KKMAbstract implements KKMInterface
      * {@inheritDoc}
      */
     abstract function isQueueActive($id);
+
+    /**
+     * {@inheritDoc}
+     */
+    abstract function checkKKM();
 }

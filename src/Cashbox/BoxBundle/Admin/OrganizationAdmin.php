@@ -2,13 +2,15 @@
 
 namespace Cashbox\BoxBundle\Admin;
 
-use Cashbox\BoxBundle\Model\KKM\{TaxSystem, Vat};
+use Cashbox\BoxBundle\Document\{Organization, KKM, Payment};
+use Cashbox\BoxBundle\Model\KKM\KKMTypes;
+use Cashbox\BoxBundle\Model\Payment\PaymentTypes;
+use Doctrine\Common\Collections\ArrayCollection;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
-use Sonata\Form\Type\BooleanType;
-use Symfony\Component\Form\Extension\Core\Type\{ChoiceType, IntegerType, TextType};
+use Sonata\CoreBundle\Validator\ErrorElement;
 
 class OrganizationAdmin extends AbstractAdmin
 {
@@ -22,104 +24,175 @@ class OrganizationAdmin extends AbstractAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->with('Basic', ['class' => 'col-md-6'])
-                ->add('name')
-                ->add('INN', null, [
-                    'label' => 'INN'
-                ])
-                ->add('patternNomenclature')
-                    ->addHelp('patternNomenclature', 'Строка в чеке')
-                ->add('secret')
-                    ->addHelp('secret', 'Для плагинов')
-                ->add('adminEmail', null, [
-                    'required' => false
-                ])
-                    ->addHelp('adminEmail', 'Для писем об отправленных чеках')
+            ->tab('Basic')
+                ->with('Basic', ['label' => false, 'class' => 'col-md-6'])
+                    ->add('name')
+                    ->add('INN', null, [
+                        'label' => 'INN'
+                    ])
+                    ->add('patternNomenclature')
+                        ->addHelp('patternNomenclature', 'Строка в чеке')
+                    ->add('secret')
+                        ->addHelp('secret', 'Для плагинов')
+                    ->add('adminEmail', null, [
+                        'required' => false
+                    ])
+                        ->addHelp('adminEmail', 'Уведомление о чеках')
+                ->end()
             ->end()
-            ->with('Komtet', ['class' => 'col-md-6'])
-                ->add('dataKomtet', 'sonata_type_immutable_array', [
-                    'label' => false,
-                    'keys' => [
-                        'shop_id' => ['shop_id', TextType::class, [
-                            'required' => true,
-                            'label' => 'Shop ID',
-                            'translation_domain' => $this->translationDomain
-                        ]],
-                        'secret' => ['secret', TextType::class, [
-                            'required' => true,
-                            'label' => 'Secret',
-                            'translation_domain' => $this->translationDomain
-                        ]],
-                        'queue_name' => ['queue_name', TextType::class, [
-                            'required' => true,
-                            'label' => 'Queue name',
-                            'translation_domain' => $this->translationDomain
-                        ]],
-                        'queue_id' => ['queue_id', IntegerType::class, [
-                            'required' => true,
-                            'label' => 'Queue ID',
-                            'translation_domain' => $this->translationDomain
-                        ]],
-                        'tax_system' => ['tax_system', ChoiceType::class, [
-                            'required' => true,
-                            'label' => 'Tax system',
-                            'choices' => TaxSystem::$choices,
-                            'translation_domain' => $this->translationDomain
-                        ]],
-                        'vat' => ['vat', ChoiceType::class, [
-                            'required' => true,
-                            'label' => 'Vat',
-                            'choices' => Vat::$choices,
-                            'translation_domain' => $this->translationDomain
-                        ]],
-                        'cancel_action' => ['cancel_action', BooleanType::class, [
-                            'required' => true,
-                            'label' => 'Cancel action',
-                            'translation_domain' => $this->translationDomain
-                        ]],
-                    ]
-                ])
+
+            ->tab('KKMs')
+                ->with('KKMs', ['label' => false, 'class' => 'col-md-6'])
+                    ->add('KKMs', 'sonata_type_collection', [
+                        'label' => false,
+                        'by_reference' => true,
+                    ], [
+                        'edit' => 'inline',
+//                        'inline' => 'table',
+                        'admin_code' => 'admin.kkm',
+                        'template' => 'BoxBundle:Admin/sonataproject/Form:form_admin_fields.html.twig',
+                    ])
+                ->end()
             ->end()
-            ->with('Sberbank', ['class' => 'col-md-6'])
-                ->add('dataSberbank', 'sonata_type_immutable_array', [
-                    'label' => false,
-                    'keys' => [
-                        'sberbank_username' => ['sberbank_username', TextType::class, [
-                            'required' => true,
-                            'label' => 'Username',
-                            'translation_domain' => $this->translationDomain
-                        ]],
-                        'sberbank_password' => ['sberbank_password', TextType::class, [
-                            'required' => true,
-                            'label' => 'Password',
-                            'translation_domain' => $this->translationDomain
-                        ]],
-                        'secret' => ['secret', TextType::class, [
-                            'required' => true,
-                            'label' => 'Secret',
-                            'translation_domain' => $this->translationDomain
-                        ]],
-                    ]
-                ])
-            ->end()
-            ->with('Yandex', ['class' => 'col-md-6'])
-                ->add('dataYandex', 'sonata_type_immutable_array', [
-                    'label' => false,
-                    'keys' => [
-                        'yandex_id' => ['yandex_id', IntegerType::class, [
-                            'required' => true,
-                            'label' => 'ID Yandex',
-                            'translation_domain' => $this->translationDomain
-                        ]],
-                        'secret' => ['secret', TextType::class, [
-                            'required' => true,
-                            'label' => 'Secret',
-                            'translation_domain' => $this->translationDomain
-                        ]],
-                    ]
-                ])
+
+            ->tab('Payments')
+                ->with('Payments', ['label' => false, 'class' => 'col-md-12'])
+                    ->add('payments', 'sonata_type_collection', [
+                        'label' => false,
+                        'by_reference' => true,
+                    ], [
+                        'edit' => 'inline',
+//                        'inline' => 'table',
+                        'admin_code' => 'admin.payment',
+                        'template' => 'BoxBundle:Admin/sonataproject/Form:form_admin_fields.html.twig',
+                        'kkms' => $this->getSubject()->getKKMs()->toArray()
+                    ])
+                ->end()
             ->end()
         ;
+    }
+
+    /**
+     * @param ErrorElement $errorElement
+     * @param Organization $organization
+     * @return bool
+     */
+    public function validate(ErrorElement $errorElement, $organization)
+    {
+        if ($organization->getPayments()->count() > sizeof(PaymentTypes::getArrayForAdmin())) {
+            $errorElement
+                ->with('payments')
+                ->addViolation("Не должно быть больше одной плптежной системы каждого типа")
+                ->end()
+            ;
+            return true;
+        }
+
+        $translator = $this->getConfigurationPool()->getContainer()->get('translator');
+
+        $kkmsByPayment = new ArrayCollection();
+
+        $index = 0;
+        /**
+         * @var Payment $payment
+         */
+        foreach ($organization->getPayments() as $payment) {
+            $kkm = $payment->getKkm();
+            if ($kkm instanceof KKM && !$kkmsByPayment->contains($kkm)) {
+                $kkmsByPayment->add($kkm);
+            }
+            if (is_array($payment->getData())) {
+                $index++;
+                $type = $payment->getType();
+                $textError = PaymentTypes::getTextValidation($type, $payment->getData(), $translator);
+                if (!empty($textError)) {
+                    $errorElement
+                        ->with('payments')
+                        ->addViolation("Платежная система №{$index} \"{$type}\":<br>" . $textError)
+                        ->end()
+                    ;
+                }
+            }
+        }
+
+        /**
+         * @var KKM $kkm
+         */
+        foreach ($organization->getKKMs() as $kkm) {
+            $kkmsByPayment->removeElement($kkm);
+        }
+        if ($kkmsByPayment->count() > 0) {
+            foreach ($kkmsByPayment as $kkm) {
+                $errorElement
+                    ->with('KKMs')
+                    ->addViolation("Невозможно удалить ККМ: \"{$kkm->getName()}\" ({$kkm->getType()})")
+                    ->end();
+            }
+            return true;
+        }
+
+        $index = 0;
+        /**
+         * @var KKM $kkm
+         */
+        foreach ($organization->getKKMs() as $kkm) {
+            $type = $kkm->getType();
+            $additional = $kkm->getAdditional();
+            if (isset($additional[$type])) {
+                $kkm->setData($additional[$type]);
+            }
+
+            if (is_array($kkm->getData())) {
+                $index++;
+                $type = $kkm->getType();
+                $textError = KKMTypes::getTextValidation($type, $kkm->getData(), $translator);
+                if (!empty($textError)) {
+                    $errorElement
+                        ->with('KKMs')
+                        ->addViolation("ККМ №{$index} \"{$type}\":<br>" . $textError)
+                        ->end()
+                    ;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param Organization $organization
+     */
+    public function preUpdate($organization)
+    {
+        /**
+         * @var Payment $payment
+         */
+        foreach ($organization->getPayments() as $payment) {
+            $type = $payment->getType();
+            $additional = $payment->getAdditional();
+            if (isset($additional[$type])) {
+                $payment->setData($additional[$type]);
+            }
+        }
+
+        /**
+         * @var KKM $kkm
+         */
+        foreach ($organization->getKKMs() as $kkm) {
+            $type = $kkm->getType();
+            $additional = $kkm->getAdditional();
+            if (isset($additional[$type])) {
+                $kkm->setData($additional[$type]);
+            }
+        }
+    }
+
+    /**
+     * @param Organization $organization
+     */
+    public function prePersist($organization)
+    {
+        $this->preUpdate($organization);
     }
 
     /**
@@ -163,5 +236,13 @@ class OrganizationAdmin extends AbstractAdmin
         $instance = parent::getNewInstance();
         $instance->setPatternNomenclature('Товар по счету №%s');
         return $instance;
+    }
+
+    public function getFormTheme()
+    {
+        return array_merge(
+            parent::getFormTheme(),
+            ['BoxBundle:Admin/sonataproject/Form:form_admin_fields.html.twig']
+        );
     }
 }    

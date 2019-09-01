@@ -1,0 +1,17 @@
+{#
+
+This file is part of the Sonata package.
+
+(c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
+(c) Kévin Dunglas <dunglas@gmail.com>
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+
+#}
+
+{% extends '@SonataDoctrineMongoDBAdmin/Form/form_admin_fields.html.twig' %}
+
+{% block sonata_admin_mongo_collection %}
+    {% include '@Box/Admin/sonataproject/CRUD/Association/edit_one_to_many.html.twig' %}
+{% endblock %}

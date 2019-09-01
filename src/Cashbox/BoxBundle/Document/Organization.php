@@ -2,6 +2,7 @@
 
 namespace Cashbox\BoxBundle\Document;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
 
@@ -41,19 +42,20 @@ class Organization
     protected $patternNomenclature;
 
     /**
-     * @MongoDB\Field(type="hash")
+     * @MongoDB\EmbedMany(targetDocument="Payment")
      */
-    protected $dataKomtet;
+    protected $payments;
 
     /**
-     * @MongoDB\Field(type="hash")
+     * @MongoDB\EmbedMany(targetDocument="KKM")
      */
-    protected $dataSberbank;
+    protected $KKMs;
 
-    /**
-     * @MongoDB\Field(type="hash")
-     */
-    protected $dataYandex;
+    public function __construct()
+    {
+        $this->payments = new ArrayCollection();
+        $this->KKMs = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -176,69 +178,63 @@ class Organization
     }
 
     /**
-     * Set dataKomtet
+     * Add payment
      *
-     * @param array $dataKomtet
-     * @return self
+     * @param $payment
      */
-    public function setDataKomtet($dataKomtet)
+    public function addPayment($payment)
     {
-        $this->dataKomtet = $dataKomtet;
-        return $this;
+        $this->payments[] = $payment;
     }
 
     /**
-     * Get dataKomtet
+     * Remove payment
      *
-     * @return array $dataKomtet
+     * @param $payment
      */
-    public function getDataKomtet()
+    public function removePayment($payment)
     {
-        return $this->dataKomtet;
+        $this->payments->removeElement($payment);
     }
 
     /**
-     * Set dataSberbank
+     * Get payments
      *
-     * @param array $dataSberbank
-     * @return self
+     * @return ArrayCollection $payments
      */
-    public function setDataSberbank($dataSberbank)
+    public function getPayments()
     {
-        $this->dataSberbank = $dataSberbank;
-        return $this;
+        return $this->payments;
     }
 
     /**
-     * Get dataSberbank
+     * Add KKM
      *
-     * @return array $dataSberbank
+     * @param $KKM
      */
-    public function getDataSberbank()
+    public function addKKM($KKM)
     {
-        return $this->dataSberbank;
+        $this->KKMs[] = $KKM;
     }
 
     /**
-     * Set dataYandex
+     * Remove $KKM
      *
-     * @param array $dataYandex
-     * @return self
+     * @param $KKM
      */
-    public function setDataYandex($dataYandex)
+    public function removeKKM($KKM)
     {
-        $this->dataYandex = $dataYandex;
-        return $this;
+        $this->KKMs->removeElement($KKM);
     }
 
     /**
-     * Get dataYandex
+     * Get KKMs
      *
-     * @return array $dataYandex
+     * @return ArrayCollection $KKMs
      */
-    public function getDataYandex()
+    public function getKKMs()
     {
-        return $this->dataYandex;
+        return $this->KKMs;
     }
 
     /**

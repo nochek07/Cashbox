@@ -4,7 +4,7 @@ namespace Cashbox\BoxBundle\Model\Report;
 
 use Cashbox\BoxBundle\Document\SberbankTransaction;
 
-class SberbankReport extends ReportAbstract implements ReportInterface
+class SberbankReport implements ReportInterface
 {
     /**
      * {@inheritDoc}
@@ -19,8 +19,6 @@ class SberbankReport extends ReportAbstract implements ReportInterface
         $transaction->setDataPost($params['data']);
         $transaction->setInn($params['inn']);
 
-        $dm = $this->manager->getManager();
-        $dm->persist($transaction);
-        $dm->flush();
+        return $transaction;
     }
 }

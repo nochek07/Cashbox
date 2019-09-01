@@ -1,15 +1,14 @@
 <?php
 
-namespace Cashbox\BoxBundle\Controller;
+namespace Cashbox\BoxBundle\DependencyInjection;
 
 use Cashbox\BoxBundle\Document\Organization;
-use Cashbox\BoxBundle\Model\KKM\{KKMInterface, Komtet};
 use Cashbox\BoxBundle\Model\OrganizationModel;
-use Cashbox\BoxBundle\Model\Payment\PaymentInterface;;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Cashbox\BoxBundle\Model\Payment\PaymentInterface;
+use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 
-class PaymentController extends Controller
+class Box
 {
     /**
      * @var Organization|null $Organization;
@@ -20,6 +19,35 @@ class PaymentController extends Controller
      * @var string $OrganizationTextError;
      */
     private $OrganizationTextError = '';
+
+    /**
+     * @var ManagerRegistry $manager
+     */
+    private $manager;
+
+    /**
+     * @var Report $report
+     */
+    private $report;
+
+    /**
+     * @var Mailer $mailer
+     */
+    private $mailer;
+
+    /**
+     * Box constructor.
+     * 
+     * @param ManagerRegistry $manager
+     * @param Report $report
+     * @param Mailer $mailer
+     */
+    public function __construct(ManagerRegistry $manager, Report $report, Mailer $mailer)
+    {
+        $this->manager = $manager;
+        $this->report = $report;
+        $this->mailer = $mailer;
+    }
 
     /**
      * Проверка
@@ -50,13 +78,13 @@ class PaymentController extends Controller
      *
      * @param Request $request
      * @param PaymentInterface $payment
-     * @param bool $isSend
+     * @param bool $isSend - send to the kkm
      * @return string
      */
     public function getResponseText(Request $request, PaymentInterface $payment, bool $isSend = true)
     {
-        $this->setOrganization($request);
-        if ($this->Organization instanceof Organization) {
+        $this->defineOrganization($request);
+        if ($this->getOrganization() instanceof Organization) {
             return $this->getResponsePayment($request, $payment, $isSend);
         } else {
             return $this->OrganizationTextError;
@@ -73,26 +101,40 @@ class PaymentController extends Controller
      */
     public function getResponsePayment(Request $request, PaymentInterface $payment, bool $isSend = true)
     {
-        $KKM = $this->getKKM($isSend);
+        $this->setOptionsPayment($payment);
         if ($isSend) {
-            return $payment->send($request, $this->Organization, $KKM);
+            return $payment->send($request);
         } else {
-            return $payment->check($request, $this->Organization, $KKM);
+            return $payment->check($request);
         }
     }
 
     /**
-     * Set Organization
-     *
-     * @param Request $request
+     * @param PaymentInterface $payment
      */
-    public function setOrganization(Request $request)
+    public function setOptionsPayment(PaymentInterface &$payment)
     {
-        $this->Organization = OrganizationModel::getOrganization($request, $this->get('doctrine_mongodb'));
+        $payment->setOrganization($this->getOrganization());
+        $payment->setReport($this->report);
+        $payment->setManager($this->manager);
+        $payment->setMailer($this->mailer);
     }
 
     /**
-     * Get Organization
+     * Define Organization
+     *
+     * @param Request $request
+     */
+    public function defineOrganization(Request $request)
+    {
+        $this->Organization = OrganizationModel::getOrganization(
+            $request,
+            $this->manager
+        );
+    }
+
+    /**
+     * @return Organization|null
      */
     public function getOrganization()
     {
@@ -107,21 +149,5 @@ class PaymentController extends Controller
     public function setOrganizationTextError($text)
     {
         $this->OrganizationTextError = $text;
-    }
-
-    /**
-     * Get ККМ
-     *
-     * @param bool $mailer
-     * @example true - for send, false - for check
-     * @return KKMInterface
-     */
-    public function getKKM($mailer = false)
-    {
-        $KKM = new Komtet($this->Organization, $this->get('doctrine_mongodb'));
-        if ($mailer) {
-            $KKM->setMailer($this->get('cashbox.mailer'));
-        }
-        return $KKM;
     }
 }

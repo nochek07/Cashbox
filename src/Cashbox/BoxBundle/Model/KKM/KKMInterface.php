@@ -41,7 +41,14 @@ interface KKMInterface
      * Проверка очереди
      *
      * @param mixed $id
-     * @return mixed
+     * @return bool
      */
     public function isQueueActive($id);
+
+    /**
+     * Проверка доступности кассы
+     *
+     * @return bool
+     */
+    public function checkKKM();
 }

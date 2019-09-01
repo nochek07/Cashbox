@@ -2,9 +2,8 @@
 
 namespace Cashbox\BoxBundle\Model\Payment;
 
-use Cashbox\BoxBundle\Document\Organization;
+use Cashbox\BoxBundle\Document\Payment;
 use Cashbox\BoxBundle\Model\KKM\{KKMInterface, KKMMessages};
-use Cashbox\BoxBundle\Model\Payment\Exception\KKMException;
 use Cashbox\BoxBundle\Model\Report\YandexReport;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -19,84 +18,90 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class YandexPayment extends PaymentAbstract
 {
+    protected $name = 'Yandex';
+
     /**
      * {@inheritDoc}
      * @return string
      */
-    public function send(Request $request, Organization $Organization, $kkm = null)
+    public function send(Request $request)
     {
-        $yandex = $Organization->getDataYandex();
-        $responseText = $this->processRequest($request, $yandex, $Organization->getSecret());
-        if ($responseText == '') {
-            $email = $request->get('email');
-            $orderSum = (float)$request->get('orderSumAmount');
-            $order = $request->get('customerNumber');
+        $payment = $this->getDataPayment();
+        if ($payment instanceof Payment) {
+            $yandex = $payment->getData();
+            $responseText = $this->processRequest($request, $yandex, $this->Organization->getSecret());
+            if ($responseText == '') {
+                $email = $request->get('email');
+                $orderSum = (float)$request->get('orderSumAmount');
+                $order = $request->get('customerNumber');
 
-            $YandexReport = new YandexReport($this->manager);
-            $YandexReport->create([
-                'action' => $request->get('action'),
-                'orderSum' => $orderSum,
-                'customerNumber' => $order,
-                'email' => $email,
-                'inn' => $Organization->getINN(),
-                'data' => $request->request->all()
-            ]);
+                $this->getReport()->add(new YandexReport(), [
+                    'action' => $request->get('action'),
+                    'orderSum' => $orderSum,
+                    'customerNumber' => $order,
+                    'email' => $email,
+                    'inn' => $this->Organization->getINN(),
+                    'data' => $request->request->all()
+                ]);
 
-            if ($kkm instanceof KKMInterface) {
-                if ($kkm->connect()) {
-                    $dataKKM = $kkm->buildData([
-                        "order" => $order,
-                        "email" => $email,
-                        "orderSum" => $orderSum
-                    ]);
-                    $kkm->send($dataKKM, PaymentTypes::PAYMENT_TYPE_YANDEX);
+                $kkm = $this->getKKM($payment);
+                if ($kkm instanceof KKMInterface) {
+                    if ($kkm->connect()) {
+                        $dataKKM = $kkm->buildData([
+                            "order" => $order,
+                            "email" => $email,
+                            "orderSum" => $orderSum
+                        ]);
+                        $kkm->send($dataKKM, PaymentTypes::PAYMENT_TYPE_YANDEX);
+                    }
                 }
-            }
 
-            $responseText = $this->getAnswer($request, $yandex);
+                return $this->getAnswer($request, $yandex);
+            }
         }
 
-        return $responseText;
+        return '';
     }
 
     /**
      * {@inheritDoc}
      * @return string
      */
-    public function check(Request $request, Organization $Organization, $kkm = null)
+    public function check(Request $request)
     {
-        $yandex = $Organization->getDataYandex();
-        $responseText = $this->processRequest($request, $yandex, $Organization->getSecret());
-        if ($responseText == '') {
-            $komtet = $Organization->getDataKomtet();
-            if ($komtet['cancel_action'] == 1) {
-                try {
-                    $this->checkKKM($komtet['queue_name'], $kkm);
-                } catch (KKMException $error) {
-                    return $this->buildResponse(
-                        $request->get('action'),
-                        $request->get('invoiceId'),
-                        100,
-                        $yandex['shop_yandex_id'],
-                        KKMMessages::MSG_CASHBOX_UNAV
-                    );
+        $payment = $this->getDataPayment();
+        if ($payment instanceof Payment) {
+            $yandex = $payment->getData();
+
+            $responseText = $this->processRequest($request, $yandex, $this->Organization->getSecret());
+            if ($responseText == '') {
+                $kkm = $this->getKKM($payment);
+                if ($kkm instanceof KKMInterface) {
+                    if (!$kkm->checkKKM()) {
+                        return $this->buildResponse(
+                            $request->get('action'),
+                            $request->get('invoiceId'),
+                            100,
+                            $yandex['shop_yandex_id'],
+                            KKMMessages::MSG_CASHBOX_UNAV
+                        );
+                    }
                 }
+
+                $this->getReport()->add(new YandexReport(), [
+                    'action' => $request->get('action'),
+                    'orderSum' => (float)$request->get('orderSumAmount'),
+                    'customerNumber' => $request->get('customerNumber'),
+                    'email' => $request->get('email'),
+                    'inn' => $this->Organization->getINN(),
+                    'data' => $request->request->all()
+                ]);
+
+                return $this->getAnswer($request, $yandex);
             }
-
-            $YandexReport = new YandexReport($this->manager);
-            $YandexReport->create([
-                'action' => $request->get('action'),
-                'orderSum' => (float)$request->get('orderSumAmount'),
-                'customerNumber' => $request->get('customerNumber'),
-                'email' => $request->get('email'),
-                'inn' => $Organization->getINN(),
-                'data' => $request->request->all()
-            ]);
-
-            $responseText = $this->getAnswer($request, $yandex);
         }
 
-        return $responseText;
+        return '';
     }
 
     /**

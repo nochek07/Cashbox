@@ -4,3 +4,20 @@ sonata_admin:
     templates:
         # default global templates
         layout:  BoxBundle:Admin:standard_layout.html.twig
+    dashboard:
+        groups:
+            sonata.page.settings:
+                label: group.settings
+                items:
+                    - admin.organization
+
+            sonata.page.transactions:
+                label: group.transactions
+                items:
+                    - admin.yandex
+                    - admin.sberbank
+
+            sonata.page.kkm:
+                label: group.komtet
+                items:
+                    - admin.komtet
