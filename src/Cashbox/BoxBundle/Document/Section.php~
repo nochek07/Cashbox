@@ -1,0 +1,35 @@
+<?php
+
+namespace Cashbox\BoxBundle\Document;
+
+use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
+
+/**
+* @MongoDB\EmbeddedDocument
+*/
+class Section
+{
+    /**
+     * @MongoDB\Id(strategy="AUTO")
+     */
+    protected $id;
+
+    /**
+     * @MongoDB\Field(type="string")
+     */
+    protected $name;
+
+    /**
+     * @MongoDB\Field(type="string")
+     */
+    protected $secret;
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getName() ?? '-';
+    }
+}
