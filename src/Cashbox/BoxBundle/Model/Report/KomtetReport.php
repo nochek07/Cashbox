@@ -4,7 +4,7 @@ namespace Cashbox\BoxBundle\Model\Report;
 
 use Cashbox\BoxBundle\Document\ReportKomtet;
 
-class KomtetReport extends ReportAbstract implements ReportInterface
+class KomtetReport implements ReportInterface
 {
     /**
      * {@inheritDoc}
@@ -36,8 +36,6 @@ class KomtetReport extends ReportAbstract implements ReportInterface
             $Report->setDataPost([]);
         }
 
-        $dm = $this->manager->getManager();
-        $dm->persist($Report);
-        $dm->flush();
+        return $Report;
     }
 }

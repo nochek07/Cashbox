@@ -15,6 +15,8 @@ services:
               group: "group.settings"
               label: "label.organization"
               show_mosaic_button: false
+        calls:
+          - [ setTemplate, [edit, "BoxBundle:Admin/sonataproject/CRUD:base_edit_form.html.twig"]]
         public: true
 
     admin.yandex:
@@ -57,10 +59,52 @@ services:
               show_mosaic_button: false 
         public: true
 
+    admin.payment:
+        class: Cashbox\BoxBundle\Admin\PaymentAdmin
+        arguments:
+            - ~
+            - Cashbox\BoxBundle\Document\Payment
+            - ~
+        tags:
+            - name: sonata.admin
+              manager_type: doctrine_mongodb
+              group: "group.payment"
+              label: "label.payment"
+              show_mosaic_button: false
+        public: true
+
+    admin.kkm:
+        class: Cashbox\BoxBundle\Admin\KKMAdmin
+        arguments:
+            - ~
+            - Cashbox\BoxBundle\Document\KKM
+            - ~
+        tags:
+            - name: sonata.admin
+              manager_type: doctrine_mongodb
+              group: "group.KKM"
+              label: "label.KKM"
+              show_mosaic_button: false
+        public: true
+
     cashbox.mailer:
         class: 'Cashbox\BoxBundle\DependencyInjection\Mailer'
         public: true
         arguments:
-          - '%mailer_user%'
-          - '@templating'
-          - '@mailer'
+            - '%mailer_user%'
+            - '@templating'
+            - '@mailer'
+
+    cashbox.report:
+        class: 'Cashbox\BoxBundle\DependencyInjection\Report'
+        public: true
+        arguments:
+            - '@doctrine_mongodb'
+
+    cashbox.box:
+        class: 'Cashbox\BoxBundle\DependencyInjection\Box'
+        public: true
+        arguments:
+            - '@doctrine_mongodb'
+            - '@cashbox.report'
+            - '@cashbox.mailer'

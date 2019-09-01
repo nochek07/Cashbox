@@ -2,49 +2,53 @@
 
 namespace Cashbox\BoxBundle\Controller;
 
+use Cashbox\BoxBundle\DependencyInjection\Box;
 use Cashbox\BoxBundle\Document\Organization;
 use Cashbox\BoxBundle\Model\Payment\SberbankPayment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request, Response};
 
-class SberbankController extends PaymentController
+class SberbankController extends AbstractController
 {
-    /**
-     * Создание заказа и отправка настраницу оплаты в случае успеха
-     *
-     * @Route("/restSberbank", schemes={"https"})
-     * @param  Request $request
-     * @return Response
-     */
-    public function restSberbankAction(Request $request)
-    {
-        $SberbankPayment = new SberbankPayment($this->get('doctrine_mongodb'));
-        $url = $SberbankPayment->getSiteUrl($request, 0);
-
-        if ($request->isMethod(Request::METHOD_GET)) {
-            $this->setOrganization($request);
-            $Organization = $this->getOrganization();
-            if ($Organization instanceof Organization) {
-                $url = $SberbankPayment->getRedirectUrl(
-                    $request, $Organization, $url, $this->getKKM()
-                );
-            }
-        }
-        return $this->redirect($url);
-    }
-
     /**
      * Отправка чека по callback
      *
      * @Route("/callbackSberbank", schemes={"https"})
-     * @param  Request $request
+     * @param Request $request
+     * @param Box $box
      * @return Response
      */
-    public function callbackSberbankAction(Request $request)
+    public function callbackSberbankAction(Request $request, Box $box)
     {
         if ($request->isMethod(Request::METHOD_GET)) {
-            $this->send($request, new SberbankPayment($this->get('doctrine_mongodb')));
+            return new Response(
+                $box->send($request, new SberbankPayment())
+            );
+        } else {
+            return new Response('');
         }
-        return new Response('');
+    }
+
+    /**
+     * Создание заказа и отправка настраницу оплаты в случае успеха
+     *
+     * @Route("/restSberbank", schemes={"https"})
+     * @param Request $request
+     * @param Box $box
+     * @return Response
+     */
+    public function restSberbankAction(Request $request, $box)
+    {
+        $SberbankPayment = new SberbankPayment();
+        $url = $SberbankPayment->getSiteUrl($request, 0);
+        if ($request->isMethod(Request::METHOD_GET)) {
+            $box->defineOrganization($request);
+            if ($box->getOrganization() instanceof Organization) {
+                $box->setOptionsPayment($SberbankPayment);
+                $url = $SberbankPayment->getRedirectUrl($request, $url);
+            }
+        }
+        return $this->redirect($url);
     }
 }

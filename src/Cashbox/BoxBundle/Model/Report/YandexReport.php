@@ -4,7 +4,7 @@ namespace Cashbox\BoxBundle\Model\Report;
 
 use Cashbox\BoxBundle\Document\YandexTransaction;
 
-class YandexReport extends ReportAbstract implements ReportInterface
+class YandexReport implements ReportInterface
 {
     /**
      * {@inheritDoc}
@@ -20,8 +20,6 @@ class YandexReport extends ReportAbstract implements ReportInterface
         $transaction->setDataPost($params['data']);
         $transaction->setInn($params['inn']);
 
-        $dm = $this->manager->getManager();
-        $dm->persist($transaction);
-        $dm->flush();
+        return $transaction;
     }
 }

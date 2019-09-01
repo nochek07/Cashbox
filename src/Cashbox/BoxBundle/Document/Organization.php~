@@ -42,6 +42,21 @@ class Organization
     protected $patternNomenclature;
 
     /**
+     * @MongoDB\Field(type="hash")
+     */
+    protected $dataKomtet;
+
+    /**
+     * @MongoDB\Field(type="hash")
+     */
+    protected $dataSberbank;
+
+    /**
+     * @MongoDB\Field(type="hash")
+     */
+    protected $dataYandex;
+
+    /**
      * @MongoDB\EmbedMany(targetDocument="Payment")
      */
     protected $payments;
@@ -178,6 +193,80 @@ class Organization
     }
 
     /**
+     * Set dataKomtet
+     *
+     * @param array $dataKomtet
+     * @return self
+     */
+    public function setDataKomtet($dataKomtet)
+    {
+        $this->dataKomtet = $dataKomtet;
+        return $this;
+    }
+
+    /**
+     * Get dataKomtet
+     *
+     * @return array $dataKomtet
+     */
+    public function getDataKomtet()
+    {
+        return $this->dataKomtet;
+    }
+
+    /**
+     * Set dataSberbank
+     *
+     * @param array $dataSberbank
+     * @return self
+     */
+    public function setDataSberbank($dataSberbank)
+    {
+        $this->dataSberbank = $dataSberbank;
+        return $this;
+    }
+
+    /**
+     * Get dataSberbank
+     *
+     * @return array $dataSberbank
+     */
+    public function getDataSberbank()
+    {
+        return $this->dataSberbank;
+    }
+
+    /**
+     * Set dataYandex
+     *
+     * @param array $dataYandex
+     * @return self
+     */
+    public function setDataYandex($dataYandex)
+    {
+        $this->dataYandex = $dataYandex;
+        return $this;
+    }
+
+    /**
+     * Get dataYandex
+     *
+     * @return array $dataYandex
+     */
+    public function getDataYandex()
+    {
+        return $this->dataYandex;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getName() ?? '-';
+    }
+
+    /**
      * Add payment
      *
      * @param $payment
@@ -235,13 +324,5 @@ class Organization
     public function getKKMs()
     {
         return $this->KKMs;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->getName() ?? '-';
     }
 }

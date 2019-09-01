@@ -6,9 +6,9 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
 
 /**
- * @MongoDB\Document(collection="SberbankTransaction")
+ * @MongoDB\Document(collection="ReportKomtet")
  */
-class SberbankTransaction
+class ReportKomtet
 {
     /**
      * @MongoDB\Id(strategy="AUTO")
@@ -21,19 +21,29 @@ class SberbankTransaction
     protected $datetime;
 
     /**
-     * @MongoDB\Field(type="float")
+     * @MongoDB\Field(type="string")
      */
-    protected $Sum;
+    protected $type;
 
     /**
      * @MongoDB\Field(type="string")
      */
-    protected $customerNumber;
+    protected $state;
 
     /**
      * @MongoDB\Field(type="string")
      */
-    protected $email;
+    protected $uuid;
+
+    /**
+     * @MongoDB\Field(type="string")
+     */
+    protected $action;
+
+    /**
+     * @MongoDB\Field(type="hash")
+     */
+    protected $dataKomtet;
 
     /**
      * @MongoDB\Field(type="hash")
@@ -67,7 +77,7 @@ class SberbankTransaction
     }
 
     /**
-     * Get datetime
+     * Get Sum
      *
      * @return \DateTime $datetime
      */
@@ -77,69 +87,113 @@ class SberbankTransaction
     }
 
     /**
-     * Set Sum
+     * Set type
      *
-     * @param float $Sum
+     * @param string $type
      * @return self
      */
-    public function setSum($Sum)
+    public function setType($type)
     {
-        $this->Sum = $Sum;
+        $this->type = $type;
         return $this;
     }
 
     /**
-     * Get Sum
+     * Get type
      *
-     * @return float $Sum
+     * @return string $type
      */
-    public function getSum()
+    public function getType()
     {
-        return $this->Sum;
+        return $this->type;
     }
 
     /**
-     * Set customerNumber
+     * Set state
      *
-     * @param string $customerNumber
+     * @param string $state
      * @return self
      */
-    public function setCustomerNumber($customerNumber)
+    public function setState($state)
     {
-        $this->customerNumber = $customerNumber;
+        $this->state = $state;
         return $this;
     }
 
     /**
-     * Get customerNumber
+     * Get state
      *
-     * @return string $customerNumber
+     * @return string $state
      */
-    public function getCustomerNumber()
+    public function getState()
     {
-        return $this->customerNumber;
+        return $this->state;
     }
 
     /**
-     * Set email
+     * Set uuid
      *
-     * @param string $email
+     * @param string $uuid
      * @return self
      */
-    public function setEmail($email)
+    public function setUuid($uuid)
     {
-        $this->email = $email;
+        $this->uuid = $uuid;
         return $this;
     }
 
     /**
-     * Get email
+     * Get uuid
      *
-     * @return string $email
+     * @return string $uuid
      */
-    public function getEmail()
+    public function getUuid()
     {
-        return $this->email;
+        return $this->uuid;
+    }
+
+    /**
+     * Set action
+     *
+     * @param string $action
+     * @return self
+     */
+    public function setAction($action)
+    {
+        $this->action = $action;
+        return $this;
+    }
+
+    /**
+     * Get action
+     *
+     * @return string $action
+     */
+    public function getAction()
+    {
+        return $this->action;
+    }
+
+    /**
+     * Set dataKomtet
+     *
+     * @param array $dataKomtet
+     * @return self
+     */
+    public function setDataKomtet($dataKomtet)
+    {
+        $this->dataKomtet = $dataKomtet;
+        return $this;
+    }
+
+    /**
+     * Get dataKomtet
+     *
+     * @return array $dataKomtet
+     */
+    public function getDataKomtet()
+    {
+        return $this->dataKomtet;
     }
 
     /**

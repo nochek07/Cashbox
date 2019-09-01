@@ -2,42 +2,44 @@
 
 namespace Cashbox\BoxBundle\Controller;
 
+use Cashbox\BoxBundle\DependencyInjection\Box;
 use Cashbox\BoxBundle\Model\KKM\KKMMessages;
 use Cashbox\BoxBundle\Model\Payment\For1CPayment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request, Response};
 
-class For1CController extends PaymentController
+class For1CController extends AbstractController
 {
     /**
      * Отправка чека из 1С
      *
      * @Route("/send1c", schemes={"https"})
      * @param Request $request
+     * @param Box $box
      * @return Response
      */
-    public function send1cAction(Request $request)
+    public function send1cAction(Request $request, Box $box)
     {
-        $For1CPayment = new For1CPayment($this->get('doctrine_mongodb'));
-
-        $responseText = null;
+        $For1CPayment = new For1CPayment();
         if ($request->isMethod(Request::METHOD_POST)) {
             if ($request->getContentType() === 'json') {
-                $postData = file_get_contents('php://input');
-                $data = json_decode($postData, true);
+                $data = json_decode($request->getContent(), true);
                 if (!is_null($data)) {
                     $For1CPayment->setDataJSON($data);
 
-                    $this->setOrganizationTextError(
+                    $box->setOrganizationTextError(
                         $For1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR_INN)
                     );
-                    $responseText = $this->send($request, $For1CPayment);
+                    return new Response(
+                       $box->send($request, $For1CPayment)
+                    );
                 }
             }
         }
 
         return new Response(
-            $responseText ?? $For1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR)
+            $For1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR)
         );
     }
 
@@ -45,31 +47,31 @@ class For1CController extends PaymentController
      * Проверка сайта/очереди из 1С
      *
      * @Route("/chek1c", schemes={"https"})
-     * @param  Request $request
+     * @param Request $request
+     * @param Box $box
      * @return Response
      */
-    public function chek1cAction(Request $request)
+    public function chek1cAction(Request $request, Box $box)
     {
-        $For1CPayment = new For1CPayment($this->get('doctrine_mongodb'));
-
-        $responseText = null;
+        $For1CPayment = new For1CPayment();
         if ($request->isMethod(Request::METHOD_POST)) {
             if ($request->getContentType() === 'json') {
-                $postData = file_get_contents('php://input');
-                $data = json_decode($postData, true);
+                $data = json_decode($request->getContent(), true);
                 if (!is_null($data)) {
                     $For1CPayment->setDataJSON($data);
 
-                    $this->setOrganizationTextError(
+                    $box->setOrganizationTextError(
                         $For1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR_INN)
                     );
-                    $responseText = $this->check($request, $For1CPayment);
+                    return new Response(
+                        $box->check($request, $For1CPayment)
+                    );
                 }
             }
         }
 
         return new Response(
-            $responseText ?? $For1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR)
+            $For1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR)
         );
     }
 }

@@ -61,6 +61,7 @@ doctrine:
         auto_mapping: true
 
 doctrine_mongodb:
+    auto_generate_proxy_classes: true
     connections:
         default:
             server: "%mongodb_server%"

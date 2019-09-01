@@ -2,9 +2,8 @@
 
 namespace Cashbox\BoxBundle\Model\KKM;
 
-use Cashbox\BoxBundle\Document\Organization;
+use Cashbox\BoxBundle\DependencyInjection\Mailer;
 use Cashbox\BoxBundle\Model\Report\KomtetReport;
-use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
 use Komtet\KassaSdk\{Check, Client, Payment, Position, QueueManager, Vat};
 
 /**
@@ -20,32 +19,16 @@ class Komtet extends KKMAbstract
     private $QueueManager = null;
 
     /**
-     * @var array $komtet
-     */
-    protected $komtet = [];
-
-    /**
-     * Komtet constructor.
-     *
-     * @param Organization $Organization
-     * @param ManagerRegistry $manager
-     */
-    public function __construct(Organization $Organization, ManagerRegistry $manager)
-    {
-        parent::__construct($Organization, $manager);
-        $this->komtet = $Organization->getDataKomtet();
-    }
-
-    /**
      * {@inheritDoc}
      */
     public function connect()
     {
         if (is_null($this->QueueManager)) {
             try {
-                $client = new Client($this->komtet['shop_id'], $this->komtet['secret']);
+                $komtet = $this->kkmDocument->getData();
+                $client = new Client($komtet['shop_id'], $komtet['secret']);
                 $this->QueueManager = new QueueManager($client);
-                $this->QueueManager->registerQueue($this->komtet['queue_name'], $this->komtet['queue_id']);
+                $this->QueueManager->registerQueue($komtet['queue_name'], $komtet['queue_id']);
             } catch (\Exception $e) {
                 return false;
             }
@@ -88,7 +71,7 @@ class Komtet extends KKMAbstract
             "kkm" => [
                 "positions" => [
                     0 => [
-                        "name" => sprintf($this->getOrganization()->getPatternNomenclature(), $param['order']),
+                        "name" => sprintf($this->organizationDocument->getPatternNomenclature(), $param['order']),
                         "price" => $param['orderSum'],
                         "quantity" => 1,
                         "orderSum" => $param['orderSum'],
@@ -107,9 +90,10 @@ class Komtet extends KKMAbstract
      */
     public function send(array $data, string $from)
     {
-        $this->QueueManager->setDefaultQueue($this->komtet['queue_name']);
+        $komtet = $this->kkmDocument->getData();
+        $this->QueueManager->setDefaultQueue($komtet['queue_name']);
 
-        $tax_system = $this->komtet['tax_system'];
+        $tax_system = $komtet['tax_system'];
         switch ($data["action"]) {
             case "sale":
                 $check = Check::createSell($data["order"], $data["email"], $tax_system);
@@ -124,7 +108,7 @@ class Komtet extends KKMAbstract
         // Говорим, что чек нужно распечатать
         $check->setShouldPrint(true);
 
-        $vat = new Vat($this->komtet['vat']);
+        $vat = new Vat($komtet['vat']);
 
         foreach ($data["kkm"]["positions"] as $value) {
             // Позиция в чеке: имя, цена, кол-во, общая стоимость, скидка, налог
@@ -149,14 +133,14 @@ class Komtet extends KKMAbstract
             $check->addPayment($payment);
         }
 
-        $INN = $this->getOrganization()->getINN();
-        $KomtetReport = new KomtetReport($this->getManager());
+        $INN = $this->organizationDocument->getINN();
 
         // Добавляем чек в очередь.
         try {
             $request = $this->QueueManager->putCheck($check);
             if (isset($res['state'])) {
-                $KomtetReport->create([
+
+                $this->getReport()->add(new KomtetReport(), [
                     'type' => $from,
                     'state' => $request['state'],
                     'dataKomtet' => $request,
@@ -167,7 +151,7 @@ class Komtet extends KKMAbstract
                 $this->sendMail($data, $from);
                 return '';
             } else {
-                $KomtetReport->create([
+                $this->getReport()->add(new KomtetReport(), [
                     'type' => $from,
                     'state' => 'otherError',
                     'dataKomtet' => $request,
@@ -175,7 +159,8 @@ class Komtet extends KKMAbstract
                 ]);
             }
         } catch (\Exception $error) {
-            $KomtetReport->create([
+
+            $this->getReport()->add(new KomtetReport(), [
                 'type' => $from,
                 'state' => 'error',
                 'dataKomtet' => ["error_description" => $error->getMessage()],
@@ -194,8 +179,8 @@ class Komtet extends KKMAbstract
     public function sendMail(array $data, string $from)
     {
         $mailer = $this->getMailer();
-        if (!is_null($mailer)) {
-            $email = $this->getOrganization()->getAdminEmail();
+        if ($mailer instanceof Mailer) {
+            $email = $this->organizationDocument->getAdminEmail();
             if (trim($email) !== '') {
                 if (isset($data["kkm"]["payment"]["card"])) {
                     $data['card'] = (float)$data["kkm"]["payment"]["card"];
@@ -227,4 +212,22 @@ class Komtet extends KKMAbstract
             return false;
         }
 	}
+
+    /**
+     * @return false
+     */
+    public function checkKKM()
+    {
+        $komtet = $this->kkmDocument->getData();
+        if ($komtet['cancel_action'] == 1) {
+            if ($this->connect()) {
+                if (!$this->isQueueActive($komtet['queue_name'])) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
 }

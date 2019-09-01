@@ -2,9 +2,8 @@
 
 namespace Cashbox\BoxBundle\Model\Payment;
 
-use Cashbox\BoxBundle\Document\Organization;
+use Cashbox\BoxBundle\Document\Payment;
 use Cashbox\BoxBundle\Model\KKM\{KKMInterface, KKMMessages};
-use Cashbox\BoxBundle\Model\Payment\Exception\KKMException;
 use Symfony\Component\HttpFoundation\Request;
 
 class For1CPayment extends YandexPayment
@@ -18,49 +17,53 @@ class For1CPayment extends YandexPayment
      * {@inheritDoc}
      * @return string
      */
-    public function send(Request $request, Organization $Organization, $kkm = null)
+    public function send(Request $request)
     {
-        $komtet = $Organization->getDataKomtet();
-        if ($this->check1cMD5($this->dataJSON, $Organization->getSecret())) {
-            try {
-                $this->checkKKM($komtet['queue_name'], $kkm);
-            } catch (KKMException $error) {
-                return $this->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_CASHBOX_UNAV);
+        $payment = $this->getDataPayment();
+        if ($payment instanceof Payment) {
+            if ($this->check1cMD5($this->dataJSON, $this->Organization->getSecret())) {
+                $kkm = $this->getKKM($payment);
+                if ($kkm instanceof KKMInterface) {
+                    if (!$kkm->checkKKM()) {
+                        return $this->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_CASHBOX_UNAV);
+                    }
+                }
+
+                $repository = $this->getManager()
+                    ->getRepository('BoxBundle:ReportKomtet');
+                $report = $repository->findOneBy([
+                    'type' => PaymentTypes::PAYMENT_TYPE_1C,
+                    'action' => $this->dataJSON["action"],
+                    'uuid' => $this->dataJSON["uuid"]
+                ]);
+
+                if (is_null($report) && $kkm instanceof KKMInterface) {
+                    $error = $kkm->send($this->dataJSON, PaymentTypes::PAYMENT_TYPE_1C);
+                } else {
+                    $error = KKMMessages::MSG_ERROR_CHECK;
+                }
+
+                return $this->buildResponse('For1C', 0, 100, null, $error);
             }
-
-            $repository = $this->manager->getManager()
-                ->getRepository('BoxBundle:ReportKomtet');
-            $report = $repository->findOneBy([
-                'type'   => PaymentTypes::PAYMENT_TYPE_1C,
-                'action' => $this->dataJSON["action"],
-                'uuid'   => $this->dataJSON["uuid"]
-            ]);
-
-            if (is_null($report) && $kkm instanceof KKMInterface) {
-                $error = $kkm->send($this->dataJSON, PaymentTypes::PAYMENT_TYPE_1C);
-            } else {
-                $error = KKMMessages::MSG_ERROR_CHECK;
-            }
-
-            return $this->buildResponse('For1C', 0, 100, null, $error);
-        } else {
-            return $this->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR_HASH);
         }
+        return $this->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR_HASH);
     }
 
     /**
      * {@inheritDoc}
      * @return string
      */
-    public function check(Request $request, Organization $Organization, $kkm = null)
+    public function check(Request $request)
     {
-        $komtet = $Organization->getDataKomtet();
-        try {
-            $this->checkKKM($komtet['queue_name'], $kkm);
-        } catch (KKMException $error) {
-            return $this->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_CASHBOX_UNAV);
+        $payment = $this->getDataPayment();
+        if ($payment instanceof Payment) {
+            $kkm = $this->getKKM($payment);
+            if ($kkm instanceof KKMInterface) {
+                if (!$kkm->checkKKM()) {
+                    return $this->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_CASHBOX_UNAV);
+                }
+            }
         }
-
         return $this->buildResponse('For1C', 0, 0, null, null);
     }
 

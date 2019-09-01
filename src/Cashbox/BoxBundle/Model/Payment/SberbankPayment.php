@@ -2,14 +2,15 @@
 
 namespace Cashbox\BoxBundle\Model\Payment;
 
-use Cashbox\BoxBundle\Document\Organization;
+use Cashbox\BoxBundle\Document\Payment;
 use Cashbox\BoxBundle\Model\KKM\KKMInterface;
-use Cashbox\BoxBundle\Model\Payment\Exception\KKMException;
 use Cashbox\BoxBundle\Model\Report\SberbankReport;
 use Symfony\Component\HttpFoundation\Request;
 
 class SberbankPayment extends PaymentAbstract
 {
+    protected $name = 'Sberbank';
+
     /**
      * Test merchants
      * @example const GATEWAY_URL = 'https://3dsec.sberbank.ru/payment/rest/';
@@ -28,53 +29,55 @@ class SberbankPayment extends PaymentAbstract
      * {@inheritDoc}
      * @return string
      */
-    public function send(Request $request, Organization $Organization, $kkm = null)
+    public function send(Request $request)
     {
-        $sberbank = $Organization->getDataSberbank();
-        if ($this->checkCallback($request, $sberbank)) {
-            $customerNumber = $request->query->get('orderNumber');
-            $data = [
-                'userName' => $sberbank['sberbank_username'],
-                'password' => $sberbank['sberbank_password'],
-                'orderNumber' => $customerNumber
-            ];
-            $response = $this->gateway('getOrderStatusExtended.do', $data);
-            if (isset($response['errorCode']) && $response['errorCode'] == 0 && $response['actionCode'] == 0) {
+        $payment = $this->getDataPayment();
+        if ($payment instanceof Payment) {
+            $sberbank = $payment->getData();
+            if ($this->checkCallback($request, $sberbank)) {
+                $customerNumber = $request->query->get('orderNumber');
+                $data = [
+                    'userName' => $sberbank['sberbank_username'],
+                    'password' => $sberbank['sberbank_password'],
+                    'orderNumber' => $customerNumber
+                ];
+                $response = $this->gateway('getOrderStatusExtended.do', $data);
+                if (isset($response['errorCode']) && $response['errorCode'] == 0 && $response['actionCode'] == 0) {
 
-                $email = '';
-                if (sizeof($response['merchantOrderParams']) > 0) {
-                    foreach ($response['merchantOrderParams'] as $param) {
-                        if ($param['name'] == 'email') {
-                            $email = $param['value'];
-                            break;
+                    $email = '';
+                    if (sizeof($response['merchantOrderParams']) > 0) {
+                        foreach ($response['merchantOrderParams'] as $param) {
+                            if ($param['name'] == 'email') {
+                                $email = $param['value'];
+                                break;
+                            }
                         }
                     }
-                }
 
-                $orderSum = ((float)$response['amount']) / 100;
+                    $orderSum = ((float)$response['amount']) / 100;
 
-                $SberbankReport = new SberbankReport($this->manager);
-                $SberbankReport->create([
-                    'orderSum' => $orderSum,
-                    'customerNumber' => $customerNumber,
-                    'email' => $email,
-                    'inn' => $Organization->getINN(),
-                    'data' => $response
-                ]);
+                    $this->getReport()->add(new SberbankReport(), [
+                        'orderSum' => $orderSum,
+                        'customerNumber' => $customerNumber,
+                        'email' => $email,
+                        'inn' => $this->Organization->getINN(),
+                        'data' => $response
+                    ]);
 
-                if ($kkm instanceof KKMInterface) {
-                    if ($kkm->connect()) {
-                        $dataKKM = $kkm->buildData([
-                            "order" => $customerNumber,
-                            "email" => $email,
-                            "orderSum" => $orderSum
-                        ]);
-                        $kkm->send($dataKKM, PaymentTypes::PAYMENT_TYPE_SBERBANK);
+                    $kkm = $this->getKKM($payment);
+                    if ($kkm instanceof KKMInterface) {
+                        if ($kkm->connect()) {
+                            $dataKKM = $kkm->buildData([
+                                "order" => $customerNumber,
+                                "email" => $email,
+                                "orderSum" => $orderSum
+                            ]);
+                            $kkm->send($dataKKM, PaymentTypes::PAYMENT_TYPE_SBERBANK);
+                        }
                     }
                 }
             }
         }
-
         return '';
     }
 
@@ -82,7 +85,7 @@ class SberbankPayment extends PaymentAbstract
      * {@inheritDoc}
      * @return string
      */
-    public function check(Request $request, Organization $Organization, $kkm = null)
+    public function check(Request $request)
     {
         return '';
     }
@@ -142,64 +145,61 @@ class SberbankPayment extends PaymentAbstract
      * Получение ссылки для перенаправления
      *
      * @param Request $request
-     * @param Organization $Organization - организация
      * @param string $failUrl - ссылка в случае ошибки
-     * @param KKMInterface|null $kkm - касса
      * @return string
      */
-    public function getRedirectUrl(Request $request, Organization $Organization, string $failUrl, $kkm = null)
+    public function getRedirectUrl(Request $request, string $failUrl)
     {
         $redirect_url = $failUrl;
-        if ($this->otherCheckMD5($request, $Organization->getSecret())) {
-            $komtet = $Organization->getDataKomtet();
-
-            if ($komtet['cancel_action'] == 1) {
-                try {
-                    $this->checkKKM($komtet['queue_name'], $kkm);
-                } catch (KKMException $error) {
-                    return $redirect_url;
+        $payment = $this->getDataPayment();
+        if ($payment instanceof Payment) {
+            if ($this->otherCheckMD5($request, $this->Organization->getSecret())) {
+                $kkm = $this->getKKM($payment);
+                if ($kkm instanceof KKMInterface) {
+                    if (!$kkm->checkKKM()) {
+                        return $redirect_url;
+                    }
                 }
-            }
 
-            $successUrl = $this->getSiteUrl($request, 1);
+                $successUrl = $this->getSiteUrl($request, 1);
 
-            $sberbank = $Organization->getDataSberbank();
-            $data = [
-                'userName' => $sberbank['sberbank_username'],
-                'password' => $sberbank['sberbank_password'],
-                'orderNumber' => $request->get('customerNumber'),
-                'amount' => $this->replaceSum($request->get('Sum')),
-                'returnUrl' => $successUrl,
-                'failUrl' => $failUrl,
-                'jsonParams' => '{"email": "' . $request->get('email') . '"}',
-                'expirationDate' => date("Y-m-d\TH:i:s", strtotime('+' . self::ORDER_DAY . ' day'))
-            ];
-
-            $answer = $this->gateway('register.do', $data);
-
-            if (isset($answer['errorCode']) && ($answer['errorCode'] == 0 || $answer['errorCode'] == 1)) {
-                // Заказ уже существует
+                $sberbank = $payment->getData();
                 $data = [
                     'userName' => $sberbank['sberbank_username'],
                     'password' => $sberbank['sberbank_password'],
-                    'orderNumber' => $request->get('customerNumber')
+                    'orderNumber' => $request->get('customerNumber'),
+                    'amount' => $this->replaceSum($request->get('Sum')),
+                    'returnUrl' => $successUrl,
+                    'failUrl' => $failUrl,
+                    'jsonParams' => '{"email": "' . $request->get('email') . '"}',
+                    'expirationDate' => date("Y-m-d\TH:i:s", strtotime('+' . self::ORDER_DAY . ' day'))
                 ];
-                $response = $this->gateway('getOrderStatusExtended.do', $data);
 
-                if ($response['errorCode'] == 0) {
-                    // Произведена полная оплата
-                    if ($response['orderStatus'] == 2) {
-                        $redirect_url = $successUrl;
-                    } else {
-                        $id = $response['attributes'][0]['value'];
-                        $redirect_url = self::FORM_URL . '?mdOrder=' . $id;
+                $answer = $this->gateway('register.do', $data);
+
+                if (isset($answer['errorCode']) && ($answer['errorCode'] == 0 || $answer['errorCode'] == 1)) {
+                    // Заказ уже существует
+                    $data = [
+                        'userName' => $sberbank['sberbank_username'],
+                        'password' => $sberbank['sberbank_password'],
+                        'orderNumber' => $request->get('customerNumber')
+                    ];
+                    $response = $this->gateway('getOrderStatusExtended.do', $data);
+
+                    if ($response['errorCode'] == 0) {
+                        // Произведена полная оплата
+                        if ($response['orderStatus'] == 2) {
+                            $redirect_url = $successUrl;
+                        } else {
+                            $id = $response['attributes'][0]['value'];
+                            $redirect_url = self::FORM_URL . '?mdOrder=' . $id;
+                        }
                     }
+                } elseif (isset($answer['formUrl'])) {
+                    $redirect_url = $answer['formUrl'];
                 }
-            } elseif (isset($answer['formUrl'])) {
-                $redirect_url = $answer['formUrl'];
             }
         }
-
         return $redirect_url;
     }
 
