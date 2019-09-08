@@ -2,9 +2,9 @@
 
 namespace Cashbox\BoxBundle\Admin;
 
-use Cashbox\BoxBundle\Document\{Organization, KKM, Payment};
+use Cashbox\BoxBundle\Document\{Organization, KKM, Other, Payment};
 use Cashbox\BoxBundle\Model\KKM\KKMTypes;
-use Cashbox\BoxBundle\Model\Payment\PaymentTypes;
+use Cashbox\BoxBundle\Model\Payment\{PaymentTypes, OtherTypes};
 use Doctrine\Common\Collections\ArrayCollection;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -23,6 +23,8 @@ class OrganizationAdmin extends AbstractAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
+        $KKMs = $this->getSubject()->getKKMs()->toArray();
+
         $formMapper
             ->tab('Basic')
                 ->with('Basic', ['label' => false, 'class' => 'col-md-6'])
@@ -65,7 +67,22 @@ class OrganizationAdmin extends AbstractAdmin
 //                        'inline' => 'table',
                         'admin_code' => 'admin.payment',
                         'template' => 'BoxBundle:Admin/sonataproject/Form:form_admin_fields.html.twig',
-                        'kkms' => $this->getSubject()->getKKMs()->toArray()
+                        'kkms' => $KKMs
+                    ])
+                ->end()
+            ->end()
+
+            ->tab('Others')
+                ->with('Others', ['label' => false, 'class' => 'col-md-12'])
+                    ->add('others', 'sonata_type_collection', [
+                        'label' => false,
+                        'by_reference' => true,
+                    ], [
+                        'edit' => 'inline',
+//                        'inline' => 'table',
+                        'admin_code' => 'admin.other',
+                        'template' => 'BoxBundle:Admin/sonataproject/Form:form_admin_fields.html.twig',
+                        'kkms' => $KKMs
                     ])
                 ->end()
             ->end()
@@ -82,7 +99,16 @@ class OrganizationAdmin extends AbstractAdmin
         if ($organization->getPayments()->count() > sizeof(PaymentTypes::getArrayForAdmin())) {
             $errorElement
                 ->with('payments')
-                ->addViolation("Не должно быть больше одной плптежной системы каждого типа")
+                ->addViolation("Платежные системы не должны повторяться по типам")
+                ->end()
+            ;
+            return true;
+        }
+
+        if ($organization->getOthers()->count() > sizeof(OtherTypes::getArrayForAdmin())) {
+            $errorElement
+                ->with('others')
+                ->addViolation("Другие системы не должны повторяться по типам")
                 ->end()
             ;
             return true;
@@ -115,6 +141,29 @@ class OrganizationAdmin extends AbstractAdmin
             }
         }
 
+        $index = 0;
+        /**
+         * @var Other $other
+         */
+        foreach ($organization->getOthers() as $other) {
+            $kkm = $other->getKkm();
+            if ($kkm instanceof KKM && !$kkmsByPayment->contains($kkm)) {
+                $kkmsByPayment->add($kkm);
+            }
+            if (is_array($other->getData())) {
+                $index++;
+                $type = $other->getType();
+                $textError = OtherTypes::getTextValidation($type, $other->getData(), $translator);
+                if (!empty($textError)) {
+                    $errorElement
+                        ->with('others')
+                        ->addViolation("Другая система №{$index} \"{$type}\":<br>" . $textError)
+                        ->end()
+                    ;
+                }
+            }
+        }
+
         /**
          * @var KKM $kkm
          */
@@ -126,7 +175,8 @@ class OrganizationAdmin extends AbstractAdmin
                 $errorElement
                     ->with('KKMs')
                     ->addViolation("Невозможно удалить ККМ: \"{$kkm->getName()}\" ({$kkm->getType()})")
-                    ->end();
+                    ->end()
+                ;
             }
             return true;
         }
@@ -172,6 +222,17 @@ class OrganizationAdmin extends AbstractAdmin
             $additional = $payment->getAdditional();
             if (isset($additional[$type])) {
                 $payment->setData($additional[$type]);
+            }
+        }
+
+        /**
+         * @var Other $other
+         */
+        foreach ($organization->getOthers() as $other) {
+            $type = $other->getType();
+            $additional = $other->getAdditional();
+            if (isset($additional[$type])) {
+                $other->setData($additional[$type]);
             }
         }
 

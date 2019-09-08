@@ -1,4 +1,5 @@
 label.organization: Организации
+label.KKM: Устройства ККМ
 label.yandex.transactions: Транзакции Яндекс.Кассы
 label.sberbank.transactions: Транзакции Сбербанка
 label.komtet.report: Сообщения Komtet
@@ -23,6 +24,10 @@ Yandex Transaction List: Транзакции Яндекс.Кассы
 Sberbank Transaction List: Транзакции Сбербанка
 Report Komtet List: Сообщения Komtet
 
+KKMs: Устройства ККМ
+Payments: Платежные системы
+Others: Другие системы
+
 ID: ID
 Name: Наименование
 INN: ИНН
@@ -35,6 +40,8 @@ Komtet: Komtet
 Pattern Nomenclature: Шаблон номенклатуры
 Secret: Секретное слово
 Admin Email: Email администратора
+
+Kkm: ККМ
 
 Username: Логин
 Password: Пароль

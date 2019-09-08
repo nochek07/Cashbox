@@ -73,6 +73,20 @@ services:
               show_mosaic_button: false
         public: true
 
+    admin.other:
+        class: Cashbox\BoxBundle\Admin\OtherAdmin
+        arguments:
+            - ~
+            - Cashbox\BoxBundle\Document\Other
+            - ~
+        tags:
+            - name: sonata.admin
+              manager_type: doctrine_mongodb
+              group: "group.other"
+              label: "label.other"
+              show_mosaic_button: false
+        public: true
+
     admin.kkm:
         class: Cashbox\BoxBundle\Admin\KKMAdmin
         arguments:

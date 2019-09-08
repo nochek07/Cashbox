@@ -51,10 +51,19 @@ class Organization
      */
     protected $KKMs;
 
+    /**
+     * @MongoDB\EmbedMany(targetDocument="Other")
+     */
+    protected $others;
+
+    /**
+     * Organization constructor.
+     */
     public function __construct()
     {
         $this->payments = new ArrayCollection();
         $this->KKMs = new ArrayCollection();
+        $this->others = new ArrayCollection();
     }
 
     /**
@@ -235,6 +244,36 @@ class Organization
     public function getKKMs()
     {
         return $this->KKMs;
+    }
+
+    /**
+     * Add others
+     *
+     * @param $other
+     */
+    public function addOther($other)
+    {
+        $this->others[] = $other;
+    }
+
+    /**
+     * Remove $others
+     *
+     * @param $other
+     */
+    public function removeOther($other)
+    {
+        $this->others->removeElement($other);
+    }
+
+    /**
+     * Get others
+     *
+     * @return ArrayCollection $others
+     */
+    public function getOthers()
+    {
+        return $this->others;
     }
 
     /**

@@ -2,13 +2,13 @@
 
 namespace Cashbox\BoxBundle\Admin;
 
-use Cashbox\BoxBundle\Model\Payment\PaymentTypes;
+use Cashbox\BoxBundle\Model\Payment\OtherTypes;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 
-class PaymentAdmin extends AbstractAdmin
+class OtherAdmin extends AbstractAdmin
 {
     protected $translationDomain = 'BoxBundle';
 
@@ -22,12 +22,12 @@ class PaymentAdmin extends AbstractAdmin
         $order = ['type', 'kkm'];
         $choices = [];
         $map = [];
-        foreach (PaymentTypes::getArrayForAdmin() as $key => $value) {
+        foreach (OtherTypes::getArrayForAdmin() as $key => $value) {
             $choices[$key] = $key;
             $map[$key] = [$key];
             $order[] = $key;
 
-            $keys = PaymentTypes::getNewKeys($value);
+            $keys = OtherTypes::getNewKeys($value);
             if (0 < sizeof($keys)) {
                 $formMapper
                     ->add($key, 'sonata_type_immutable_array', [

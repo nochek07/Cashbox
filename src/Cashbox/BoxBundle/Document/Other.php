@@ -3,14 +3,14 @@
 namespace Cashbox\BoxBundle\Document;
 
 use BadMethodCallException;
-use Cashbox\BoxBundle\Model\Payment\PaymentTypes;
+use Cashbox\BoxBundle\Model\Payment\OtherTypes;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
 
 /**
 * @MongoDB\EmbeddedDocument
 */
-class Payment
+class Other
 {
     /**
      * @MongoDB\Id(strategy="AUTO")
@@ -20,22 +20,22 @@ class Payment
     /**
      * @MongoDB\Field(type="string")
      */
-    protected $name;
-
-    /**
-     * @MongoDB\Field(type="string")
-     */
     protected $type;
 
     /**
      * @MongoDB\Field(type="hash")
      */
-    protected $data;
+    protected $data = [];
 
     /**
-     * @MongoDB\ReferenceOne(targetDocument="KKM")
+     * @MongoDB\ReferenceOne(targetDocument="KKM", nullable=true)
      */
-    protected $kkm;
+    protected $kkm = null;
+
+    /**
+     * @var array $additional
+     */
+    protected $additional = [];
 
     /**
      * Get id
@@ -45,28 +45,6 @@ class Payment
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set name
-     *
-     * @param string $name
-     * @return $this
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-        return $this;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string $name
-     */
-    public function getName()
-    {
-        return $this->name;
     }
 
     /**
@@ -114,12 +92,34 @@ class Payment
     }
 
     /**
+     * Set KKM
+     *
+     * @param KKM|null $kkm
+     * @return $this
+     */
+    public function setKkm($kkm)
+    {
+        $this->kkm = $kkm;
+        return $this;
+    }
+
+    /**
+     * Get KKM
+     *
+     * @return KKM|null $kkm
+     */
+    public function getKkm()
+    {
+        return $this->kkm;
+    }
+
+    /**
      * @param $name
      * @return array
      */
     public function __get($name)
     {
-        if (array_key_exists($name, PaymentTypes::getPaymentsForAdmin())) {
+        if (array_key_exists($name, OtherTypes::getArrayForAdmin())) {
             if ($this->getType() === $name) {
                 return $this->getData();
 
@@ -137,12 +137,20 @@ class Payment
      */
     public function __set($name, $data)
     {
-        if (array_key_exists($name, PaymentTypes::getPaymentsForAdmin())) {
-            if ($this->getType() === $name) {
-                $this->setData($data);
-            }
+        if (array_key_exists($name, OtherTypes::getArrayForAdmin())) {
+            $this->additional[$name] = $data;
             return $this;
         }
         throw new BadMethodCallException;
+    }
+
+    /**
+     * Get Additional
+     *
+     * @return array
+     */
+    public function getAdditional()
+    {
+        return $this->additional;
     }
 }

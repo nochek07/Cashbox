@@ -27,13 +27,16 @@ class KKMAdmin extends AbstractAdmin
             $map[$key] = [$key];
             $order[] = $key;
 
-            $formMapper
-                ->add($key, 'sonata_type_immutable_array', [
-                    'mapped' => true,
-                    'required' => false,
-                    'keys' => KKMTypes::getNewKeys($value),
-                ])
-            ;
+            $keys = KKMTypes::getNewKeys($value);
+            if (0 < sizeof($keys)) {
+                $formMapper
+                    ->add($key, 'sonata_type_immutable_array', [
+                        'mapped' => true,
+                        'required' => false,
+                        'keys' => $keys,
+                    ])
+                ;
+            }
         }
 
         $formMapper
