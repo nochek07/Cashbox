@@ -2,55 +2,31 @@
 
 namespace Cashbox\BoxBundle\Admin;
 
-use Cashbox\BoxBundle\Model\KKM\KKMTypes;
-use Sonata\AdminBundle\Admin\AbstractAdmin;
+use Cashbox\BoxBundle\Model\Type;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 
-class KKMAdmin extends AbstractAdmin
+class KKMAdmin extends ObjectAbstractAdmin
 {
-    protected $translationDomain = 'BoxBundle';
-
-    protected $listModes = [];
-    
     /**
      * @param FormMapper $formMapper
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
-        $order = ['name', 'type'];
-        $choices = [];
-        $map = [];
-        foreach (KKMTypes::getArrayForAdmin() as $key => $value) {
-            $choices[$key] = $key;
-            $map[$key] = [$key];
-            $order[] = $key;
-
-            $keys = KKMTypes::getNewKeys($value);
-            if (0 < sizeof($keys)) {
-                $formMapper
-                    ->add($key, 'sonata_type_immutable_array', [
-                        'mapped' => true,
-                        'required' => false,
-                        'keys' => $keys,
-                    ])
-                ;
-            }
-        }
-
+        $params = $this->addImmutableArray($formMapper, new Type\KKMTypes, ['name', 'type']);
         $formMapper
             ->add('name', null, [
                 'trim' => true
             ])
             ->add('type', 'sonata_type_choice_field_mask', [
-                'choices' => $choices,
-                'map' => $map,
+                'choices' => $params['choices'],
+                'map' => $params['map'],
                 'required' => true,
                 'mapped' => true,
             ])
         ;
-        $formMapper->reorder($order);
+        $formMapper->reorder($params['order']);
     }
 
     /**

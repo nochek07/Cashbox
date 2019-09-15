@@ -1,20 +1,18 @@
 <?php
 
-namespace Cashbox\BoxBundle\Model\KKM;
+namespace Cashbox\BoxBundle\Model\Type;
 
-use Cashbox\BoxBundle\Model\BoxTypes;
+use Cashbox\BoxBundle\Model\KKM;
 use Sonata\Form\Type\BooleanType;
 use Symfony\Component\Form\Extension\Core\Type\{ChoiceType, IntegerType, TextType};
 
-class KKMTypes extends BoxTypes
+class KKMTypes extends TypeAbstract
 {
-    private static $translationDomain = 'BoxBundle';
-
     /**
      * @var array $arrayKkmModelClass
      */
     public static $arrayKkmModelClass = [
-        'Komtet' => Komtet::class,
+        'Komtet' => KKM\Komtet::class,
     ];
 
     /**
@@ -49,13 +47,13 @@ class KKMTypes extends BoxTypes
                 'tax_system' => ['tax_system', ChoiceType::class, [
                     'required' => true,
                     'label' => 'Tax system',
-                    'choices' => TaxSystem::$choices,
+                    'choices' => KKM\TaxSystem::$choices,
                     'translation_domain' => self::$translationDomain,
                 ]],
                 'vat' => ['vat', ChoiceType::class, [
                     'required' => true,
                     'label' => 'Vat',
-                    'choices' => Vat::$choices,
+                    'choices' => KKM\Vat::$choices,
                     'translation_domain' => self::$translationDomain
                 ]],
                 'cancel_action' => ['cancel_action', BooleanType::class, [

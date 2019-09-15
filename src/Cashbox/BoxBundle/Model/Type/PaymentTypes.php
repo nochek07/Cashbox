@@ -1,17 +1,14 @@
 <?php
 
-namespace Cashbox\BoxBundle\Model\Payment;
+namespace Cashbox\BoxBundle\Model\Type;
 
-use Cashbox\BoxBundle\Model\BoxTypes;
 use Symfony\Component\Form\Extension\Core\Type\{IntegerType, TextType};
 
-class PaymentTypes extends BoxTypes
+class PaymentTypes extends TypeAbstract
 {
     const PAYMENT_TYPE_YANDEX = "yandex";
     const PAYMENT_TYPE_1C = "1c";
     const PAYMENT_TYPE_SBERBANK = "sberbank";
-
-    private static $translationDomain = 'BoxBundle';
 
     /**
      * Get ArrayForAdmin

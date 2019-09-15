@@ -29,11 +29,6 @@ abstract class ObjectDocumentAbstract
     protected $additional = [];
 
     /**
-     * @var array $arrayForAdmin
-     */
-    protected $arrayForAdmin = [];
-
-    /**
      * Get id
      *
      * @return id $id
@@ -93,7 +88,7 @@ abstract class ObjectDocumentAbstract
      */
     public function __get($name)
     {
-        if (array_key_exists($name, $this->arrayForAdmin)) {
+        if (array_key_exists($name, $this->getArrayForAdmin())) {
             if ($this->getType() === $name) {
                 return $this->getData();
 
@@ -111,7 +106,7 @@ abstract class ObjectDocumentAbstract
      */
     public function __set($name, $data)
     {
-        if (array_key_exists($name, $this->arrayForAdmin)) {
+        if (array_key_exists($name, $this->getArrayForAdmin())) {
             $this->additional[$name] = $data;
             return $this;
         }
@@ -127,4 +122,6 @@ abstract class ObjectDocumentAbstract
     {
         return $this->additional;
     }
+
+    abstract function getArrayForAdmin(): array;
 }

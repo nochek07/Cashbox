@@ -2,7 +2,7 @@
 
 namespace Cashbox\BoxBundle\Document;
 
-use Cashbox\BoxBundle\Model\KKM\KKMTypes;
+use Cashbox\BoxBundle\Model\Type\KKMTypes;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 
 /**
@@ -14,14 +14,6 @@ class KKM extends ObjectDocumentAbstract
      * @MongoDB\Field(type="string")
      */
     protected $name;
-
-    /**
-     * KKM constructor.
-     */
-    public function __construct()
-    {
-        $this->arrayForAdmin = KKMTypes::getArrayForAdmin();
-    }
 
     /**
      * Set name
@@ -51,5 +43,10 @@ class KKM extends ObjectDocumentAbstract
     public function __toString()
     {
         return ($this->getName() ?? '-') . ' (' . ($this->getType() ?? '-') . ')';
+    }
+
+    public function getArrayForAdmin(): array
+    {
+        return KKMTypes::getArrayForAdmin();
     }
 }

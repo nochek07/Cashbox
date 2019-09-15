@@ -1,12 +1,14 @@
 <?php
 
-namespace Cashbox\BoxBundle\Model;
+namespace Cashbox\BoxBundle\Model\Type;
 
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Translation\TranslatorInterface;
 
-abstract class BoxTypes
+abstract class TypeAbstract
 {
+    protected static $translationDomain = 'BoxBundle';
+
     /**
      * @return array
      */

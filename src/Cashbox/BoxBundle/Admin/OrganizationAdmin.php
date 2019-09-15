@@ -2,10 +2,9 @@
 
 namespace Cashbox\BoxBundle\Admin;
 
-use Cashbox\BoxBundle\Document\{Organization, KKM, Other, Payment};
-use Cashbox\BoxBundle\Model\KKM\KKMTypes;
-use Cashbox\BoxBundle\Model\Payment\{PaymentTypes, OtherTypes};
-use Doctrine\Common\Collections\ArrayCollection;
+use Cashbox\BoxBundle\Document\{ObjectDocumentAbstract, Organization, KKM, Other, Payment};
+use Doctrine\Common\Collections\{Collection, ArrayCollection};
+use Cashbox\BoxBundle\Model\Type;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -96,7 +95,7 @@ class OrganizationAdmin extends AbstractAdmin
      */
     public function validate(ErrorElement $errorElement, $organization)
     {
-        if ($organization->getPayments()->count() > sizeof(PaymentTypes::getArrayForAdmin())) {
+        if ($organization->getPayments()->count() > sizeof(Type\PaymentTypes::getArrayForAdmin())) {
             $errorElement
                 ->with('payments')
                 ->addViolation("Платежные системы не должны повторяться по типам")
@@ -105,7 +104,7 @@ class OrganizationAdmin extends AbstractAdmin
             return true;
         }
 
-        if ($organization->getOthers()->count() > sizeof(OtherTypes::getArrayForAdmin())) {
+        if ($organization->getOthers()->count() > sizeof(Type\OtherTypes::getArrayForAdmin())) {
             $errorElement
                 ->with('others')
                 ->addViolation("Другие системы не должны повторяться по типам")
@@ -130,7 +129,7 @@ class OrganizationAdmin extends AbstractAdmin
             if (is_array($payment->getData())) {
                 $index++;
                 $type = $payment->getType();
-                $textError = PaymentTypes::getTextValidation($type, $payment->getData(), $translator);
+                $textError = TYpe\PaymentTypes::getTextValidation($type, $payment->getData(), $translator);
                 if (!empty($textError)) {
                     $errorElement
                         ->with('payments')
@@ -153,7 +152,7 @@ class OrganizationAdmin extends AbstractAdmin
             if (is_array($other->getData())) {
                 $index++;
                 $type = $other->getType();
-                $textError = OtherTypes::getTextValidation($type, $other->getData(), $translator);
+                $textError = Type\OtherTypes::getTextValidation($type, $other->getData(), $translator);
                 if (!empty($textError)) {
                     $errorElement
                         ->with('others')
@@ -186,16 +185,16 @@ class OrganizationAdmin extends AbstractAdmin
          * @var KKM $kkm
          */
         foreach ($organization->getKKMs() as $kkm) {
-            $type = $kkm->getType();
-            $additional = $kkm->getAdditional();
-            if (isset($additional[$type])) {
-                $kkm->setData($additional[$type]);
-            }
+//            $type = $kkm->getType();
+//            $additional = $kkm->getAdditional();
+//            if (isset($additional[$type])) {
+//                $kkm->setData($additional[$type]);
+//            }
 
             if (is_array($kkm->getData())) {
                 $index++;
                 $type = $kkm->getType();
-                $textError = KKMTypes::getTextValidation($type, $kkm->getData(), $translator);
+                $textError = Type\KKMTypes::getTextValidation($type, $kkm->getData(), $translator);
                 if (!empty($textError)) {
                     $errorElement
                         ->with('KKMs')
@@ -214,38 +213,9 @@ class OrganizationAdmin extends AbstractAdmin
      */
     public function preUpdate($organization)
     {
-        /**
-         * @var Payment $payment
-         */
-        foreach ($organization->getPayments() as $payment) {
-            $type = $payment->getType();
-            $additional = $payment->getAdditional();
-            if (isset($additional[$type])) {
-                $payment->setData($additional[$type]);
-            }
-        }
-
-        /**
-         * @var Other $other
-         */
-        foreach ($organization->getOthers() as $other) {
-            $type = $other->getType();
-            $additional = $other->getAdditional();
-            if (isset($additional[$type])) {
-                $other->setData($additional[$type]);
-            }
-        }
-
-        /**
-         * @var KKM $kkm
-         */
-        foreach ($organization->getKKMs() as $kkm) {
-            $type = $kkm->getType();
-            $additional = $kkm->getAdditional();
-            if (isset($additional[$type])) {
-                $kkm->setData($additional[$type]);
-            }
-        }
+        $this->setDataByAdditional($organization->getPayments());
+        $this->setDataByAdditional($organization->getOthers());
+        $this->setDataByAdditional($organization->getKKMs());
     }
 
     /**
@@ -254,6 +224,23 @@ class OrganizationAdmin extends AbstractAdmin
     public function prePersist($organization)
     {
         $this->preUpdate($organization);
+    }
+
+    /**
+     * @param Collection $objects
+     */
+    private function setDataByAdditional($objects)
+    {
+        /**
+         * @var ObjectDocumentAbstract $object
+         */
+        foreach ($objects as $object) {
+            $type = $object->getType();
+            $additional = $object->getAdditional();
+            if (isset($additional[$type])) {
+                $object->setData($additional[$type]);
+            }
+        }
     }
 
     /**

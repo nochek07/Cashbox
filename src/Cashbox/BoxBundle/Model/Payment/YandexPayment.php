@@ -5,6 +5,7 @@ namespace Cashbox\BoxBundle\Model\Payment;
 use Cashbox\BoxBundle\Document\Payment;
 use Cashbox\BoxBundle\Model\KKM\{KKMInterface, KKMMessages};
 use Cashbox\BoxBundle\Model\Report\YandexReport;
+use Cashbox\BoxBundle\Model\Type\PaymentTypes;
 use Symfony\Component\HttpFoundation\Request;
 
 /**

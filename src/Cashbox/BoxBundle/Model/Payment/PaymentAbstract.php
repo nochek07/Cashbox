@@ -4,8 +4,9 @@ namespace Cashbox\BoxBundle\Model\Payment;
 
 use Cashbox\BoxBundle\DependencyInjection\{Mailer, Report};
 use Cashbox\BoxBundle\Document\{KKM, Organization, PaymentDocumentAbstract};
-use Cashbox\BoxBundle\Model\KKM\{KKMAbstract, KKMInterface, KKMTypes};
-use Doctrine\Common\Collections\ArrayCollection;
+use Cashbox\BoxBundle\Model\KKM\{KKMAbstract, KKMInterface};
+use Cashbox\BoxBundle\Model\Type\KKMTypes;
+use Doctrine\Common\Collections\{Collection, ArrayCollection};
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -113,10 +114,10 @@ abstract class PaymentAbstract implements PaymentInterface
     }
 
     /**
-     * @param ArrayCollection $mongoPersistCollection
+     * @param Collection $mongoPersistCollection
      * @return PaymentDocumentAbstract|null
      */
-    public function getDesiredPayment(ArrayCollection $mongoPersistCollection)
+    public function getDesiredPayment(Collection $mongoPersistCollection)
     {
         $payments = $mongoPersistCollection->filter(
             function (PaymentDocumentAbstract $entry) {

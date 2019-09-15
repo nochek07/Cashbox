@@ -2,45 +2,19 @@
 
 namespace Cashbox\BoxBundle\Admin;
 
-use Cashbox\BoxBundle\Model\Payment\PaymentTypes;
-use Sonata\AdminBundle\Admin\AbstractAdmin;
+use Cashbox\BoxBundle\Model\Type;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 
-class PaymentAdmin extends AbstractAdmin
+class PaymentAdmin extends ObjectAbstractAdmin
 {
-    protected $translationDomain = 'BoxBundle';
-
-    protected $listModes = [];
-    
     /**
      * @param FormMapper $formMapper
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
-        $order = ['type', 'kkm'];
-        $choices = [];
-        $map = [];
-        foreach (PaymentTypes::getArrayForAdmin() as $key => $value) {
-            $choices[$key] = $key;
-            $map[$key] = [$key];
-            $order[] = $key;
-
-            $keys = PaymentTypes::getNewKeys($value);
-            if (0 < sizeof($keys)) {
-                $formMapper
-                    ->add($key, 'sonata_type_immutable_array', [
-                        'mapped' => true,
-                        'required' => false,
-                        'keys' => $keys,
-                    ])
-                ;
-            }
-        }
-
-        $this->getParent();
-
+        $params = $this->addImmutableArray($formMapper, new Type\PaymentTypes, ['type', 'kkm']);
         $formMapper
             ->add('kkm', 'sonata_type_model', [
                 'btn_add' => false,
@@ -48,13 +22,13 @@ class PaymentAdmin extends AbstractAdmin
                 'choices' => $this->getParentFieldDescription()->getOption('kkms')
             ])
             ->add('type', 'sonata_type_choice_field_mask', [
-                'choices' => $choices,
-                'map' => $map,
+                'choices' => $params['choices'],
+                'map' => $params['map'],
                 'required' => true,
                 'mapped' => true,
             ])
         ;
-        $formMapper->reorder($order);
+        $formMapper->reorder($params['order']);
     }
 
     /**

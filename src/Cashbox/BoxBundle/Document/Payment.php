@@ -2,7 +2,7 @@
 
 namespace Cashbox\BoxBundle\Document;
 
-use Cashbox\BoxBundle\Model\Payment\PaymentTypes;
+use Cashbox\BoxBundle\Model\Type;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 
 /**
@@ -10,11 +10,8 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 */
 class Payment extends PaymentDocumentAbstract
 {
-    /**
-     * Payment constructor.
-     */
-    public function __construct()
+    public function getArrayForAdmin(): array
     {
-        $this->arrayForAdmin = PaymentTypes::getArrayForAdmin();
+        return Type\PaymentTypes::getArrayForAdmin();
     }
 }
