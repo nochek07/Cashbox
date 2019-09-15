@@ -31,7 +31,9 @@ class SberbankPayment extends PaymentAbstract
      */
     public function send(Request $request)
     {
-        $payment = $this->getDataPayment();
+        $payment = $this->getDesiredPayment(
+            $this->Organization->getPayments()
+        );
         if ($payment instanceof Payment) {
             $sberbank = $payment->getData();
             if ($this->checkCallback($request, $sberbank)) {
@@ -64,7 +66,7 @@ class SberbankPayment extends PaymentAbstract
                         'data' => $response
                     ]);
 
-                    $kkm = $this->getKKM($payment);
+                    $kkm = $this->getKkmByPayment($payment);
                     if ($kkm instanceof KKMInterface) {
                         if ($kkm->connect()) {
                             $dataKKM = $kkm->buildData([
@@ -151,10 +153,12 @@ class SberbankPayment extends PaymentAbstract
     public function getRedirectUrl(Request $request, string $failUrl)
     {
         $redirect_url = $failUrl;
-        $payment = $this->getDataPayment();
+        $payment = $this->getDesiredPayment(
+            $this->Organization->getPayments()
+        );
         if ($payment instanceof Payment) {
             if ($this->otherCheckMD5($request, $this->Organization->getSecret())) {
-                $kkm = $this->getKKM($payment);
+                $kkm = $this->getKkmByPayment($payment);
                 if ($kkm instanceof KKMInterface) {
                     if (!$kkm->checkKKM()) {
                         return $redirect_url;

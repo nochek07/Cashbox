@@ -1,0 +1,130 @@
+<?php
+
+namespace Cashbox\BoxBundle\Document;
+
+use BadMethodCallException;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
+
+abstract class ObjectDocumentAbstract
+{
+    /**
+     * @MongoDB\Id(strategy="AUTO")
+     */
+    protected $id;
+
+    /**
+     * @MongoDB\Field(type="string")
+     */
+    protected $type;
+
+    /**
+     * @MongoDB\Field(type="hash")
+     */
+    protected $data = [];
+
+    /**
+     * @var array $additional
+     */
+    protected $additional = [];
+
+    /**
+     * @var array $arrayForAdmin
+     */
+    protected $arrayForAdmin = [];
+
+    /**
+     * Get id
+     *
+     * @return id $id
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set type
+     *
+     * @param string $type
+     * @return self
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return string $type
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Set data
+     *
+     * @param array $data
+     * @return self
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
+        return $this;
+    }
+
+    /**
+     * Get data
+     *
+     * @return array $data
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * @param $name
+     * @return array
+     */
+    public function __get($name)
+    {
+        if (array_key_exists($name, $this->arrayForAdmin)) {
+            if ($this->getType() === $name) {
+                return $this->getData();
+
+            } else {
+                return [];
+            }
+        }
+        throw new BadMethodCallException;
+    }
+
+    /**
+     * @param $name
+     * @param array $data
+     * @return self
+     */
+    public function __set($name, $data)
+    {
+        if (array_key_exists($name, $this->arrayForAdmin)) {
+            $this->additional[$name] = $data;
+            return $this;
+        }
+        throw new BadMethodCallException;
+    }
+
+    /**
+     * Get Additional
+     *
+     * @return array
+     */
+    public function getAdditional()
+    {
+        return $this->additional;
+    }
+}

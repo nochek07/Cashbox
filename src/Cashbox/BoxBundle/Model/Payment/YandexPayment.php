@@ -26,7 +26,9 @@ class YandexPayment extends PaymentAbstract
      */
     public function send(Request $request)
     {
-        $payment = $this->getDataPayment();
+        $payment = $this->getDesiredPayment(
+            $this->Organization->getPayments()
+        );
         if ($payment instanceof Payment) {
             $yandex = $payment->getData();
             $responseText = $this->processRequest($request, $yandex, $this->Organization->getSecret());
@@ -44,7 +46,7 @@ class YandexPayment extends PaymentAbstract
                     'data' => $request->request->all()
                 ]);
 
-                $kkm = $this->getKKM($payment);
+                $kkm = $this->getKkmByPayment($payment);
                 if ($kkm instanceof KKMInterface) {
                     if ($kkm->connect()) {
                         $dataKKM = $kkm->buildData([
@@ -69,13 +71,15 @@ class YandexPayment extends PaymentAbstract
      */
     public function check(Request $request)
     {
-        $payment = $this->getDataPayment();
+        $payment = $this->getDesiredPayment(
+            $this->Organization->getPayments()
+        );
         if ($payment instanceof Payment) {
             $yandex = $payment->getData();
 
             $responseText = $this->processRequest($request, $yandex, $this->Organization->getSecret());
             if ($responseText == '') {
-                $kkm = $this->getKKM($payment);
+                $kkm = $this->getKkmByPayment($payment);
                 if ($kkm instanceof KKMInterface) {
                     if (!$kkm->checkKKM()) {
                         return $this->buildResponse(

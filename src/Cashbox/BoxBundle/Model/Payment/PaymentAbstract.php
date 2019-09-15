@@ -2,12 +2,11 @@
 
 namespace Cashbox\BoxBundle\Model\Payment;
 
-use Cashbox\BoxBundle\DependencyInjection\Mailer;
-use Cashbox\BoxBundle\DependencyInjection\Report;
-use Cashbox\BoxBundle\Document\{KKM, Organization, Payment};
+use Cashbox\BoxBundle\DependencyInjection\{Mailer, Report};
+use Cashbox\BoxBundle\Document\{KKM, Organization, PaymentDocumentAbstract};
 use Cashbox\BoxBundle\Model\KKM\{KKMAbstract, KKMInterface, KKMTypes};
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\ODM\MongoDB\PersistentCollection;
 use Symfony\Component\HttpFoundation\Request;
 
 abstract class PaymentAbstract implements PaymentInterface
@@ -114,16 +113,13 @@ abstract class PaymentAbstract implements PaymentInterface
     }
 
     /**
-     * @return Payment|null
+     * @param ArrayCollection $mongoPersistCollection
+     * @return PaymentDocumentAbstract|null
      */
-    public function getDataPayment()
+    public function getDesiredPayment(ArrayCollection $mongoPersistCollection)
     {
-        /**
-         * @var PersistentCollection $mongoPersistCollection
-         */
-        $mongoPersistCollection = $this->Organization->getPayments();
         $payments = $mongoPersistCollection->filter(
-            function (Payment $entry) {
+            function (PaymentDocumentAbstract $entry) {
                 return $entry->getType() === $this->name;
             }    
         );
@@ -135,18 +131,17 @@ abstract class PaymentAbstract implements PaymentInterface
     }
 
     /**
-     * @param Payment $payments
+     * @param PaymentDocumentAbstract $payments
      * @return KKMInterface|null
      */
-    public function getKKM(Payment $payments)
+    public function getKkmByPayment(PaymentDocumentAbstract $payments)
     {
         $kkmDocument = $payments->getKkm();
         if ($kkmDocument instanceof KKM) {
             /**
-             * @var PersistentCollection $mongoPersistCollection
+             * @var ArrayCollection $mongoPersistCollection
              */
             $mongoPersistCollection = $this->Organization->getKKMs();
-
             $kkms = $mongoPersistCollection->filter(
                 function (KKM $entry) use ($kkmDocument) {
                     return $entry->getId() === $kkmDocument->getId();
@@ -154,7 +149,6 @@ abstract class PaymentAbstract implements PaymentInterface
             );
             if ($kkms->count() > 0) {
                 $kkmDocument = $kkms->first();
-                print_r($kkmDocument->getType());
                 $classKKM = KKMTypes::$arrayKkmModelClass[$kkmDocument->getType()];
                 /**
                  * @var KKMAbstract $kkmManager

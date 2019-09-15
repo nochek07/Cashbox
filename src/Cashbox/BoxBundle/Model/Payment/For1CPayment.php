@@ -19,10 +19,12 @@ class For1CPayment extends YandexPayment
      */
     public function send(Request $request)
     {
-        $payment = $this->getDataPayment();
+        $payment = $this->getDesiredPayment(
+            $this->Organization->getOthers()
+        );
         if ($payment instanceof Payment) {
             if ($this->check1cMD5($this->dataJSON, $this->Organization->getSecret())) {
-                $kkm = $this->getKKM($payment);
+                $kkm = $this->getKkmByPayment($payment);
                 if ($kkm instanceof KKMInterface) {
                     if (!$kkm->checkKKM()) {
                         return $this->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_CASHBOX_UNAV);
@@ -55,9 +57,11 @@ class For1CPayment extends YandexPayment
      */
     public function check(Request $request)
     {
-        $payment = $this->getDataPayment();
+        $payment = $this->getDesiredPayment(
+            $this->Organization->getOthers()
+        );
         if ($payment instanceof Payment) {
-            $kkm = $this->getKKM($payment);
+            $kkm = $this->getKkmByPayment($payment);
             if ($kkm instanceof KKMInterface) {
                 if (!$kkm->checkKKM()) {
                     return $this->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_CASHBOX_UNAV);

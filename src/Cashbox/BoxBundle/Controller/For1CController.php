@@ -32,7 +32,7 @@ class For1CController extends AbstractController
                         $For1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR_INN)
                     );
                     return new Response(
-                       $box->send($request, $For1CPayment)
+                        $box->send($request, $For1CPayment)
                     );
                 }
             }
