@@ -2,7 +2,7 @@
 
 namespace Cashbox\BoxBundle\Model\Payment;
 
-use Cashbox\BoxBundle\DependencyInjection\{Mailer, Report};
+use Cashbox\BoxBundle\Service\{Mailer, Report};
 use Cashbox\BoxBundle\Document\{KKM, Organization, PaymentDocumentAbstract};
 use Cashbox\BoxBundle\Model\KKM\{KKMAbstract, KKMInterface};
 use Cashbox\BoxBundle\Model\Type\KKMTypes;

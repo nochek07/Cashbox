@@ -2,7 +2,7 @@
 
 namespace Cashbox\BoxBundle\Controller;
 
-use Cashbox\BoxBundle\DependencyInjection\Box;
+use Cashbox\BoxBundle\Service\Box;
 use Cashbox\BoxBundle\Model\Payment\YandexPayment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

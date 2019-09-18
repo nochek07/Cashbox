@@ -2,7 +2,7 @@
 
 namespace Cashbox\BoxBundle\Controller;
 
-use Cashbox\BoxBundle\DependencyInjection\Box;
+use Cashbox\BoxBundle\Service\Box;
 use Cashbox\BoxBundle\Document\Organization;
 use Cashbox\BoxBundle\Model\Payment\SberbankPayment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;

@@ -2,8 +2,8 @@
 
 namespace Cashbox\BoxBundle\Model\KKM;
 
-use Cashbox\BoxBundle\DependencyInjection\Mailer;
-use Cashbox\BoxBundle\DependencyInjection\Report;
+use Cashbox\BoxBundle\Service\Mailer;
+use Cashbox\BoxBundle\Service\Report;
 use Cashbox\BoxBundle\Document\{Organization, KKM};
 
 abstract class KKMAbstract implements KKMInterface

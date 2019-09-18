@@ -2,7 +2,7 @@
 
 namespace Cashbox\BoxBundle\Model\KKM;
 
-use Cashbox\BoxBundle\DependencyInjection\Mailer;
+use Cashbox\BoxBundle\Service\Mailer;
 use Cashbox\BoxBundle\Model\Report\KomtetReport;
 use Komtet\KassaSdk\{Check, Client, Payment, Position, QueueManager, Vat};
 

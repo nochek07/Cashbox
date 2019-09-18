@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Cashbox\BoxBundle\DependencyInjection;
+namespace Cashbox\BoxBundle\Service;
 
 use Cashbox\BoxBundle\Model\Report\ReportInterface;
 use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;

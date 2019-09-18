@@ -2,7 +2,7 @@
 
 namespace Cashbox\BoxBundle\Controller;
 
-use Cashbox\BoxBundle\DependencyInjection\Box;
+use Cashbox\BoxBundle\Service\Box;
 use Cashbox\BoxBundle\Model\KKM\KKMMessages;
 use Cashbox\BoxBundle\Model\Payment\For1CPayment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;

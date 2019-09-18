@@ -1,6 +1,6 @@
 <?php
 
-namespace Cashbox\BoxBundle\DependencyInjection;
+namespace Cashbox\BoxBundle\Service;
 
 use Cashbox\BoxBundle\Document\Organization;
 use Cashbox\BoxBundle\Model\OrganizationModel;

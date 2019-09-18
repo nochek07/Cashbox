@@ -1,6 +1,6 @@
 <?php
 
-namespace Cashbox\BoxBundle\DependencyInjection;
+namespace Cashbox\BoxBundle\Service;
 
 use Swift_Mailer;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;

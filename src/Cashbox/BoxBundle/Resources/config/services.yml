@@ -31,6 +31,7 @@ services:
               group: "group.transactions"
               label: "label.yandex.transactions"
               show_mosaic_button: false
+        public: true
 
     admin.sberbank:
         class: Cashbox\BoxBundle\Admin\SberbankTransactionAdmin
@@ -43,7 +44,8 @@ services:
               manager_type: doctrine_mongodb
               group: "group.transactions"
               label: "label.sberbank.transactions"
-              show_mosaic_button: false 
+              show_mosaic_button: false
+        public: true
 
     admin.komtet:
         class: Cashbox\BoxBundle\Admin\ReportKomtetAdmin
@@ -102,7 +104,7 @@ services:
         public: true
 
     cashbox.mailer:
-        class: 'Cashbox\BoxBundle\DependencyInjection\Mailer'
+        class: 'Cashbox\BoxBundle\Service\Mailer'
         public: true
         arguments:
             - '%mailer_user%'
@@ -110,13 +112,13 @@ services:
             - '@mailer'
 
     cashbox.report:
-        class: 'Cashbox\BoxBundle\DependencyInjection\Report'
+        class: 'Cashbox\BoxBundle\Service\Report'
         public: true
         arguments:
             - '@doctrine_mongodb'
 
     cashbox.box:
-        class: 'Cashbox\BoxBundle\DependencyInjection\Box'
+        class: 'Cashbox\BoxBundle\Service\Box'
         public: true
         arguments:
             - '@doctrine_mongodb'

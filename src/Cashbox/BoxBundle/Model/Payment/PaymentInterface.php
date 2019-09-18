@@ -2,7 +2,7 @@
 
 namespace Cashbox\BoxBundle\Model\Payment;
 
-use Cashbox\BoxBundle\DependencyInjection\{Report, Mailer};
+use Cashbox\BoxBundle\Service\{Report, Mailer};
 use Cashbox\BoxBundle\Document\Organization;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
