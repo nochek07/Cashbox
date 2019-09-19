@@ -20,7 +20,7 @@ services:
 
     Cashbox\BoxBundle\:
         resource: '../../src/Cashbox/BoxBundle/*'
-        exclude: '../../src/Cashbox/BoxBundle/{Entity,Document,DependencyInjection,Repository,Tests}'
+        exclude: '../../src/Cashbox/BoxBundle/{Entity,Document,DependencyInjection,Service,Repository,Tests}'
 
     Cashbox\UserBundle\:
         resource: '../../src/Cashbox/UserBundle/*'
