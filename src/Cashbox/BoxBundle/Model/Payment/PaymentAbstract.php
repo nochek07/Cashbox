@@ -2,7 +2,7 @@
 
 namespace Cashbox\BoxBundle\Model\Payment;
 
-use Cashbox\BoxBundle\Service\{Mailer, Report};
+use Cashbox\BoxBundle\Service\{KKMBuilder, Report};
 use Cashbox\BoxBundle\Document\{KKM, Organization, PaymentDocumentAbstract};
 use Cashbox\BoxBundle\Model\KKM\{KKMAbstract, KKMInterface};
 use Cashbox\BoxBundle\Model\Type\KKMTypes;
@@ -30,9 +30,9 @@ abstract class PaymentAbstract implements PaymentInterface
     private $report;
 
     /**
-     * @var Mailer $mailer
+     * @var KKMBuilder $kkmBuilder
      */
-    private $mailer;
+    private $kkmBuilder;
 
     /**
      * {@inheritDoc}
@@ -85,19 +85,19 @@ abstract class PaymentAbstract implements PaymentInterface
     }
 
     /**
-     * @param Mailer $mailer
+     * @param KKMBuilder $kkmBuilder
      */
-    public function setMailer(Mailer $mailer)
+    public function setKKMBuilder(KKMBuilder $kkmBuilder)
     {
-        $this->mailer = $mailer;
+        $this->kkmBuilder = $kkmBuilder;
     }
 
     /**
-     * @return Mailer
+     * @return KKMBuilder
      */
-    public function getMailer()
+    public function getKKMBuilder()
     {
-        return $this->mailer;
+        return $this->kkmBuilder;
     }
 
     /**
@@ -151,13 +151,12 @@ abstract class PaymentAbstract implements PaymentInterface
             if ($kkms->count() > 0) {
                 $kkmDocument = $kkms->first();
                 $classKKM = KKMTypes::$arrayKkmModelClass[$kkmDocument->getType()];
-                /**
-                 * @var KKMAbstract $kkmManager
-                 */
-                $kkmManager = new $classKKM($this->Organization, $kkmDocument);
-                $kkmManager->setReport($this->getReport());
-                $kkmManager->setMailer($this->getMailer());
-                return $kkmManager;
+
+                $kkmManager = $this->kkmBuilder
+                    ->create($classKKM, $this->Organization, $kkmDocument);
+                if ($kkmManager instanceof KKMAbstract) {
+                    return $this->kkmBuilder->getKKMWithOptions($kkmManager);
+                }
             }
         }
         return null;

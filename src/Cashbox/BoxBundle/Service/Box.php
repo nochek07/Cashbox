@@ -4,7 +4,7 @@ namespace Cashbox\BoxBundle\Service;
 
 use Cashbox\BoxBundle\Document\Organization;
 use Cashbox\BoxBundle\Model\OrganizationModel;
-use Cashbox\BoxBundle\Model\Payment\PaymentInterface;
+use Cashbox\BoxBundle\Model\Payment\PaymentAbstract;
 use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -31,32 +31,32 @@ class Box
     private $report;
 
     /**
-     * @var Mailer $mailer
+     * @var KKMBuilder $kkmBuilder
      */
-    private $mailer;
+    private $kkmBuilder;
 
     /**
      * Box constructor.
      * 
      * @param ManagerRegistry $manager
      * @param Report $report
-     * @param Mailer $mailer
+     * @param KKMBuilder $kkmBuilder
      */
-    public function __construct(ManagerRegistry $manager, Report $report, Mailer $mailer)
+    public function __construct(ManagerRegistry $manager, Report $report, KKMBuilder $kkmBuilder)
     {
         $this->manager = $manager;
         $this->report = $report;
-        $this->mailer = $mailer;
+        $this->kkmBuilder = $kkmBuilder;
     }
 
     /**
      * Проверка
      *
      * @param Request $request
-     * @param PaymentInterface $payment
+     * @param PaymentAbstract $payment
      * @return string
      */
-    public function check(Request $request, PaymentInterface $payment)
+    public function check(Request $request, PaymentAbstract $payment)
     {
         return $this->getResponseText($request, $payment, false);
     }
@@ -65,10 +65,10 @@ class Box
      * Отправка
      *
      * @param Request $request
-     * @param PaymentInterface $payment
+     * @param PaymentAbstract $payment
      * @return string
      */
-    public function send(Request $request, PaymentInterface $payment)
+    public function send(Request $request, PaymentAbstract $payment)
     {
         return $this->getResponseText($request, $payment, true);
     }
@@ -77,11 +77,11 @@ class Box
      * Get Response Text
      *
      * @param Request $request
-     * @param PaymentInterface $payment
+     * @param PaymentAbstract $payment
      * @param bool $isSend - send to the kkm
      * @return string
      */
-    public function getResponseText(Request $request, PaymentInterface $payment, bool $isSend = true)
+    public function getResponseText(Request $request, PaymentAbstract $payment, bool $isSend = true)
     {
         $this->defineOrganization($request);
         if ($this->getOrganization() instanceof Organization) {
@@ -95,11 +95,11 @@ class Box
      * Get Response Payment Send or Check
      *
      * @param Request $request
-     * @param PaymentInterface $payment
+     * @param PaymentAbstract $payment
      * @param bool $isSend
      * @return string
      */
-    public function getResponsePayment(Request $request, PaymentInterface $payment, bool $isSend = true)
+    public function getResponsePayment(Request $request, PaymentAbstract $payment, bool $isSend = true)
     {
         $this->setOptionsPayment($payment);
         if ($isSend) {
@@ -110,14 +110,14 @@ class Box
     }
 
     /**
-     * @param PaymentInterface $payment
+     * @param PaymentAbstract $payment
      */
-    public function setOptionsPayment(PaymentInterface &$payment)
+    public function setOptionsPayment(PaymentAbstract &$payment)
     {
         $payment->setOrganization($this->getOrganization());
         $payment->setReport($this->report);
         $payment->setManager($this->manager);
-        $payment->setMailer($this->mailer);
+        $payment->setKKMBuilder($this->kkmBuilder);
     }
 
     /**

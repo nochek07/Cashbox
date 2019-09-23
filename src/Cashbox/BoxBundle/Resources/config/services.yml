@@ -117,10 +117,17 @@ services:
         arguments:
             - '@doctrine_mongodb'
 
+    cashbox.kkm.builder:
+        class: 'Cashbox\BoxBundle\Service\KKMBuilder'
+        public: true
+        arguments:
+            - '@cashbox.report'
+            - '@cashbox.mailer'
+
     cashbox.box:
         class: 'Cashbox\BoxBundle\Service\Box'
         public: true
         arguments:
             - '@doctrine_mongodb'
             - '@cashbox.report'
-            - '@cashbox.mailer'
+            - '@cashbox.kkm.builder'
