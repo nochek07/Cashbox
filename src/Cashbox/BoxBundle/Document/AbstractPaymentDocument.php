@@ -4,7 +4,7 @@ namespace Cashbox\BoxBundle\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 
-abstract class PaymentDocumentAbstract extends ObjectDocumentAbstract
+abstract class AbstractPaymentDocument extends AbstractObjectDocument
 {
     /**
      * @MongoDB\ReferenceOne(targetDocument="KKM", nullable=true)
@@ -15,6 +15,7 @@ abstract class PaymentDocumentAbstract extends ObjectDocumentAbstract
      * Set KKM
      *
      * @param KKM|null $kkm
+     *
      * @return $this
      */
     public function setKkm($kkm)

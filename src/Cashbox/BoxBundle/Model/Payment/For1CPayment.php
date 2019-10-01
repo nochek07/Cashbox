@@ -10,12 +10,13 @@ use Symfony\Component\HttpFoundation\Request;
 class For1CPayment extends YandexPayment
 {
     /**
-     * @var array $dataJSON
+     * @var array
      */
     private $dataJSON = [];
 
     /**
      * {@inheritDoc}
+     *
      * @return string
      */
     public function send(Request $request)
@@ -33,7 +34,7 @@ class For1CPayment extends YandexPayment
                 }
 
                 $repository = $this->getManager()
-                    ->getRepository('BoxBundle:ReportKomtet');
+                    ->getRepository('BoxBundle:ReportKomtet.php');
                 $report = $repository->findOneBy([
                     'type' => PaymentTypes::PAYMENT_TYPE_1C,
                     'action' => $this->dataJSON["action"],
@@ -54,6 +55,7 @@ class For1CPayment extends YandexPayment
 
     /**
      * {@inheritDoc}
+     *
      * @return string
      */
     public function check(Request $request)
@@ -76,7 +78,8 @@ class For1CPayment extends YandexPayment
      * Checking the MD5 sign.
      *
      * @param array $data payment parameters
-     * @param string $secret
+     * @param string $secret secret word
+     *
      * @return bool true if MD5 hash is correct
      */
     private function check1cMD5(array $data, string $secret)
@@ -101,6 +104,7 @@ class For1CPayment extends YandexPayment
      * Set DataJSON
      *
      * @param array $data
+     *
      * @return self
      */
     public function setDataJSON(array $data)

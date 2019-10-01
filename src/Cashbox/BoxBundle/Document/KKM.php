@@ -8,7 +8,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 /**
 * @MongoDB\EmbeddedDocument
 */
-class KKM extends ObjectDocumentAbstract
+class KKM extends AbstractObjectDocument
 {
     /**
      * @MongoDB\Field(type="string")
@@ -19,6 +19,7 @@ class KKM extends ObjectDocumentAbstract
      * Set name
      *
      * @param string $name
+     *
      * @return $this
      */
     public function setName($name)

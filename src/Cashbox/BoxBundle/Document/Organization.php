@@ -80,6 +80,7 @@ class Organization
      * Set name
      *
      * @param string $name
+     *
      * @return self
      */
     public function setName($name)
@@ -101,19 +102,20 @@ class Organization
     /**
      * Set INN
      *
-     * @param integer $iNN
+     * @param integer $INN
+     *
      * @return self
      */
-    public function setINN($iNN)
+    public function setINN($INN)
     {
-        $this->INN = $iNN;
+        $this->INN = $INN;
         return $this;
     }
 
     /**
      * Get INN
      *
-     * @return integer $iNN
+     * @return integer $inn
      */
     public function getINN()
     {
@@ -124,6 +126,7 @@ class Organization
      * Set adminEmail
      *
      * @param string $adminEmail
+     *
      * @return self
      */
     public function setAdminEmail($adminEmail)
@@ -146,6 +149,7 @@ class Organization
      * Set secret
      *
      * @param string $secret
+     *
      * @return self
      */
     public function setSecret($secret)
@@ -168,6 +172,7 @@ class Organization
      * Set patternNomenclature
      *
      * @param string $patternNomenclature
+     *
      * @return self
      */
     public function setPatternNomenclature($patternNomenclature)

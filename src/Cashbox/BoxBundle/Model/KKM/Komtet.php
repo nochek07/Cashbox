@@ -11,10 +11,10 @@ use Komtet\KassaSdk\{Check, Client, Payment, Position, QueueManager, Vat};
  *
  * @see https://github.com/Komtet/komtet-kassa-php-sdk
  */
-class Komtet extends KKMAbstract
+class Komtet extends AbstractKKM
 {
     /**
-     * @var QueueManager $QueueManager
+     * @var QueueManager
      */
     private $QueueManager = null;
 
@@ -37,9 +37,10 @@ class Komtet extends KKMAbstract
     }
 
     /**
-     * Отправка данных на кассу Komtet
+     * Building data for Komtet
      *
      * {@inheritDoc}
+     *
      * @example
      * [
      *      "order"  => "1224",
@@ -48,7 +49,7 @@ class Komtet extends KKMAbstract
      *      "kkm"    => [
      *          "positions" => [
      *              0 => [
-     *                  "name"     => "Наименование",
+     *                  "name"     => "Name",
      *                  "price"    => 3.0,
      *                  "quantity" => 2,
      *                  "orderSum" => 6.0,
@@ -62,7 +63,7 @@ class Komtet extends KKMAbstract
      *      ]
      * ]
      */
-    public function buildData(array $param)
+    public function buildData(array $param): array
     {
         return [
             "order" => $param['order'],
@@ -176,7 +177,7 @@ class Komtet extends KKMAbstract
     /**
      * {@inheritDoc}
      */
-    public function sendMail(array $data, string $from)
+    public function sendMail(array $data, string $from): bool
     {
         $mailer = $this->getMailer();
         if ($mailer instanceof Mailer) {
@@ -204,7 +205,7 @@ class Komtet extends KKMAbstract
     /**
      * {@inheritDoc}
      */
-	public function isQueueActive($name)
+	public function isQueueActive($name): bool
     {
         if (!is_null($this->QueueManager)) {
             return $this->QueueManager->isQueueActive($name);
@@ -216,7 +217,7 @@ class Komtet extends KKMAbstract
     /**
      * @return false
      */
-    public function checkKKM()
+    public function checkKKM(): bool
     {
         $komtet = $this->kkmDocument->getData();
         if ($komtet['cancel_action'] == 1) {

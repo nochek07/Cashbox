@@ -3,17 +3,17 @@
 namespace Cashbox\BoxBundle\Service;
 
 use Cashbox\BoxBundle\Document\{Organization, KKM};
-use Cashbox\BoxBundle\Model\KKM\{KKMInterface, KKMAbstract};
+use Cashbox\BoxBundle\Model\KKM\{KKMInterface, AbstractKKM};
 
 class KKMBuilder
 {
     /**
-     * @var Report $report
+     * @var Report
      */
     private $report;
 
     /**
-     * @var Mailer $mailer
+     * @var Mailer
      */
     private $mailer;
 
@@ -30,10 +30,13 @@ class KKMBuilder
     }
 
     /**
+     * Factory
+     *
      * @param string $name
      * @param Organization $Organization
      * @param KKM $kkmDocument
-     * @return null
+     *
+     * @return AbstractKKM|null
      */
     public function create(string $name, Organization $Organization, KKM $kkmDocument)
     {
@@ -45,10 +48,13 @@ class KKMBuilder
     }
 
     /**
-     * @param KKMAbstract $kkmManager
+     * Get KKMInterface with Options
+     *
+     * @param AbstractKKM $kkmManager
+     *
      * @return KKMInterface
      */
-    public function getKKMWithOptions(KKMAbstract $kkmManager)
+    public function getKKMWithOptions(AbstractKKM $kkmManager)
     {
         $kkmManager->setReport($this->report);
         $kkmManager->setMailer($this->mailer);

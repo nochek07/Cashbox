@@ -3,34 +3,34 @@
 namespace Cashbox\BoxBundle\Model\Payment;
 
 use Cashbox\BoxBundle\Service\{KKMBuilder, Report};
-use Cashbox\BoxBundle\Document\{KKM, Organization, PaymentDocumentAbstract};
-use Cashbox\BoxBundle\Model\KKM\{KKMAbstract, KKMInterface};
+use Cashbox\BoxBundle\Document\{KKM, Organization, AbstractPaymentDocument};
+use Cashbox\BoxBundle\Model\KKM\{AbstractKKM, KKMInterface};
 use Cashbox\BoxBundle\Model\Type\KKMTypes;
 use Doctrine\Common\Collections\{Collection, ArrayCollection};
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 
-abstract class PaymentAbstract implements PaymentInterface
+abstract class AbstractPayment implements PaymentInterface
 {
     protected $name = '';
 
     /**
-     * @var ManagerRegistry $manager
+     * @var ManagerRegistry
      */
     private $manager;
 
     /**
-     * @var Organization $Organization
+     * @var Organization
      */
     protected $Organization;
 
     /**
-     * @var Report $report
+     * @var Report
      */
     private $report;
 
     /**
-     * @var KKMBuilder $kkmBuilder
+     * @var KKMBuilder
      */
     private $kkmBuilder;
 
@@ -45,6 +45,8 @@ abstract class PaymentAbstract implements PaymentInterface
     abstract public function check(Request $request);
 
     /**
+     * Set Organization
+     *
      * @param Organization $Organization
      */
     public function setOrganization(Organization $Organization)
@@ -53,6 +55,8 @@ abstract class PaymentAbstract implements PaymentInterface
     }
 
     /**
+     * Set Manager
+     *
      * @param ManagerRegistry $manager
      */
     public function setManager(ManagerRegistry $manager)
@@ -61,6 +65,8 @@ abstract class PaymentAbstract implements PaymentInterface
     }
 
     /**
+     * Get Manager
+     *
      * @return ManagerRegistry
      */
     public function getManager()
@@ -69,6 +75,8 @@ abstract class PaymentAbstract implements PaymentInterface
     }
 
     /**
+     * Set Report
+     *
      * @param Report $report
      */
     public function setReport(Report $report)
@@ -77,6 +85,8 @@ abstract class PaymentAbstract implements PaymentInterface
     }
 
     /**
+     * Get Report
+     *
      * @return Report
      */
     public function getReport()
@@ -85,6 +95,8 @@ abstract class PaymentAbstract implements PaymentInterface
     }
 
     /**
+     * Set KKMBuilder
+     *
      * @param KKMBuilder $kkmBuilder
      */
     public function setKKMBuilder(KKMBuilder $kkmBuilder)
@@ -93,6 +105,8 @@ abstract class PaymentAbstract implements PaymentInterface
     }
 
     /**
+     * Get KKMBuilder
+     *
      * @return KKMBuilder
      */
     public function getKKMBuilder()
@@ -101,10 +115,11 @@ abstract class PaymentAbstract implements PaymentInterface
     }
 
     /**
-     * Дополнительная проверка
+     * Additional check
      *
      * @param Request $request
-     * @param String $handling_secret - секретное слово
+     * @param String $handling_secret - secret word
+     *
      * @return bool
      */
     public function otherCheckMD5(Request $request, $handling_secret)
@@ -114,13 +129,16 @@ abstract class PaymentAbstract implements PaymentInterface
     }
 
     /**
+     * Get desired payment
+     *
      * @param Collection $mongoPersistCollection
-     * @return PaymentDocumentAbstract|null
+     *
+     * @return AbstractPaymentDocument|null
      */
     public function getDesiredPayment(Collection $mongoPersistCollection)
     {
         $payments = $mongoPersistCollection->filter(
-            function (PaymentDocumentAbstract $entry) {
+            function (AbstractPaymentDocument $entry) {
                 return $entry->getType() === $this->name;
             }    
         );
@@ -132,10 +150,13 @@ abstract class PaymentAbstract implements PaymentInterface
     }
 
     /**
-     * @param PaymentDocumentAbstract $payments
+     * Get KKM By Payment
+     *
+     * @param AbstractPaymentDocument $payments
+     *
      * @return KKMInterface|null
      */
-    public function getKkmByPayment(PaymentDocumentAbstract $payments)
+    public function getKkmByPayment(AbstractPaymentDocument $payments)
     {
         $kkmDocument = $payments->getKkm();
         if ($kkmDocument instanceof KKM) {
@@ -148,13 +169,14 @@ abstract class PaymentAbstract implements PaymentInterface
                     return $entry->getId() === $kkmDocument->getId();
                 }
             );
+
             if ($kkms->count() > 0) {
                 $kkmDocument = $kkms->first();
                 $classKKM = KKMTypes::$arrayKkmModelClass[$kkmDocument->getType()];
 
                 $kkmManager = $this->kkmBuilder
                     ->create($classKKM, $this->Organization, $kkmDocument);
-                if ($kkmManager instanceof KKMAbstract) {
+                if ($kkmManager instanceof AbstractKKM) {
                     return $this->kkmBuilder->getKKMWithOptions($kkmManager);
                 }
             }

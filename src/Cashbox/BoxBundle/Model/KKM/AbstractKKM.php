@@ -2,34 +2,33 @@
 
 namespace Cashbox\BoxBundle\Model\KKM;
 
-use Cashbox\BoxBundle\Service\Mailer;
-use Cashbox\BoxBundle\Service\Report;
+use Cashbox\BoxBundle\Service\{Mailer, Report};
 use Cashbox\BoxBundle\Document\{Organization, KKM};
 
-abstract class KKMAbstract implements KKMInterface
+abstract class AbstractKKM implements KKMInterface
 {
     /**
-     * @var Organization $organizationDocument
+     * @var Organization
      */
     protected $organizationDocument;
 
     /**
-     * @var KKM $kkmDocument
+     * @var KKM
      */
     protected $kkmDocument;
 
     /**
-     * @var Report $report
+     * @var Report
      */
     private $report;
 
     /**
-     * @var Mailer|null $mailer
+     * @var Mailer|null
      */
     private $mailer = null;
 
     /**
-     * KKMAbstract constructor.
+     * AbstractKKM constructor.
      *
      * @param Organization $organizationDocument
      * @param KKM $kkmDocument
@@ -66,6 +65,7 @@ abstract class KKMAbstract implements KKMInterface
      * Set Mailer
      *
      * @param Mailer $mailer
+     *
      * @return self
      */
     public function setMailer(Mailer $mailer)
@@ -92,7 +92,7 @@ abstract class KKMAbstract implements KKMInterface
     /**
      * {@inheritDoc}
      */
-    abstract function buildData(array $param);
+    abstract function buildData(array $param): array;
 
     /**
      * {@inheritDoc}
@@ -102,15 +102,15 @@ abstract class KKMAbstract implements KKMInterface
     /**
      * {@inheritDoc}
      */
-    abstract function sendMail(array $data, string $from);
+    abstract function sendMail(array $data, string $from): bool;
 
     /**
      * {@inheritDoc}
      */
-    abstract function isQueueActive($id);
+    abstract function isQueueActive($id): bool;
 
     /**
      * {@inheritDoc}
      */
-    abstract function checkKKM();
+    abstract function checkKKM(): bool;
 }

@@ -2,12 +2,10 @@
 
 namespace Cashbox\BoxBundle\Model\Type;
 
-class OtherTypes extends TypeAbstract
+class OtherTypes extends AbstractTypes
 {
     /**
-     * Get ArrayForAdmin
-     *
-     * @return array
+     * {@inheritDoc}
      */
     public static function getArrayForAdmin()
     {

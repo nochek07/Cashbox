@@ -9,12 +9,13 @@ use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
 class Report
 {
     /**
-     * @var ManagerRegistry $manager
+     * @var ManagerRegistry
      */
     private $manager;
 
     /**
      * Report constructor.
+     *
      * @param ManagerRegistry $manager
      */
     public function __construct(ManagerRegistry $manager)
@@ -23,6 +24,8 @@ class Report
     }
 
     /**
+     * Add report
+     *
      * @param ReportInterface $report
      * @param array $param
      */

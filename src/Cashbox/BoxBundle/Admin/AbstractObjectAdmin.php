@@ -2,23 +2,26 @@
 
 namespace Cashbox\BoxBundle\Admin;
 
-use Cashbox\BoxBundle\Model\Type\TypeAbstract;
+use Cashbox\BoxBundle\Model\Type\AbstractTypes;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Form\FormMapper;
 
-abstract class ObjectAbstractAdmin extends AbstractAdmin
+abstract class AbstractObjectAdmin extends AbstractAdmin
 {
     protected $translationDomain = 'BoxBundle';
 
     protected $listModes = [];
 
     /**
+     * Add Immutable Array to form
+     *
      * @param FormMapper $formMapper
-     * @param TypeAbstract $type
+     * @param AbstractTypes $type
      * @param array $order
+     *
      * @return array
      */
-    public function addImmutableArray(FormMapper $formMapper, TypeAbstract $type, array $order = [])
+    public function addImmutableArray(FormMapper $formMapper, AbstractTypes $type, array $order = [])
     {
         $result = [
             'order' => $order,

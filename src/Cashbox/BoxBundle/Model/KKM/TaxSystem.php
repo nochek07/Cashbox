@@ -4,6 +4,9 @@ namespace Cashbox\BoxBundle\Model\KKM;
 
 class TaxSystem extends \Komtet\KassaSdk\TaxSystem
 {
+    /**
+     * @var array
+     */
     public static $choices = [
         'tax.commom' => self::COMMON,
         'tax.simplified.in' => self::SIMPLIFIED_IN,

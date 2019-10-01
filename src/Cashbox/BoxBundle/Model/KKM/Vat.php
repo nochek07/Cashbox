@@ -4,6 +4,9 @@ namespace Cashbox\BoxBundle\Model\KKM;
 
 class Vat extends \Komtet\KassaSdk\Vat
 {
+    /**
+     * @var array
+     */
     public static $choices = [
         'rate.no' => self::RATE_NO,
         'rate.0' => self::RATE_0,

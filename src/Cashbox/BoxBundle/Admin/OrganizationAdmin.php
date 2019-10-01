@@ -2,7 +2,7 @@
 
 namespace Cashbox\BoxBundle\Admin;
 
-use Cashbox\BoxBundle\Document\{ObjectDocumentAbstract, Organization, KKM, Other, Payment};
+use Cashbox\BoxBundle\Document\{AbstractObjectDocument, Organization, KKM, Other, Payment};
 use Doctrine\Common\Collections\{Collection, ArrayCollection};
 use Cashbox\BoxBundle\Model\Type;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
@@ -89,8 +89,11 @@ class OrganizationAdmin extends AbstractAdmin
     }
 
     /**
+     * Validate
+     *
      * @param ErrorElement $errorElement
      * @param Organization $organization
+     *
      * @return bool
      */
     public function validate(ErrorElement $errorElement, $organization)
@@ -232,7 +235,7 @@ class OrganizationAdmin extends AbstractAdmin
     private function setDataByAdditional($objects)
     {
         /**
-         * @var ObjectDocumentAbstract $object
+         * @var AbstractObjectDocument $object
          */
         foreach ($objects as $object) {
             $type = $object->getType();
@@ -286,6 +289,9 @@ class OrganizationAdmin extends AbstractAdmin
         return $instance;
     }
 
+    /**
+     * @return array
+     */
     public function getFormTheme()
     {
         return array_merge(

@@ -7,17 +7,19 @@ use Symfony\Component\HttpFoundation\Request;
 interface PaymentInterface
 {
     /**
-     * Отправка
+     * Sending
      *
      * @param Request $request
+     *
      * @return mixed
      */
     public function send(Request $request);
 
     /**
-     * Проверка
+     * Checking
      *
      * @param Request $request
+     *
      * @return mixed
      */
     public function check(Request $request);

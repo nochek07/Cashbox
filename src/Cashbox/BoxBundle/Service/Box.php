@@ -4,34 +4,34 @@ namespace Cashbox\BoxBundle\Service;
 
 use Cashbox\BoxBundle\Document\Organization;
 use Cashbox\BoxBundle\Model\OrganizationModel;
-use Cashbox\BoxBundle\Model\Payment\PaymentAbstract;
+use Cashbox\BoxBundle\Model\Payment\AbstractPayment;
 use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 
 class Box
 {
     /**
-     * @var Organization|null $Organization;
+     * @var Organization|null
      */
     private $Organization;
 
     /**
-     * @var string $OrganizationTextError;
+     * @var string
      */
     private $OrganizationTextError = '';
 
     /**
-     * @var ManagerRegistry $manager
+     * @var ManagerRegistry
      */
     private $manager;
 
     /**
-     * @var Report $report
+     * @var Report
      */
     private $report;
 
     /**
-     * @var KKMBuilder $kkmBuilder
+     * @var KKMBuilder
      */
     private $kkmBuilder;
 
@@ -50,25 +50,27 @@ class Box
     }
 
     /**
-     * Проверка
+     * Checking
      *
      * @param Request $request
-     * @param PaymentAbstract $payment
+     * @param AbstractPayment $payment
+     *
      * @return string
      */
-    public function check(Request $request, PaymentAbstract $payment)
+    public function check(Request $request, AbstractPayment $payment)
     {
         return $this->getResponseText($request, $payment, false);
     }
 
     /**
-     * Отправка
+     * Sending
      *
      * @param Request $request
-     * @param PaymentAbstract $payment
+     * @param AbstractPayment $payment
+     *
      * @return string
      */
-    public function send(Request $request, PaymentAbstract $payment)
+    public function send(Request $request, AbstractPayment $payment)
     {
         return $this->getResponseText($request, $payment, true);
     }
@@ -77,11 +79,12 @@ class Box
      * Get Response Text
      *
      * @param Request $request
-     * @param PaymentAbstract $payment
+     * @param AbstractPayment $payment
      * @param bool $isSend - send to the kkm
+     * 
      * @return string
      */
-    public function getResponseText(Request $request, PaymentAbstract $payment, bool $isSend = true)
+    public function getResponseText(Request $request, AbstractPayment $payment, bool $isSend = true)
     {
         $this->defineOrganization($request);
         if ($this->getOrganization() instanceof Organization) {
@@ -92,14 +95,15 @@ class Box
     }
 
     /**
-     * Get Response Payment Send or Check
+     * Get Response Payment after Sending or Checking
      *
      * @param Request $request
-     * @param PaymentAbstract $payment
-     * @param bool $isSend
+     * @param AbstractPayment $payment
+     * @param bool $isSend - send to the kkm
+     *
      * @return string
      */
-    public function getResponsePayment(Request $request, PaymentAbstract $payment, bool $isSend = true)
+    public function getResponsePayment(Request $request, AbstractPayment $payment, bool $isSend = true)
     {
         $this->setOptionsPayment($payment);
         if ($isSend) {
@@ -110,9 +114,11 @@ class Box
     }
 
     /**
-     * @param PaymentAbstract $payment
+     * Set payment options
+     *
+     * @param AbstractPayment $payment
      */
-    public function setOptionsPayment(PaymentAbstract &$payment)
+    public function setOptionsPayment(AbstractPayment &$payment)
     {
         $payment->setOrganization($this->getOrganization());
         $payment->setReport($this->report);
@@ -134,6 +140,8 @@ class Box
     }
 
     /**
+     * Get Organization
+     * 
      * @return Organization|null
      */
     public function getOrganization()
@@ -142,7 +150,7 @@ class Box
     }
 
     /**
-     * Set Text Error for Organization
+     * Set text error of Organization
      *
      * @param $text
      */

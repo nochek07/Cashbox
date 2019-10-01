@@ -42,6 +42,8 @@ class SberbankTransaction
 
     /**
      * @MongoDB\Field(type="int")
+     *
+     * TODO Upper
      */
     protected $inn;
 
@@ -80,6 +82,7 @@ class SberbankTransaction
      * Set Sum
      *
      * @param float $Sum
+     *
      * @return self
      */
     public function setSum($Sum)
@@ -102,6 +105,7 @@ class SberbankTransaction
      * Set customerNumber
      *
      * @param string $customerNumber
+     *
      * @return self
      */
     public function setCustomerNumber($customerNumber)
@@ -124,6 +128,7 @@ class SberbankTransaction
      * Set email
      *
      * @param string $email
+     *
      * @return self
      */
     public function setEmail($email)
@@ -146,6 +151,7 @@ class SberbankTransaction
      * Set dataPost
      *
      * @param array $dataPost
+     *
      * @return self
      */
     public function setDataPost($dataPost)
@@ -167,12 +173,13 @@ class SberbankTransaction
     /**
      * Set INN
      *
-     * @param integer $inn
+     * @param integer $INN
+     *
      * @return self
      */
-    public function setInn($inn)
+    public function setInn($INN)
     {
-        $this->inn = $inn;
+        $this->inn = $INN;
         return $this;
     }
 

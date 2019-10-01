@@ -8,7 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class DefaultController extends Controller
 {
     /**
-     * Главная страница
+     * Home page
      *
      * @Route("/", name="homepage")
      */

@@ -5,17 +5,22 @@ namespace Cashbox\BoxBundle\Model\Type;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Translation\TranslatorInterface;
 
-abstract class TypeAbstract
+abstract class AbstractTypes
 {
     protected static $translationDomain = 'BoxBundle';
 
     /**
+     * Get ArrayForAdmin
+     *
      * @return array
      */
     abstract public static function getArrayForAdmin();
 
     /**
+     * Get new keys or array for admin
+     *
      * @param array $value
+     *
      * @return array
      */
     public static function getNewKeys(array $value)
@@ -27,9 +32,12 @@ abstract class TypeAbstract
     }
 
     /**
+     * Get text validation
+     *
      * @param string $type
      * @param array $value
      * @param TranslatorInterface $translator
+     *
      * @return string
      */
     public static function getTextValidation(string $type, array $value, TranslatorInterface $translator)

@@ -12,11 +12,13 @@ use Symfony\Component\HttpFoundation\{Request, Response};
 class SberbankController extends AbstractController
 {
     /**
-     * Отправка чека по callback
+     * Sending a check by callback
      *
      * @Route("/callbackSberbank", schemes={"https"})
+     *
      * @param Request $request
      * @param Box $box
+     *
      * @return Response
      */
     public function callbackSberbankAction(Request $request, Box $box)
@@ -31,11 +33,13 @@ class SberbankController extends AbstractController
     }
 
     /**
-     * Создание заказа и отправка настраницу оплаты в случае успеха
+     * Creating an order and sending a payment page if successful
      *
      * @Route("/restSberbank", schemes={"https"})
+     *
      * @param Request $request
      * @param Box $box
+     *
      * @return Response
      */
     public function restSberbankAction(Request $request, $box)

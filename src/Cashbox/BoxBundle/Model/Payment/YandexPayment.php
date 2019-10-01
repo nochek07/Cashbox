@@ -17,12 +17,13 @@ use Symfony\Component\HttpFoundation\Request;
  * @see Новый API Яндекса
  * https://tech.yandex.ru/money/doc/payment-solution/payment-notifications/payment-notifications-check-docpage/
  */
-class YandexPayment extends PaymentAbstract
+class YandexPayment extends AbstractPayment
 {
     protected $name = 'Yandex';
 
     /**
      * {@inheritDoc}
+     *
      * @return string
      */
     public function send(Request $request)
@@ -68,6 +69,7 @@ class YandexPayment extends PaymentAbstract
 
     /**
      * {@inheritDoc}
+     *
      * @return string
      */
     public function check(Request $request)
@@ -112,9 +114,10 @@ class YandexPayment extends PaymentAbstract
     /**
      * Handles "checkOrder" and "paymentAviso" requests.
      *
-     * @param  Request $request
-     * @param  array $param
-     * @param  string $secret
+     * @param Request $request
+     * @param array $param
+     * @param string $secret
+     *
      * @return string
      */
     private function processRequest(Request $request, array $param, string $secret)
@@ -127,10 +130,11 @@ class YandexPayment extends PaymentAbstract
     }
 
     /**
-     * Получение ответа
+     * Get Answer
      * 
      * @param Request $request
      * @param array $param
+     *
      * @return string
      */
     private function getAnswer(Request $request, array $param)
@@ -141,10 +145,11 @@ class YandexPayment extends PaymentAbstract
     /**
      * Checking the MD5 sign.
      *
-     * @param  Request $request
-     * @param  array $param
-     * @param  string $secret
-     * @return bool (true if MD5 hash is correct)
+     * @param Request $request
+     * @param array $param
+     * @param string $secret
+     *
+     * @return bool true if MD5 hash is correct
      */
     private function checkMD5(Request $request, array $param, string $secret)
     {
@@ -163,12 +168,13 @@ class YandexPayment extends PaymentAbstract
     /**
      * Building XML response.
      *
-     * @param  string $functionName  "checkOrder" or "paymentAviso" string
-     * @param  string $invoiceId     transaction number
-     * @param  string $result_code   result code
-     * @param  string $shopId        shop Id
-     * @param  string $message       error message. May be null.
-     * @return string                prepared XML response
+     * @param string $functionName  "checkOrder" or "paymentAviso" string
+     * @param string $invoiceId     transaction number
+     * @param string $result_code   result code
+     * @param string $shopId        shop Id
+     * @param string $message       error message. May be null.
+     *
+     * @return string               prepared XML response
      */
     public function buildResponse($functionName, $invoiceId, $result_code, $shopId = null, $message = null)
     {
@@ -184,9 +190,10 @@ class YandexPayment extends PaymentAbstract
     }
 
     /**
-     * Форматирование даты
+     * Date formatting
      *
      * @param \DateTime $date
+     *
      * @return string
      */
     private function formatDate(\DateTime $date)

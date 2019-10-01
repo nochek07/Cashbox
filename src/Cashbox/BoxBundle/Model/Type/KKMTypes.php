@@ -6,19 +6,17 @@ use Cashbox\BoxBundle\Model\KKM;
 use Sonata\Form\Type\BooleanType;
 use Symfony\Component\Form\Extension\Core\Type\{ChoiceType, IntegerType, TextType};
 
-class KKMTypes extends TypeAbstract
+class KKMTypes extends AbstractTypes
 {
     /**
-     * @var array $arrayKkmModelClass
+     * @var array
      */
     public static $arrayKkmModelClass = [
         'Komtet' => KKM\Komtet::class,
     ];
 
     /**
-     * Get ArrayForAdmin
-     *
-     * @return array
+     * {@inheritDoc}
      */
     public static function getArrayForAdmin()
     {

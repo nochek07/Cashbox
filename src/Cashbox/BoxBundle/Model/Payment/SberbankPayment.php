@@ -8,16 +8,16 @@ use Cashbox\BoxBundle\Model\Report\SberbankReport;
 use Cashbox\BoxBundle\Model\Type\PaymentTypes;
 use Symfony\Component\HttpFoundation\Request;
 
-class SberbankPayment extends PaymentAbstract
+class SberbankPayment extends AbstractPayment
 {
     protected $name = 'Sberbank';
 
     /**
      * Test merchants
+     *
      * @example const GATEWAY_URL = 'https://3dsec.sberbank.ru/payment/rest/';
      * @example const FORM_URL    = 'https://3dsec.sberbank.ru/payment/merchants/{login}/payment_ru.html';
      */
-
     const GATEWAY_URL = 'https://securepayments.sberbank.ru/payment/rest/';
     const FORM_URL    = 'https://securepayments.sberbank.ru/payment/merchants/sbersafe/payment_ru.html';
 
@@ -28,6 +28,7 @@ class SberbankPayment extends PaymentAbstract
 
     /**
      * {@inheritDoc}
+     *
      * @return string
      */
     public function send(Request $request)
@@ -86,6 +87,7 @@ class SberbankPayment extends PaymentAbstract
 
     /**
      * {@inheritDoc}
+     *
      * @return string
      */
     public function check(Request $request)
@@ -94,10 +96,11 @@ class SberbankPayment extends PaymentAbstract
     }
 
     /**
-     * Вычисление hash-суммы
+     * Calculation of hash-sum
      *
      * @param Request $request
      * @param array $param
+     *
      * @return bool
      */
     private function checkCallback(Request $request, array $param)
@@ -121,10 +124,11 @@ class SberbankPayment extends PaymentAbstract
     }
 
     /**
-     * Основная функция работы со сбербанком
+     * Gateway fot Sberbank
      *
      * @param string $method
      * @param array $data
+     *
      * @return mixed
      */
     private function gateway(string $method, array $data)
@@ -145,10 +149,11 @@ class SberbankPayment extends PaymentAbstract
     }
 
     /**
-     * Получение ссылки для перенаправления
+     * Get Redirect Url
      *
      * @param Request $request
-     * @param string $failUrl - ссылка в случае ошибки
+     * @param string $failUrl - error url of page
+     *
      * @return string
      */
     public function getRedirectUrl(Request $request, string $failUrl)
@@ -209,10 +214,11 @@ class SberbankPayment extends PaymentAbstract
     }
 
     /**
-     * Получение ссулки с которой перешел пользователь
+     * Getting the link with which the user switched
      *
      * @param Request $request
      * @param int $success
+     *
      * @return string
      */
     public function getSiteUrl(Request $request, int $success = 0)
@@ -227,9 +233,10 @@ class SberbankPayment extends PaymentAbstract
     }
 
     /**
-     * Преоброзование строки с суммой
+     * Replace Sum
      *
      * @param string $Sum
+     *
      * @return string
      */
     private function replaceSum(string $Sum)

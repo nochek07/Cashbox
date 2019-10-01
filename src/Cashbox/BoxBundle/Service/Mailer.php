@@ -8,17 +8,17 @@ use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 class Mailer
 {
     /**
-     * @var string $mailer_user
+     * @var string
      */
     private $mailer_user;
 
     /**
-     * @var EngineInterface $templating
+     * @var EngineInterface
      */
     private $templating;
 
     /**
-     * @var Swift_Mailer $mailer
+     * @var Swift_Mailer
      */
     private $mailer;
 
@@ -37,10 +37,11 @@ class Mailer
     }
 
     /**
-     * Отправка на почту
+     * Sending by mail
      *
      * @param string $email
      * @param array $data
+     *
      * @return bool
      */
     public function send(string $email, array $data)

@@ -8,7 +8,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 /**
 * @MongoDB\EmbeddedDocument
 */
-class Payment extends PaymentDocumentAbstract
+class Payment extends AbstractPaymentDocument
 {
     public function getArrayForAdmin(): array
     {

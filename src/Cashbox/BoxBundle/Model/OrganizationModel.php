@@ -9,11 +9,12 @@ use Cashbox\BoxBundle\Document\Organization;
 class OrganizationModel
 {
     /**
-     * Получение организации по ИНН
+     * Get Organization by INN
      *
      * @param Request|array $request
      * @param ManagerRegistry $managerMongoDB
-     * @return null|Organization
+     *
+     * @return Organization|null
      */
     public static function getOrganization($request, ManagerRegistry $managerMongoDB)
     {

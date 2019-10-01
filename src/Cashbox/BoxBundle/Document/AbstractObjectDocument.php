@@ -6,7 +6,7 @@ use BadMethodCallException;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
 
-abstract class ObjectDocumentAbstract
+abstract class AbstractObjectDocument
 {
     /**
      * @MongoDB\Id(strategy="AUTO")
@@ -24,7 +24,7 @@ abstract class ObjectDocumentAbstract
     protected $data = [];
 
     /**
-     * @var array $additional
+     * @var array
      */
     protected $additional = [];
 
@@ -42,6 +42,7 @@ abstract class ObjectDocumentAbstract
      * Set type
      *
      * @param string $type
+     *
      * @return self
      */
     public function setType($type)
@@ -64,6 +65,7 @@ abstract class ObjectDocumentAbstract
      * Set data
      *
      * @param array $data
+     *
      * @return self
      */
     public function setData($data)
@@ -84,6 +86,7 @@ abstract class ObjectDocumentAbstract
 
     /**
      * @param $name
+     *
      * @return array
      */
     public function __get($name)
@@ -102,6 +105,7 @@ abstract class ObjectDocumentAbstract
     /**
      * @param $name
      * @param array $data
+     *
      * @return self
      */
     public function __set($name, $data)

@@ -12,11 +12,13 @@ use Symfony\Component\HttpFoundation\{Request, Response};
 class For1CController extends AbstractController
 {
     /**
-     * Отправка чека из 1С
+     * Sending a check from 1C
      *
      * @Route("/send1c", schemes={"https"})
+     *
      * @param Request $request
      * @param Box $box
+     *
      * @return Response
      */
     public function send1cAction(Request $request, Box $box)
@@ -44,11 +46,13 @@ class For1CController extends AbstractController
     }
 
     /**
-     * Проверка сайта/очереди из 1С
+     * Checking a site/queue from 1C
      *
      * @Route("/chek1c", schemes={"https"})
+     *
      * @param Request $request
      * @param Box $box
+     *
      * @return Response
      */
     public function chek1cAction(Request $request, Box $box)

@@ -11,11 +11,13 @@ use Symfony\Component\HttpFoundation\{Request, Response};
 class YandexController extends AbstractController
 {
     /**
-     * Отправка чека
+     * Sending a receipt
      *
      * @Route("/aviso", schemes={"https"})
+     *
      * @param Request $request
      * @param Box $box
+     *
      * @return Response
      */
     public function avisoAction(Request $request, Box $box)
@@ -30,11 +32,13 @@ class YandexController extends AbstractController
     }
 
     /**
-     * Проверка
+     * Checking
      *
      * @Route("/check", schemes={"https"})
+     *
      * @param Request $request
      * @param Box $box
+     *
      * @return Response
      */
     public function checkAction(Request $request, Box $box)

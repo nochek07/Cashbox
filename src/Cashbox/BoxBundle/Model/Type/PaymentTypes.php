@@ -4,16 +4,14 @@ namespace Cashbox\BoxBundle\Model\Type;
 
 use Symfony\Component\Form\Extension\Core\Type\{IntegerType, TextType};
 
-class PaymentTypes extends TypeAbstract
+class PaymentTypes extends AbstractTypes
 {
     const PAYMENT_TYPE_YANDEX = "yandex";
     const PAYMENT_TYPE_1C = "1c";
     const PAYMENT_TYPE_SBERBANK = "sberbank";
 
     /**
-     * Get ArrayForAdmin
-     *
-     * @return array
+     * {@inheritDoc}
      */
     public static function getArrayForAdmin()
     {

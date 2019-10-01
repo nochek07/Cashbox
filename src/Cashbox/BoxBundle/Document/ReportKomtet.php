@@ -6,9 +6,9 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
 
 /**
- * @MongoDB\Document(collection="YandexTransaction")
+ * @MongoDB\Document(collection="ReportKomtet")
  */
-class YandexTransaction
+class ReportKomtet
 {
     /**
      * @MongoDB\Id(strategy="AUTO")
@@ -23,22 +23,27 @@ class YandexTransaction
     /**
      * @MongoDB\Field(type="string")
      */
+    protected $type;
+
+    /**
+     * @MongoDB\Field(type="string")
+     */
+    protected $state;
+
+    /**
+     * @MongoDB\Field(type="string")
+     */
+    protected $uuid;
+
+    /**
+     * @MongoDB\Field(type="string")
+     */
     protected $action;
 
     /**
-     * @MongoDB\Field(type="float")
+     * @MongoDB\Field(type="hash")
      */
-    protected $Sum;
-
-    /**
-     * @MongoDB\Field(type="string")
-     */
-    protected $customerNumber;
-
-    /**
-     * @MongoDB\Field(type="string")
-     */
-    protected $email;
+    protected $dataKomtet;
 
     /**
      * @MongoDB\Field(type="hash")
@@ -74,13 +79,82 @@ class YandexTransaction
     }
 
     /**
-     * Get datetime
+     * Get Sum
      *
      * @return \DateTime $datetime
      */
     public function getDatetime()
     {
         return $this->datetime;
+    }
+
+    /**
+     * Set type
+     *
+     * @param string $type
+     *
+     * @return self
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return string $type
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Set state
+     *
+     * @param string $state
+     *
+     * @return self
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
+        return $this;
+    }
+
+    /**
+     * Get state
+     *
+     * @return string $state
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
+     * Set uuid
+     *
+     * @param string $uuid
+     *
+     * @return self
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+        return $this;
+    }
+
+    /**
+     * Get uuid
+     *
+     * @return string $uuid
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
     }
 
     /**
@@ -107,72 +181,26 @@ class YandexTransaction
     }
 
     /**
-     * Set Sum
+     * Set dataKomtet
      *
-     * @param float $Sum
+     * @param array $dataKomtet
      *
      * @return self
      */
-    public function setSum($Sum)
+    public function setDataKomtet($dataKomtet)
     {
-        $this->Sum = $Sum;
+        $this->dataKomtet = $dataKomtet;
         return $this;
     }
 
     /**
-     * Get Sum
+     * Get dataKomtet
      *
-     * @return float $Sum
+     * @return array $dataKomtet
      */
-    public function getSum()
+    public function getDataKomtet()
     {
-        return $this->Sum;
-    }
-
-    /**
-     * Set customerNumber
-     *
-     * @param string $customerNumber
-     *
-     * @return self
-     */
-    public function setCustomerNumber($customerNumber)
-    {
-        $this->customerNumber = $customerNumber;
-        return $this;
-    }
-
-    /**
-     * Get customerNumber
-     *
-     * @return string $customerNumber
-     */
-    public function getCustomerNumber()
-    {
-        return $this->customerNumber;
-    }
-
-    /**
-     * Set email
-     *
-     * @param string $email
-     *
-     * @return self
-     */
-    public function setEmail($email)
-    {
-        $this->email = $email;
-        return $this;
-    }
-
-    /**
-     * Get email
-     *
-     * @return string $email
-     */
-    public function getEmail()
-    {
-        return $this->email;
+        return $this->dataKomtet;
     }
 
     /**

@@ -7,7 +7,7 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 
-class KKMAdmin extends ObjectAbstractAdmin
+class KKMAdmin extends AbstractObjectAdmin
 {
     /**
      * @param FormMapper $formMapper
