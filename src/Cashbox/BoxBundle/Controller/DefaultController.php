@@ -8,11 +8,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class DefaultController extends Controller
 {
     /**
-     * Home page
+     * Homepage
      *
      * @Route("/", name="homepage")
      */
-    public function indexAction()
+    public function index()
     {
         return $this->redirect(
             $this->getParameter('redirect_url')

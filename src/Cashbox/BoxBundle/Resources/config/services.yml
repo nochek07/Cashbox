@@ -1,5 +1,5 @@
 services:
-#    yandex_box.example:
+#    box.example:
 #        class: Cashbox\BoxBundle\Example
 #        arguments: ["@service_id", "plain_value", %parameter%]
 
@@ -16,8 +16,7 @@ services:
               label: "label.organization"
               show_mosaic_button: false
         calls:
-          - [ setTemplate, [edit, "BoxBundle:Admin/sonataproject/CRUD:base_edit_form.html.twig"]]
-        public: true
+            - [ setTemplate, [edit, "BoxBundle:Admin/sonataproject/CRUD:base_edit_form.html.twig"]]
 
     admin.yandex:
         class: Cashbox\BoxBundle\Admin\YandexTransactionAdmin
@@ -31,7 +30,6 @@ services:
               group: "group.transactions"
               label: "label.yandex.transactions"
               show_mosaic_button: false
-        public: true
 
     admin.sberbank:
         class: Cashbox\BoxBundle\Admin\SberbankTransactionAdmin
@@ -45,7 +43,6 @@ services:
               group: "group.transactions"
               label: "label.sberbank.transactions"
               show_mosaic_button: false
-        public: true
 
     admin.komtet:
         class: Cashbox\BoxBundle\Admin\ReportKomtetAdmin
@@ -59,7 +56,6 @@ services:
               group: "group.komtet"
               label: "label.komtet.report"
               show_mosaic_button: false 
-        public: true
 
     admin.payment:
         class: Cashbox\BoxBundle\Admin\PaymentAdmin
@@ -73,7 +69,6 @@ services:
               group: "group.payment"
               label: "label.payment"
               show_mosaic_button: false
-        public: true
 
     admin.other:
         class: Cashbox\BoxBundle\Admin\OtherAdmin
@@ -87,7 +82,6 @@ services:
               group: "group.other"
               label: "label.other"
               show_mosaic_button: false
-        public: true
 
     admin.kkm:
         class: Cashbox\BoxBundle\Admin\KKMAdmin
@@ -101,33 +95,3 @@ services:
               group: "group.KKM"
               label: "label.KKM"
               show_mosaic_button: false
-        public: true
-
-    cashbox.mailer:
-        class: 'Cashbox\BoxBundle\Service\Mailer'
-        public: true
-        arguments:
-            - '%mailer_user%'
-            - '@templating'
-            - '@mailer'
-
-    cashbox.report:
-        class: 'Cashbox\BoxBundle\Service\Report'
-        public: true
-        arguments:
-            - '@doctrine_mongodb'
-
-    cashbox.kkm.builder:
-        class: 'Cashbox\BoxBundle\Service\KKMBuilder'
-        public: true
-        arguments:
-            - '@cashbox.report'
-            - '@cashbox.mailer'
-
-    cashbox.box:
-        class: 'Cashbox\BoxBundle\Service\Box'
-        public: true
-        arguments:
-            - '@doctrine_mongodb'
-            - '@cashbox.report'
-            - '@cashbox.kkm.builder'

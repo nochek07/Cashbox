@@ -14,13 +14,16 @@ services:
         # if you need to do this, you can override this setting on individual services
         public: false
 
+        bind:
+            $mailer_user: '%mailer_user%'
+
     #service_name:
     #    class: AppBundle\Directory\ClassName
     #    arguments: ['@another_service_name', 'plain_value', '%parameter_name%']
 
     Cashbox\BoxBundle\:
         resource: '../../src/Cashbox/BoxBundle/*'
-        exclude: '../../src/Cashbox/BoxBundle/{Entity,Document,DependencyInjection,Service,Repository,Tests}'
+        exclude: '../../src/Cashbox/BoxBundle/{Entity,Document,DependencyInjection,Repository,Tests}'
 
     Cashbox\UserBundle\:
         resource: '../../src/Cashbox/UserBundle/*'
