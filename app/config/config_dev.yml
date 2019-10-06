@@ -39,3 +39,11 @@ monolog:
 
 #swiftmailer:
 #    delivery_addresses: ['me@example.com']
+
+mongo_db_migrations:
+#    collection_name: "migration_versions"
+    database_name: "%mongodb_db%"
+    dir_name: "%kernel.root_dir%/../src/Cashbox/BoxBundle/Migrations/MongoDB"
+    script_dir_name: "%kernel.root_dir%/scripts"
+    name: "MongoDB Migrations"
+    namespace: "Cashbox\\BoxBundle\\Migrations\\MongoDB"
