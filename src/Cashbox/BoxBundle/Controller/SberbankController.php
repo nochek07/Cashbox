@@ -5,7 +5,7 @@ namespace Cashbox\BoxBundle\Controller;
 use Cashbox\BoxBundle\Service\Box;
 use Cashbox\BoxBundle\Document\Organization;
 use Cashbox\BoxBundle\Model\Payment\SberbankPayment;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request, Response};
 

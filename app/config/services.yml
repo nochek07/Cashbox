@@ -16,6 +16,7 @@ services:
 
         bind:
             $mailer_user: '%mailer_user%'
+            $mongodb_db: '%mongodb_db%'
 
     #service_name:
     #    class: AppBundle\Directory\ClassName

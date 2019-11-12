@@ -116,6 +116,8 @@ class OrganizationAdmin extends AbstractAdmin
             return true;
         }
 
+        $this->preUpdate($organization);
+
         $translator = $this->getConfigurationPool()->getContainer()->get('translator');
 
         $kkmsByPayment = new ArrayCollection();
@@ -132,7 +134,7 @@ class OrganizationAdmin extends AbstractAdmin
             if (is_array($payment->getData())) {
                 $index++;
                 $type = $payment->getType();
-                $textError = TYpe\PaymentTypes::getTextValidation($type, $payment->getData(), $translator);
+                $textError = Type\PaymentTypes::getTextValidation($type, $payment->getData(), $translator);
                 if (!empty($textError)) {
                     $errorElement
                         ->with('payments')
@@ -188,12 +190,6 @@ class OrganizationAdmin extends AbstractAdmin
          * @var KKM $kkm
          */
         foreach ($organization->getKKMs() as $kkm) {
-//            $type = $kkm->getType();
-//            $additional = $kkm->getAdditional();
-//            if (isset($additional[$type])) {
-//                $kkm->setData($additional[$type]);
-//            }
-
             if (is_array($kkm->getData())) {
                 $index++;
                 $type = $kkm->getType();

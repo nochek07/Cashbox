@@ -17,3 +17,4 @@
 /.idea/
 /src/.php~
 /docker-compose.yml
+/src/Cashbox/BoxBundle/Command/Unofficial/
