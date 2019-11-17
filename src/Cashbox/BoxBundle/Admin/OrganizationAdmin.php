@@ -271,7 +271,7 @@ class OrganizationAdmin extends AbstractAdmin
     protected function configureRoutes(RouteCollection $collection)
     {
 //        $collection->remove('edit');
-        $collection->remove('delete');
+//        $collection->remove('delete');
 //        $collection->remove('create');
     }
 
