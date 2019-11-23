@@ -23,7 +23,7 @@ class YandexTransactionAdmin extends AbstractAdmin
             ->add('datetime', 'datetime', [
                 'format' => 'd.m.Y H:i:s'
             ])
-            ->add('inn', null, [
+            ->add('INN', null, [
                 'label' => 'INN'
             ])
             ->add('action')
@@ -49,7 +49,7 @@ class YandexTransactionAdmin extends AbstractAdmin
             ->add('action')
             ->add('customerNumber')
             ->add('datetime')
-            ->add('inn', null, [
+            ->add('INN', null, [
                 'label' => 'INN'
             ])
         ;
@@ -67,7 +67,7 @@ class YandexTransactionAdmin extends AbstractAdmin
            ->add('datetime', 'datetime', [
                'format' => 'd.m.Y H:i:s'
            ])
-           ->add('inn', null, [
+           ->add('INN', null, [
                 'label' => 'INN'
             ])
            ->add('action')

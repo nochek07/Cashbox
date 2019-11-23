@@ -3,7 +3,6 @@
 namespace Cashbox\BoxBundle\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
 
 /**
  * @MongoDB\Document(collection="ReportKomtet")
@@ -51,16 +50,14 @@ class ReportKomtet
     protected $dataPost;
 
     /**
-     * @MongoDB\Field(type="int")
-     *
-     * TODO Upper
+     * @MongoDB\Field(type="string")
      */
-    protected $inn;
+    protected $INN;
 
     /**
      * Get id
      *
-     * @return id $id
+     * @return MongoDB\id $id
      */
     public function getId()
     {
@@ -229,28 +226,28 @@ class ReportKomtet
     /**
      * Set INN
      *
-     * @param integer $INN
+     * @param string $INN
      *
      * @return self
      */
     public function setInn($INN)
     {
-        $this->inn = $INN;
+        $this->INN = $INN;
         return $this;
     }
 
     /**
      * Get INN
      *
-     * @return integer $inn
+     * @return string $INN
      */
     public function getInn()
     {
-        return $this->inn;
+        return $this->INN;
     }
 
     /**
-     * @return Id|string
+     * @return MongoDB\Id|string
      */
     public function __toString()
     {

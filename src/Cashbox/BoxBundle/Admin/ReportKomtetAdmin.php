@@ -23,7 +23,7 @@ class ReportKomtetAdmin extends AbstractAdmin
             ->add('datetime', 'datetime', [
                 'format' => 'd.m.Y H:i:s'
             ])
-            ->add('inn', null, [
+            ->add('INN', null, [
                 'label' => 'INN'
             ])
             ->add('action')
@@ -51,7 +51,7 @@ class ReportKomtetAdmin extends AbstractAdmin
             ->add('action')
             ->add('datetime')
             ->add('type')
-            ->add('inn', null, [
+            ->add('INN', null, [
                 'label' => 'INN'
             ])
             ->add('state')
@@ -70,7 +70,7 @@ class ReportKomtetAdmin extends AbstractAdmin
            ->add('datetime', 'datetime', [
                'format' => 'd.m.Y H:i:s'
            ])
-           ->add('inn', null, [
+           ->add('INN', null, [
                'label' => 'INN'
            ])
            ->add('action')

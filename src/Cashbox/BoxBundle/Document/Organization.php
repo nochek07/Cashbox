@@ -4,7 +4,6 @@ namespace Cashbox\BoxBundle\Document;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
 
 /**
  * @MongoDB\Document(collection="Organization")
@@ -22,7 +21,7 @@ class Organization
     protected $name;
 
     /**
-     * @MongoDB\Field(type="int")
+     * @MongoDB\Field(type="string")
      */
     protected $INN;
 
@@ -69,7 +68,7 @@ class Organization
     /**
      * Get id
      *
-     * @return id $id
+     * @return MongoDB\id $id
      */
     public function getId()
     {

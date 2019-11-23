@@ -4,7 +4,6 @@ namespace Cashbox\BoxBundle\Document;
 
 use BadMethodCallException;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
 
 abstract class AbstractObjectDocument
 {
@@ -31,7 +30,7 @@ abstract class AbstractObjectDocument
     /**
      * Get id
      *
-     * @return id $id
+     * @return MongoDB\id $id
      */
     public function getId()
     {

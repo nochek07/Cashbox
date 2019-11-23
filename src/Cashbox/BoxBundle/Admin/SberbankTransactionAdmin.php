@@ -23,7 +23,7 @@ class SberbankTransactionAdmin extends AbstractAdmin
             ->add('datetime', 'datetime', [
                 'format' => 'd.m.Y H:i:s'
             ])
-            ->add('inn', null, [
+            ->add('INN', null, [
                 'label' => 'INN'
             ])
             ->add('Sum')
@@ -50,7 +50,7 @@ class SberbankTransactionAdmin extends AbstractAdmin
         $datagridMapper
             ->add('customerNumber')
             ->add('datetime')
-            ->add('inn', null, [
+            ->add('INN', null, [
                 'label' => 'INN'
             ])
         ;
@@ -68,7 +68,7 @@ class SberbankTransactionAdmin extends AbstractAdmin
            ->add('datetime', 'datetime', [
                'format' => 'd.m.Y H:i:s'
            ])
-           ->add('inn', null, [
+           ->add('INN', null, [
                'label' => 'INN'
            ])
            ->add('Sum')
