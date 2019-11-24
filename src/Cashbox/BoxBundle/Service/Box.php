@@ -59,7 +59,8 @@ class Box
      */
     public function check(Request $request, AbstractPayment $payment)
     {
-        return $this->getResponseText($request, $payment, false);
+        $this->defineOrganization($request);
+        return $this->getResponseTextCheck($request, $payment);
     }
 
     /**
@@ -72,44 +73,43 @@ class Box
      */
     public function send(Request $request, AbstractPayment $payment)
     {
-        return $this->getResponseText($request, $payment, true);
+        $this->defineOrganization($request);
+        return $this->getResponseTextSend($request, $payment);
     }
 
     /**
-     * Get Response Text
+     * Get Response Text for Check
      *
      * @param Request $request
      * @param AbstractPayment $payment
-     * @param bool $isSend - send to the kkm
-     * 
+     *
      * @return string
      */
-    public function getResponseText(Request $request, AbstractPayment $payment, bool $isSend = true)
+    public function getResponseTextCheck(Request $request, AbstractPayment $payment)
     {
-        $this->defineOrganization($request);
         if ($this->getOrganization() instanceof Organization) {
-            return $this->getResponsePayment($request, $payment, $isSend);
+            $this->setOptionsPayment($payment);
+            return $payment->check($request);
         } else {
             return $this->OrganizationTextError;
         }
     }
 
     /**
-     * Get Response Payment after Sending or Checking
+     * Get Response Text for Send
      *
      * @param Request $request
      * @param AbstractPayment $payment
-     * @param bool $isSend - send to the kkm
-     *
+     * 
      * @return string
      */
-    public function getResponsePayment(Request $request, AbstractPayment $payment, bool $isSend = true)
+    public function getResponseTextSend(Request $request, AbstractPayment $payment)
     {
-        $this->setOptionsPayment($payment);
-        if ($isSend) {
+        if ($this->getOrganization() instanceof Organization) {
+            $this->setOptionsPayment($payment);
             return $payment->send($request);
         } else {
-            return $payment->check($request);
+            return $this->OrganizationTextError;
         }
     }
 
