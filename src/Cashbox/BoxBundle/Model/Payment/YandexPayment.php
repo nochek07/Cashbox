@@ -4,7 +4,7 @@ namespace Cashbox\BoxBundle\Model\Payment;
 
 use Cashbox\BoxBundle\Document\Payment;
 use Cashbox\BoxBundle\Model\KKM\{KKMInterface, KKMMessages};
-use Cashbox\BoxBundle\Model\Report\YandexReport;
+use Cashbox\BoxBundle\Model\Report\TransactionReport;
 use Cashbox\BoxBundle\Model\Type\PaymentTypes;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class YandexPayment extends AbstractPayment
 {
-    protected $name = 'Yandex';
+    protected $name = PaymentTypes::PAYMENT_TYPE_YANDEX;
 
     /**
      * {@inheritDoc}
@@ -39,7 +39,8 @@ class YandexPayment extends AbstractPayment
                 $orderSum = (float)$request->get('orderSumAmount');
                 $order = $request->get('customerNumber');
 
-                $this->getReport()->add(new YandexReport(), [
+                $this->getReport()->add(new TransactionReport(), [
+                    'type' => $this->name,
                     'action' => $request->get('action'),
                     'orderSum' => $orderSum,
                     'customerNumber' => $order,
@@ -95,7 +96,8 @@ class YandexPayment extends AbstractPayment
                     }
                 }
 
-                $this->getReport()->add(new YandexReport(), [
+                $this->getReport()->add(new TransactionReport(), [
+                    'type' => $this->name,
                     'action' => $request->get('action'),
                     'orderSum' => (float)$request->get('orderSumAmount'),
                     'customerNumber' => $request->get('customerNumber'),

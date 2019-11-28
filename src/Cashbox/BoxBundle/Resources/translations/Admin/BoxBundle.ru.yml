@@ -1,7 +1,6 @@
 label.organization: Организации
 label.KKM: Устройства ККМ
-label.yandex.transactions: Транзакции Яндекс.Кассы
-label.sberbank.transactions: Транзакции Сбербанка
+label.transactions: Транзакции
 label.komtet.report: Сообщения Komtet
 
 Organization Create: Создать Организацию
@@ -20,8 +19,7 @@ rate.18: 18%
 rate.20: 20%
 
 Organization List: Организации
-Yandex Transaction List: Транзакции Яндекс.Кассы
-Sberbank Transaction List: Транзакции Сбербанка
+Transaction List: Список транзакции
 Report Komtet List: Сообщения Komtet
 
 KKMs: Устройства ККМ

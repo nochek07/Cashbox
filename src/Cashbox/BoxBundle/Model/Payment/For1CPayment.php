@@ -3,12 +3,14 @@
 namespace Cashbox\BoxBundle\Model\Payment;
 
 use Cashbox\BoxBundle\Document\Payment;
+use Cashbox\BoxBundle\Model\Type\OtherTypes;
 use Cashbox\BoxBundle\Model\KKM\{KKMInterface, KKMMessages};
-use Cashbox\BoxBundle\Model\Type\PaymentTypes;
 use Symfony\Component\HttpFoundation\Request;
 
 class For1CPayment extends YandexPayment
 {
+    protected $name = OtherTypes::PAYMENT_TYPE_1C;
+
     /**
      * @var array
      */
@@ -36,13 +38,13 @@ class For1CPayment extends YandexPayment
                 $repository = $this->getManager()
                     ->getRepository('BoxBundle:ReportKomtet.php');
                 $report = $repository->findOneBy([
-                    'type' => PaymentTypes::PAYMENT_TYPE_1C,
+                    'type' => OtherTypes::PAYMENT_TYPE_1C,
                     'action' => $this->dataJSON["action"],
                     'uuid' => $this->dataJSON["uuid"]
                 ]);
 
                 if (is_null($report) && $kkm instanceof KKMInterface) {
-                    $error = $kkm->send($this->dataJSON, PaymentTypes::PAYMENT_TYPE_1C);
+                    $error = $kkm->send($this->dataJSON, OtherTypes::PAYMENT_TYPE_1C);
                 } else {
                     $error = KKMMessages::MSG_ERROR_CHECK;
                 }

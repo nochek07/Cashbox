@@ -64,23 +64,23 @@ class ReportKomtetAdmin extends AbstractAdmin
     protected function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
-           ->add('id', null, [
+            ->add('id', null, [
                'label' => 'ID'
-           ])
-           ->add('datetime', 'datetime', [
+            ])
+            ->add('datetime', 'datetime', [
                'format' => 'd.m.Y H:i:s'
-           ])
-           ->add('INN', null, [
+            ])
+            ->add('INN', null, [
                'label' => 'INN'
-           ])
-           ->add('action')
-           ->add('type')
-           ->add('state')
-           ->add('uuid', null, [
+            ])
+            ->add('action')
+            ->add('type')
+            ->add('state')
+            ->add('uuid', null, [
                'label' => 'UUID'
-           ])
-           ->add('dataKomtet')
-           ->add('dataPost')
+            ])
+            ->add('dataKomtet')
+            ->add('dataPost')
         ;
     }
 }    

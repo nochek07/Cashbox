@@ -6,9 +6,8 @@ use Symfony\Component\Form\Extension\Core\Type\{IntegerType, TextType};
 
 class PaymentTypes extends AbstractTypes
 {
-    const PAYMENT_TYPE_YANDEX = "yandex";
-    const PAYMENT_TYPE_1C = "1c";
-    const PAYMENT_TYPE_SBERBANK = "sberbank";
+    const PAYMENT_TYPE_YANDEX = "Yandex";
+    const PAYMENT_TYPE_SBERBANK = "Sberbank";
 
     /**
      * {@inheritDoc}
@@ -16,7 +15,7 @@ class PaymentTypes extends AbstractTypes
     public static function getArrayForAdmin()
     {
         return [
-            'Yandex' => [
+            self::PAYMENT_TYPE_YANDEX => [
                 'yandex_id' => ['yandex_id', IntegerType::class, [
                     'required' => true,
                     'label' => 'ID Yandex',
@@ -28,7 +27,7 @@ class PaymentTypes extends AbstractTypes
                     'translation_domain' => self::$translationDomain,
                 ]],
             ],
-            'Sberbank' => [
+            self::PAYMENT_TYPE_SBERBANK => [
                 'sberbank_username' => ['sberbank_username', TextType::class, [
                     'required' => true,
                     'label' => 'Username',

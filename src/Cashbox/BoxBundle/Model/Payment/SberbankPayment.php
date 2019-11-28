@@ -4,13 +4,13 @@ namespace Cashbox\BoxBundle\Model\Payment;
 
 use Cashbox\BoxBundle\Document\Payment;
 use Cashbox\BoxBundle\Model\KKM\KKMInterface;
-use Cashbox\BoxBundle\Model\Report\SberbankReport;
+use Cashbox\BoxBundle\Model\Report\TransactionReport;
 use Cashbox\BoxBundle\Model\Type\PaymentTypes;
 use Symfony\Component\HttpFoundation\Request;
 
 class SberbankPayment extends AbstractPayment
 {
-    protected $name = 'Sberbank';
+    protected $name = PaymentTypes::PAYMENT_TYPE_SBERBANK;
 
     /**
      * Test merchants
@@ -60,7 +60,9 @@ class SberbankPayment extends AbstractPayment
 
                     $orderSum = ((float)$response['amount']) / 100;
 
-                    $this->getReport()->add(new SberbankReport(), [
+                    $this->getReport()->add(new TransactionReport(), [
+                        'type' => $this->name,
+                        'action' => 'send',
                         'orderSum' => $orderSum,
                         'customerNumber' => $customerNumber,
                         'email' => $email,

@@ -2,23 +2,24 @@
 
 namespace Cashbox\BoxBundle\Model\Report;
 
-use Cashbox\BoxBundle\Document\YandexTransaction;
+use Cashbox\BoxBundle\Document\Transaction;
 
-class YandexReport implements ReportInterface
+class TransactionReport implements ReportInterface
 {
     /**
      * {@inheritDoc}
      */
     public function create(array $params)
     {
-        $transaction = new YandexTransaction();
+        $transaction = new Transaction();
         $transaction->setDatetime();
-        $transaction->setAction($params['action']);
         $transaction->setSum($params['orderSum']);
         $transaction->setCustomerNumber($params['customerNumber']);
         $transaction->setEmail($params['email']);
         $transaction->setDataPost($params['data']);
         $transaction->setInn($params['inn']);
+        $transaction->setAction($params['action']);
+        $transaction->setType($params['type']);
 
         return $transaction;
     }

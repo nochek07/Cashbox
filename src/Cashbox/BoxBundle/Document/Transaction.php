@@ -5,9 +5,9 @@ namespace Cashbox\BoxBundle\Document;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 
 /**
- * @MongoDB\Document(collection="YandexTransaction")
+ * @MongoDB\Document(collection="Transaction")
  */
-class YandexTransaction
+class Transaction
 {
     /**
      * @MongoDB\Id(strategy="AUTO")
@@ -48,6 +48,11 @@ class YandexTransaction
      * @MongoDB\Field(type="string")
      */
     protected $INN;
+
+    /**
+     * @MongoDB\Field(type="string")
+     */
+    protected $type;
 
     /**
      * Get id
@@ -216,6 +221,29 @@ class YandexTransaction
     public function getInn()
     {
         return $this->INN;
+    }
+
+    /**
+     * Set type
+     *
+     * @param string $type
+     *
+     * @return self
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return string $type
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 
     /**

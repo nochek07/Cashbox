@@ -11,13 +11,8 @@ sonata_admin:
                 items:
                     - admin.organization
 
-            sonata.page.transactions:
-                label: group.transactions
+            sonata.page.register:
+                label: group.register
                 items:
-                    - admin.yandex
-                    - admin.sberbank
-
-            sonata.page.kkm:
-                label: group.komtet
-                items:
+                    - admin.transaction
                     - admin.komtet

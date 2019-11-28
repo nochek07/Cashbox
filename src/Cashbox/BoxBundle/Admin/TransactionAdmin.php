@@ -7,7 +7,7 @@ use Sonata\AdminBundle\Datagrid\{DatagridMapper, ListMapper};
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 
-class SberbankTransactionAdmin extends AbstractAdmin
+class TransactionAdmin extends AbstractAdmin
 {
     protected $translationDomain = 'BoxBundle';
 
@@ -27,8 +27,10 @@ class SberbankTransactionAdmin extends AbstractAdmin
                 'label' => 'INN'
             ])
             ->add('Sum')
+            ->add('action')
             ->add('customerNumber')
             ->add('email')
+            ->add('type')
         ;
     }
 
@@ -50,6 +52,7 @@ class SberbankTransactionAdmin extends AbstractAdmin
         $datagridMapper
             ->add('customerNumber')
             ->add('datetime')
+            ->add('type')
             ->add('INN', null, [
                 'label' => 'INN'
             ])
@@ -62,19 +65,21 @@ class SberbankTransactionAdmin extends AbstractAdmin
     protected function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
-           ->add('id', null, [
+            ->add('id', null, [
                'label' => 'ID'
-           ])
-           ->add('datetime', 'datetime', [
+            ])
+            ->add('type')
+            ->add('datetime', 'datetime', [
                'format' => 'd.m.Y H:i:s'
-           ])
-           ->add('INN', null, [
+            ])
+            ->add('INN', null, [
                'label' => 'INN'
-           ])
-           ->add('Sum')
-           ->add('customerNumber')
-           ->add('email')
-           ->add('dataPost', null, ['template' => 'BoxBundle:MongoDB:show_hash.html.twig'])
+            ])
+            ->add('Sum')
+            ->add('action')
+            ->add('customerNumber')
+            ->add('email')
+            ->add('dataPost', null, ['template' => 'BoxBundle:MongoDB:show_hash.html.twig'])
         ;
     }
 }    
