@@ -32,16 +32,16 @@ services:
               show_mosaic_button: false
 
     admin.komtet:
-        class: Cashbox\BoxBundle\Admin\ReportKomtetAdmin
+        class: Cashbox\BoxBundle\Admin\ReportKKMAdmin
         arguments:
             - ~
-            - Cashbox\BoxBundle\Document\ReportKomtet
+            - Cashbox\BoxBundle\Document\ReportKKM
             - ~
         tags:
             - name: sonata.admin
               manager_type: doctrine_mongodb
               group: "group.register"
-              label: "label.komtet.report"
+              label: "label.KKM.report"
               show_mosaic_button: false 
 
     admin.payment:

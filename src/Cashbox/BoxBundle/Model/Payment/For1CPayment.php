@@ -36,7 +36,7 @@ class For1CPayment extends YandexPayment
                 }
 
                 $repository = $this->getManager()
-                    ->getRepository('BoxBundle:ReportKomtet.php');
+                    ->getRepository('BoxBundle:ReportKKMp');
                 $report = $repository->findOneBy([
                     'type' => OtherTypes::PAYMENT_TYPE_1C,
                     'action' => $this->dataJSON["action"],

@@ -7,6 +7,8 @@ use Cashbox\BoxBundle\Document\{Organization, KKM};
 
 abstract class AbstractKKM implements KKMInterface
 {
+    protected $name = '';
+
     /**
      * @var Organization
      */
@@ -97,12 +99,12 @@ abstract class AbstractKKM implements KKMInterface
     /**
      * {@inheritDoc}
      */
-    abstract function send(array $data, string $from);
+    abstract function send(array $data, string $type);
 
     /**
      * {@inheritDoc}
      */
-    abstract function sendMail(array $data, string $from): bool;
+    abstract function sendMail(array $data, string $type): bool;
 
     /**
      * {@inheritDoc}

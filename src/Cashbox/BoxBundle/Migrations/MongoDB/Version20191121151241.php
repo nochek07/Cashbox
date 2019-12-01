@@ -22,7 +22,7 @@ class Version20191121151241 extends AbstractMigration
             'oldName' => 'inn',
             'newName' => 'INN'
         ];
-        $this->repairINN($db, 'ReportKomtet', $params);
+        $this->repairINN($db, 'ReportKKM', $params);
         $this->repairINN($db, 'SberbankTransaction', $params);
         $this->repairINN($db, 'YandexTransaction', $params);
     }
@@ -34,7 +34,7 @@ class Version20191121151241 extends AbstractMigration
             'oldName' => 'INN',
             'newName' => 'inn'
         ];
-        $this->repairINN($db, 'ReportKomtet', $params);
+        $this->repairINN($db, 'ReportKKM', $params);
         $this->repairINN($db, 'SberbankTransaction', $params);
         $this->repairINN($db, 'YandexTransaction', $params);
     }

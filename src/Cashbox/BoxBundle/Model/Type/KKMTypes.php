@@ -8,11 +8,13 @@ use Symfony\Component\Form\Extension\Core\Type\{ChoiceType, IntegerType, TextTyp
 
 class KKMTypes extends AbstractTypes
 {
+    const KKM_TYPE_KOMTET = "Komtet";
+
     /**
      * @var array
      */
     public static $arrayKkmModelClass = [
-        'Komtet' => KKM\Komtet::class,
+        self::KKM_TYPE_KOMTET => KKM\Komtet::class,
     ];
 
     /**
@@ -21,7 +23,7 @@ class KKMTypes extends AbstractTypes
     public static function getArrayForAdmin()
     {
         return [
-            'Komtet' => [
+            self::KKM_TYPE_KOMTET => [
                 'shop_id' => ['shop_id', TextType::class, [
                     'required' => true,
                     'label' => 'Shop ID',

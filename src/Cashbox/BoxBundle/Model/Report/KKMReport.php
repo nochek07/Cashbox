@@ -2,23 +2,24 @@
 
 namespace Cashbox\BoxBundle\Model\Report;
 
-use Cashbox\BoxBundle\Document\ReportKomtet;
+use Cashbox\BoxBundle\Document\ReportKKM;
 
-class KomtetReport implements ReportInterface
+class KKMReport implements ReportInterface
 {
     /**
      * {@inheritDoc}
      */
     public function create(array $params)
     {
-        $Report = new ReportKomtet();
+        $Report = new ReportKKM();
         $Report->setDatetime();
         $Report->setType($params['type']);
         $Report->setState($params['state']);
+        $Report->setTypePayment($params['typePayment']);
         $Report->setInn($params['inn']);
 
-        if (isset($params['dataKomtet'])) {
-            $Report->setDataKomtet($params['dataKomtet']);
+        if (isset($params['dataKKM'])) {
+            $Report->setDataKomtet($params['dataKKM']);
         } else {
             $Report->setDataKomtet([]);
         }
@@ -28,9 +29,6 @@ class KomtetReport implements ReportInterface
 
             if (isset($dataPost["uuid"])) {
                 $Report->setUuid($params['dataPost']["uuid"]);
-            }
-            if (isset($dataPost["action"])) {
-                $Report->setAction($params['dataPost']["action"]);
             }
         } else {
             $Report->setDataPost([]);

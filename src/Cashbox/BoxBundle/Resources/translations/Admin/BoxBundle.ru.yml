@@ -1,7 +1,7 @@
 label.organization: Организации
 label.KKM: Устройства ККМ
+label.KKM.report: Сообщения ККМ
 label.transactions: Транзакции
-label.komtet.report: Сообщения Komtet
 
 Organization Create: Создать Организацию
 
@@ -20,7 +20,7 @@ rate.20: 20%
 
 Organization List: Организации
 Transaction List: Список транзакции
-Report Komtet List: Сообщения Komtet
+Report K K M List: Сообщения ККМ
 
 KKMs: Устройства ККМ
 Payments: Платежные системы
@@ -63,4 +63,5 @@ Data Post: Данные отправки
 Type: Тип
 State: Статус
 UUID: UUID
-Data Komtet: Данные Komtet
+Data KKM: Данные кассы
+Type Payment: Платежная система

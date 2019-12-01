@@ -2,8 +2,9 @@
 
 namespace Cashbox\BoxBundle\Model\KKM;
 
+use Cashbox\BoxBundle\Model\Type\KKMTypes;
 use Cashbox\BoxBundle\Service\Mailer;
-use Cashbox\BoxBundle\Model\Report\KomtetReport;
+use Cashbox\BoxBundle\Model\Report\KKMReport;
 use Komtet\KassaSdk\{Check, Client, Payment, Position, QueueManager, Vat};
 
 /**
@@ -13,6 +14,8 @@ use Komtet\KassaSdk\{Check, Client, Payment, Position, QueueManager, Vat};
  */
 class Komtet extends AbstractKKM
 {
+    protected $name = KKMTypes::KKM_TYPE_KOMTET;
+
     /**
      * @var QueueManager
      */
@@ -89,7 +92,7 @@ class Komtet extends AbstractKKM
     /**
      * {@inheritDoc}
      */
-    public function send(array $data, string $from)
+    public function send(array $data, string $type)
     {
         $komtet = $this->kkmDocument->getData();
         $this->QueueManager->setDefaultQueue($komtet['queue_name']);
@@ -141,30 +144,33 @@ class Komtet extends AbstractKKM
             $request = $this->QueueManager->putCheck($check);
             if (isset($res['state'])) {
 
-                $this->getReport()->add(new KomtetReport(), [
-                    'type' => $from,
+                $this->getReport()->add(new KKMReport(), [
+                    'type' => $this->name,
+                    'typePayment' => $type,
                     'state' => $request['state'],
-                    'dataKomtet' => $request,
+                    'dataKKM' => $request,
                     'dataPost' => $data,
                     'inn' => $INN
                 ]);
 
-                $this->sendMail($data, $from);
+                $this->sendMail($data, $type);
                 return '';
             } else {
-                $this->getReport()->add(new KomtetReport(), [
-                    'type' => $from,
+                $this->getReport()->add(new KKMReport(), [
+                    'type' => $this->name,
+                    'typePayment' => $type,
                     'state' => 'otherError',
-                    'dataKomtet' => $request,
+                    'dataKKM' => $request,
                     'inn' => $INN
                 ]);
             }
         } catch (\Exception $error) {
 
-            $this->getReport()->add(new KomtetReport(), [
-                'type' => $from,
+            $this->getReport()->add(new KKMReport(), [
+                'type' => $this->name,
+                'typePayment' => $type,
                 'state' => 'error',
-                'dataKomtet' => ["error_description" => $error->getMessage()],
+                'dataKKM' => ["error_description" => $error->getMessage()],
                 'inn' => $INN
             ]);
 
@@ -177,7 +183,7 @@ class Komtet extends AbstractKKM
     /**
      * {@inheritDoc}
      */
-    public function sendMail(array $data, string $from): bool
+    public function sendMail(array $data, string $type): bool
     {
         $mailer = $this->getMailer();
         if ($mailer instanceof Mailer) {
@@ -193,7 +199,8 @@ class Komtet extends AbstractKKM
                 } else {
                     $data['cash'] = 0;
                 }
-                $data['type'] = $from;
+                $data['typePayment'] = $type;
+                $data['type'] = $this->name;
 
                 $mailer->send($email, $data);
                 return true;

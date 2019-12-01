@@ -5,9 +5,9 @@ namespace Cashbox\BoxBundle\Document;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 
 /**
- * @MongoDB\Document(collection="ReportKomtet")
+ * @MongoDB\Document(collection="ReportKKM")
  */
-class ReportKomtet
+class ReportKKM
 {
     /**
      * @MongoDB\Id(strategy="AUTO")
@@ -23,6 +23,11 @@ class ReportKomtet
      * @MongoDB\Field(type="string")
      */
     protected $type;
+
+    /**
+     * @MongoDB\Field(type="string")
+     */
+    protected $typePayment;
 
     /**
      * @MongoDB\Field(type="string")
@@ -106,6 +111,29 @@ class ReportKomtet
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * Set type pyament
+     *
+     * @param string $typePayment
+     *
+     * @return self
+     */
+    public function setTypePayment($typePayment)
+    {
+        $this->typePayment = $typePayment;
+        return $this;
+    }
+
+    /**
+     * Get type payment
+     *
+     * @return string $typePayment
+     */
+    public function getTypePayment()
+    {
+        return $this->typePayment;
     }
 
     /**

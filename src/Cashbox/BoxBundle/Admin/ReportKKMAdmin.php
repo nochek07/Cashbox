@@ -7,7 +7,7 @@ use Sonata\AdminBundle\Datagrid\{DatagridMapper, ListMapper};
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 
-class ReportKomtetAdmin extends AbstractAdmin
+class ReportKKMAdmin extends AbstractAdmin
 {
     protected $translationDomain = 'BoxBundle';
 
@@ -23,12 +23,12 @@ class ReportKomtetAdmin extends AbstractAdmin
             ->add('datetime', 'datetime', [
                 'format' => 'd.m.Y H:i:s'
             ])
+            ->add('typePayment')
             ->add('INN', null, [
                 'label' => 'INN'
             ])
-            ->add('action')
-            ->add('type')
             ->add('state')
+            ->add('type')
         ;
     }
 
@@ -48,8 +48,8 @@ class ReportKomtetAdmin extends AbstractAdmin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('action')
             ->add('datetime')
+            ->add('typePayment')
             ->add('type')
             ->add('INN', null, [
                 'label' => 'INN'
@@ -70,16 +70,18 @@ class ReportKomtetAdmin extends AbstractAdmin
             ->add('datetime', 'datetime', [
                'format' => 'd.m.Y H:i:s'
             ])
+            ->add('typePayment')
+            ->add('type')
             ->add('INN', null, [
                'label' => 'INN'
             ])
-            ->add('action')
-            ->add('type')
             ->add('state')
             ->add('uuid', null, [
                'label' => 'UUID'
             ])
-            ->add('dataKomtet')
+            ->add('dataKKM', null, [
+                'label' => 'Data KKM'
+            ])
             ->add('dataPost')
         ;
     }

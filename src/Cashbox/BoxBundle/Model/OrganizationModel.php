@@ -27,7 +27,7 @@ class OrganizationModel
         } else {
             $INN = $request['inn'];
         }
-        if (!is_null($INN)) {
+        if (!is_null($INN) && !empty($INN)) {
             $repositoryOrganization = $managerMongoDB->getManager()
                 ->getRepository('BoxBundle:Organization');
             return $repositoryOrganization->findOneBy([

@@ -24,21 +24,21 @@ interface KKMInterface
      * Sending data
      *
      * @param array $data
-     * @param string $from
+     * @param string $type - type of payment
      *
      * @return mixed
      */
-    public function send(array $data, string $from);
+    public function send(array $data, string $type);
 
     /**
      * Sending a receipt to mail
      *
      * @param array $data
-     * @param string $from
+     * @param string $type - type of payment
      *
      * @return bool
      */
-    public function sendMail(array $data, string $from): bool;
+    public function sendMail(array $data, string $type): bool;
 
     /**
      * Checking a queue
