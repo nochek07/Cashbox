@@ -27,6 +27,8 @@ class AppKernel extends Kernel
             new Cashbox\BoxBundle\BoxBundle(),
             new FOS\UserBundle\FOSUserBundle(),
             new Cashbox\UserBundle\UserBundle(),
+
+            new APY\DataGridBundle\APYDataGridBundle(),
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {
