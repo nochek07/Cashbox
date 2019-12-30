@@ -1,6 +1,6 @@
 <?php
 
-namespace Cashbox\BoxBundle\Admin;
+namespace Cashbox\BoxBundle\Admin\Register;
 
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\{DatagridMapper, ListMapper};

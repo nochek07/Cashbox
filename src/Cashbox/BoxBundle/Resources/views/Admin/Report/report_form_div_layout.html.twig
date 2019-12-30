@@ -1,0 +1,35 @@
+{%- block form_widget_compound -%}
+    {%- if form is rootform -%}
+        {{ form_errors(form) }}
+    {%- endif -%}
+    {{- block('form_rows') -}}
+    {{- form_rest(form) -}}
+{%- endblock form_widget_compound -%}
+
+{%- block form_row -%}
+    <div class="form-group">
+        {{- form_label(form) -}}
+        {{- form_widget(form) -}}
+        <span class="help-block">
+            {{- form_errors(form) -}}
+        </span>
+    </div>
+{%- endblock form_row -%}
+
+{%- block button_row -%}
+    <div class="form-group">
+        <label class="button-label">&nbsp;</label>
+        {{- form_widget(form) -}}
+        <span class="help-block"></span>
+    </div>
+{%- endblock button_row -%}
+
+{%- block form_errors -%}
+    {%- if errors|length > 0 -%}
+        <div class="text-danger">
+            {%- for error in errors -%}
+                <div>{{ error.message }}</div>
+            {%- endfor -%}
+        </div>
+    {%- endif -%}
+{%- endblock form_errors -%}

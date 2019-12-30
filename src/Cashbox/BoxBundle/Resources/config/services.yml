@@ -18,32 +18,6 @@ services:
         calls:
             - [ setTemplate, [edit, "BoxBundle:Admin/sonataproject/CRUD:base_edit_form.html.twig"]]
 
-    admin.transaction:
-        class: Cashbox\BoxBundle\Admin\TransactionAdmin
-        arguments:
-            - ~
-            - Cashbox\BoxBundle\Document\Transaction
-            - ~
-        tags:
-            - name: sonata.admin
-              manager_type: doctrine_mongodb
-              group: "group.register"
-              label: "label.transactions"
-              show_mosaic_button: false
-
-    admin.komtet:
-        class: Cashbox\BoxBundle\Admin\ReportKKMAdmin
-        arguments:
-            - ~
-            - Cashbox\BoxBundle\Document\ReportKKM
-            - ~
-        tags:
-            - name: sonata.admin
-              manager_type: doctrine_mongodb
-              group: "group.register"
-              label: "label.KKM.report"
-              show_mosaic_button: false 
-
     admin.payment:
         class: Cashbox\BoxBundle\Admin\PaymentAdmin
         arguments:
@@ -82,3 +56,47 @@ services:
               group: "group.organization.KKM"
               label: "label.organization.KKM"
               show_mosaic_button: false
+
+    #
+    # Register
+    #
+    admin.transaction:
+        class: Cashbox\BoxBundle\Admin\Register\TransactionAdmin
+        arguments:
+            - ~
+            - Cashbox\BoxBundle\Document\Transaction
+            - ~
+        tags:
+            - name: sonata.admin
+              manager_type: doctrine_mongodb
+              group: "group.register"
+              label: "label.transactions"
+              show_mosaic_button: false
+
+    admin.report.kkm:
+        class: Cashbox\BoxBundle\Admin\Register\ReportKKMAdmin
+        arguments:
+            - ~
+            - Cashbox\BoxBundle\Document\ReportKKM
+            - ~
+        tags:
+            - name: sonata.admin
+              manager_type: doctrine_mongodb
+              group: "group.register"
+              label: "label.KKM.report"
+              show_mosaic_button: false
+
+    #
+    # Report
+    #
+    admin.report:
+        class: Cashbox\BoxBundle\Admin\Report\ReportAdmin
+        tags:
+            - name: sonata.admin
+              manager_type: doctrine_mongodb
+              group: Reports
+              label: Reports
+        arguments:
+            - ~
+            - ~
+            - Cashbox:Report

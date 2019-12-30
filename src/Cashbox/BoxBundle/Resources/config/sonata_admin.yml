@@ -4,6 +4,9 @@ sonata_admin:
     templates:
         # default global templates
         layout:  BoxBundle:Admin:standard_layout.html.twig
+    assets:
+        extra_stylesheets:
+            - bundles/box/Admin/admin.css
     dashboard:
         groups:
             sonata.page.settings:
@@ -15,4 +18,12 @@ sonata_admin:
                 label: group.register
                 items:
                     - admin.transaction
-                    - admin.komtet
+                    - admin.report.kkm
+
+            sonata.page.report:
+                keep_open: false
+                label: labels.groups.reports
+                items:
+                    - admin.report
+                    - route: report_period
+                      label: labels.groups.report.period

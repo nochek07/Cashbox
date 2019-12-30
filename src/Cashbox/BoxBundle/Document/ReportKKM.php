@@ -5,7 +5,10 @@ namespace Cashbox\BoxBundle\Document;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 
 /**
- * @MongoDB\Document(collection="ReportKKM")
+ * @MongoDB\Document(
+ *     collection="ReportKKM",
+ *     repositoryClass="Cashbox\BoxBundle\Repository\ReportKKMRepository"
+ * )
  */
 class ReportKKM
 {

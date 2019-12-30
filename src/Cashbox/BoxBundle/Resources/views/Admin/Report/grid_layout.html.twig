@@ -1,0 +1,45 @@
+{% extends '@Box/Admin/standard_layout.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/box/Admin/grid.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block breadcrumb %}
+    <li><a href="{{ url('sonata_admin_dashboard') }}"><i class="fa fa-home"></i></a></li>
+    <li class="active">{{ title }}</li>
+{% endblock %}
+
+{% if formReport is not null %}
+    {% form_theme formReport with ['@Box/Admin/Report/report_form_div_layout.html.twig'] %}
+{% endif %}
+
+{% block sonata_page_content %}
+    <section class="content">
+        {% block sonata_admin_content %}
+            {{ parent() }}
+        {% endblock %}
+    </section>
+{% endblock %}
+
+{% block content %}
+    <div class="sticky-wrapper">
+        <nav class="navbar navbar-default" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <h1>{{ title|trans({}, 'SonataAdminBundle') }}</h1>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div class="panel">
+        <div class="panel-body">
+            {{ form_start(formReport) }}
+            {{ form_widget(formReport) }}
+            {{ form_end(formReport) }}
+        </div>
+    </div>
+
+    {{ grid(grid, '@Box/Admin/Report/datagrid_sheet.blocks.html.twig') }}
+{% endblock %}

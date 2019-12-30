@@ -1,0 +1,45 @@
+{% extends 'APYDataGridBundle::blocks.html.twig' %}
+
+{% block grid_no_data %}<p class="no_data">{{ grid.noDataMessage|default('No data')|trans({}, 'SonataAdminBundle')|raw }}</p>{% endblock grid_no_data %}
+
+{% block grid_exports %}
+    <div class="exports">
+        {% spaceless %}
+            <div class="exports__div exports__div_submit">
+                <input type="button" value="{{ 'Export'|trans }}"/>
+            </div>
+            <div class="exports__div exports__div_select">
+                <select name="{{grid.hash}}[{{ constant('APY\\DataGridBundle\\Grid\\Grid::REQUEST_QUERY_EXPORT') }}]">
+                    <option value="-1"></option>
+                    {% for key, export in grid.exports %}
+                        <option value="{{key}}">{{ export.title|trans }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        {% endspaceless %}
+    </div>
+{% endblock grid_exports %}
+
+{% block grid_pager %}
+    {% if pagerfanta %}
+        {{ grid_pagerfanta(grid) }}
+    {% else %}
+        <div class="pagergrid">
+            <div class="pager__div pager__div_label">{{ grid_pager_totalcount(grid) }}&nbsp;</div>
+            <div class="pager__div pager__div_page">&nbsp;{{ grid_pager_selectpage(grid) }}</div>
+            {{ grid_pager_results_perpage(grid) }}
+        </div>
+    {% endif %}
+{% endblock grid_pager %}
+
+{% block grid_pager_results_perpage %}
+    <div class="pager__div pager__div_label">&nbsp;{{ ', Display'|trans }}&nbsp;</div>
+    <div class="pager__div pager__div_select">
+        <select onchange="return {{ grid.hash }}_resultsPerPage(this.value);">
+            {% for key, value in grid.limits %}
+                <option value="{{ key }}"{% if (key == grid.limit) %} selected="selected"{% endif %}>{{ value }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="pager__div pager__div_label">&nbsp;{{ 'Items per page'|trans }}</div>
+{% endblock grid_pager_results_perpage %}

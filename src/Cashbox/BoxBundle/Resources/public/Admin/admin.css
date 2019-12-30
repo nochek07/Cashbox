@@ -1,0 +1,12 @@
+.sticky-wrapper .navbar-header h1 {
+    margin: 10px;
+}
+
+.form-report .form-group input,
+.form-report .form-group label.button-label {
+    width: 100%;
+}
+
+.form-report .form-group {
+    padding-right: 15px;
+}
