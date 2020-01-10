@@ -54,6 +54,12 @@ th div {
     padding-top: 4px;
 }
 
+.grid th div.sort_up, .grid th div.sort_down {
+    width: 23px;
+    height: 10px;
+    margin-top: 5px;
+}
+
 .grid th div.sort_up {
     background: transparent url("data:image/gif;base64,R0lGODlhFwAKAIABAJCQkO/v7yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAAEALAAAAAAXAAoAAAIajI+py+0GwGsxTmVDvlqe/YCQ52wmyaXqUQAAOw==") no-repeat bottom left;
 }

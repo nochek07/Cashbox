@@ -3,3 +3,4 @@ group.register: Журнал
 labels.groups.reports: Отчеты
 labels.groups.report.period: За период
 labels.groups.reports.sheet: Кассовый отчет за период
+No data: Нет данных

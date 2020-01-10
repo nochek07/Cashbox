@@ -2,6 +2,8 @@
 
 namespace Cashbox\BoxBundle\Admin\Register;
 
+use Cashbox\BoxBundle\Document\Organization;
+use Cashbox\BoxBundle\Model\Type\PaymentTypes;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\{DatagridMapper, ListMapper};
 use Sonata\AdminBundle\Show\ShowMapper;
@@ -10,12 +12,21 @@ use Sonata\AdminBundle\Route\RouteCollection;
 class TransactionAdmin extends AbstractAdmin
 {
     protected $translationDomain = 'BoxBundle';
+    protected $choicesOrganizations = [];
+
+    protected $datagridValues = [
+        '_page' => 1,
+        '_sort_order' => 'DESC',
+        '_sort_by' => 'datetime',
+    ];
 
     /**
      * @param ListMapper $listMapper
      */
     protected function configureListFields(ListMapper $listMapper)
     {
+        $this->setChoiceOrganization();
+
         $listMapper
             ->addIdentifier('id', null, [
                 'label' => 'ID'
@@ -23,9 +34,11 @@ class TransactionAdmin extends AbstractAdmin
             ->add('datetime', 'datetime', [
                 'format' => 'd.m.Y H:i:s'
             ])
-            ->add('INN', null, [
-                'label' => 'INN'
-            ])
+            ->add('INN', 'choice', [
+                    'label' => 'Organization',
+                    'choices' => $this->choicesOrganizations
+                ]
+            )
             ->add('Sum')
             ->add('action')
             ->add('customerNumber')
@@ -49,13 +62,31 @@ class TransactionAdmin extends AbstractAdmin
      */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
+        $choicesOrganizations = $this->choicesOrganizations;
         $datagridMapper
             ->add('customerNumber')
             ->add('datetime')
-            ->add('type')
+            ->add('type', null, [
+                ], 'choice', [
+                    'choices' => array_keys(PaymentTypes::getArrayForAdmin()),
+                    'choice_label' => function($type) {
+                        return $type;
+                    },
+                ]
+            )
             ->add('INN', null, [
-                'label' => 'INN'
-            ])
+                    'label' => 'Organization',
+                ], 'choice', [
+                    'choices' => array_keys($choicesOrganizations),
+                    'choice_label' => function($INN) use ($choicesOrganizations) {
+                        if (isset($choicesOrganizations[$INN])) {
+                            return $choicesOrganizations[$INN]->getName();
+                        } else {
+                            return $INN;
+                        }
+                    },
+                ]
+            )
         ;
     }
 
@@ -81,5 +112,21 @@ class TransactionAdmin extends AbstractAdmin
             ->add('email')
             ->add('dataPost', null, ['template' => 'BoxBundle:MongoDB:show_hash.html.twig'])
         ;
+    }
+
+    protected function setChoiceOrganization()
+    {
+        /**
+         * @var Organization[] $Organizations
+         */
+        $Organizations = $this->getConfigurationPool()
+            ->getContainer()
+            ->get('doctrine_mongodb')->getManager()
+            ->getRepository(Organization::class)
+            ->findAll();
+
+        foreach ($Organizations as $Organization) {
+            $this->choicesOrganizations[$Organization->getINN()] = $Organization;
+        }
     }
 }    

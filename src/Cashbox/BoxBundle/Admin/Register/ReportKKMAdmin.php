@@ -2,6 +2,8 @@
 
 namespace Cashbox\BoxBundle\Admin\Register;
 
+use Cashbox\BoxBundle\Document\Organization;
+use Cashbox\BoxBundle\Model\Type\{PaymentTypes, OtherTypes, KKMTypes};
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\{DatagridMapper, ListMapper};
 use Sonata\AdminBundle\Show\ShowMapper;
@@ -10,12 +12,21 @@ use Sonata\AdminBundle\Route\RouteCollection;
 class ReportKKMAdmin extends AbstractAdmin
 {
     protected $translationDomain = 'BoxBundle';
+    protected $choicesOrganizations = [];
+
+    protected $datagridValues = [
+        '_page' => 1,
+        '_sort_order' => 'DESC',
+        '_sort_by' => 'datetime',
+    ];
 
     /**
      * @param ListMapper $listMapper
      */
     protected function configureListFields(ListMapper $listMapper)
     {
+        $this->setChoiceOrganization();
+        
         $listMapper
             ->addIdentifier('id', null, [
                 'label' => 'ID'
@@ -23,10 +34,12 @@ class ReportKKMAdmin extends AbstractAdmin
             ->add('datetime', 'datetime', [
                 'format' => 'd.m.Y H:i:s'
             ])
+            ->add('INN', 'choice', [
+                    'label' => 'Organization',
+                    'choices' => $this->choicesOrganizations
+                ]
+            )
             ->add('typePayment')
-            ->add('INN', null, [
-                'label' => 'INN'
-            ])
             ->add('state')
             ->add('type')
         ;
@@ -47,13 +60,38 @@ class ReportKKMAdmin extends AbstractAdmin
      */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
+        $choicesOrganizations = $this->choicesOrganizations;
         $datagridMapper
             ->add('datetime')
-            ->add('typePayment')
-            ->add('type')
+            ->add('typePayment', null, [
+                ], 'choice', [
+                    'choices' => array_keys(array_merge(PaymentTypes::getArrayForAdmin(), OtherTypes::getArrayForAdmin())),
+                    'choice_label' => function($type) {
+                        return $type;
+                    },
+                ]
+            )
+            ->add('type', null, [
+                ], 'choice', [
+                    'choices' => array_keys(KKMTypes::getArrayForAdmin()),
+                    'choice_label' => function($type) {
+                        return $type;
+                    },
+                ]
+            )
             ->add('INN', null, [
-                'label' => 'INN'
-            ])
+                    'label' => 'Organization',
+                ], 'choice', [
+                    'choices' => array_keys($choicesOrganizations),
+                    'choice_label' => function($INN) use ($choicesOrganizations) {
+                        if (isset($choicesOrganizations[$INN])) {
+                            return $choicesOrganizations[$INN]->getName();
+                        } else {
+                            return $INN;
+                        }
+                    },
+                ]
+            )
             ->add('state')
         ;
     }
@@ -84,5 +122,21 @@ class ReportKKMAdmin extends AbstractAdmin
             ])
             ->add('dataPost')
         ;
+    }
+
+    protected function setChoiceOrganization()
+    {
+        /**
+         * @var Organization[] $Organizations
+         */
+        $Organizations = $this->getConfigurationPool()
+            ->getContainer()
+            ->get('doctrine_mongodb')->getManager()
+            ->getRepository(Organization::class)
+            ->findAll();
+
+        foreach ($Organizations as $Organization) {
+            $this->choicesOrganizations[$Organization->getINN()] = $Organization;
+        }
     }
 }    
