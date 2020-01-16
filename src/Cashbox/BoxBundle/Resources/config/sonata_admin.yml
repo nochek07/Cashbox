@@ -8,6 +8,19 @@ sonata_admin:
         extra_stylesheets:
             - bundles/box/Admin/admin.css
     dashboard:
+        blocks:
+            -
+                position: left
+                type: sonata.admin.block.admin_list
+                settings:
+                    groups: [sonata.page.register]
+
+            -
+                position: right
+                type: sonata.admin.block.admin_list
+                settings:
+                    groups: [sonata.page.settings]
+
         groups:
             sonata.page.settings:
                 label: group.settings

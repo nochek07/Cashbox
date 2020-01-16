@@ -2,7 +2,7 @@
 
 namespace Cashbox\BoxBundle\Admin\Register;
 
-use Cashbox\BoxBundle\Document\Organization;
+use Cashbox\BoxBundle\Model\OrganizationModel;
 use Cashbox\BoxBundle\Model\Type\PaymentTypes;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\{DatagridMapper, ListMapper};
@@ -116,17 +116,10 @@ class TransactionAdmin extends AbstractAdmin
 
     protected function setChoiceOrganization()
     {
-        /**
-         * @var Organization[] $Organizations
-         */
-        $Organizations = $this->getConfigurationPool()
-            ->getContainer()
-            ->get('doctrine_mongodb')->getManager()
-            ->getRepository(Organization::class)
-            ->findAll();
-
-        foreach ($Organizations as $Organization) {
-            $this->choicesOrganizations[$Organization->getINN()] = $Organization;
-        }
+        $this->choicesOrganizations = OrganizationModel::setChoiceOrganization(
+            $this->getConfigurationPool()
+                ->getContainer()
+                ->get('doctrine_mongodb')
+        );
     }
 }    

@@ -27,14 +27,39 @@ class OrganizationModel
         } else {
             $INN = $request['inn'];
         }
+
         if (!is_null($INN) && !empty($INN)) {
-            $repositoryOrganization = $managerMongoDB->getManager()
-                ->getRepository('BoxBundle:Organization');
-            return $repositoryOrganization->findOneBy([
-                'INN' => (int)$INN
-            ]);
+            return $managerMongoDB->getManager()
+                ->getRepository('BoxBundle:Organization')
+                ->findOneBy([
+                    'INN' => (int)$INN
+                ]);
         }
 
         return null;
+    }
+
+    /**
+     * Set choice or organizations
+     *
+     * @param ManagerRegistry $manager
+     *
+     * @return array
+     */
+    public static function setChoiceOrganization(ManagerRegistry $manager)
+    {
+        $choicesOrganizations = [];
+        /**
+         * @var Organization[] $Organizations
+         */
+        $Organizations = $manager->getManager()
+            ->getRepository(Organization::class)
+            ->findAll();
+
+        foreach ($Organizations as $Organization) {
+            $choicesOrganizations[$Organization->getINN()] = $Organization;
+        }
+
+        return $choicesOrganizations;
     }
 }

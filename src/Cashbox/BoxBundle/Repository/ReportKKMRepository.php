@@ -2,7 +2,7 @@
 
 namespace Cashbox\BoxBundle\Repository;
 
-use Doctrine\MongoDB\Query\Expr;
+use Cashbox\BoxBundle\Repository\Form\ReportByPeriodFormType;
 use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 
 class ReportKKMRepository extends DocumentRepository
@@ -10,28 +10,27 @@ class ReportKKMRepository extends DocumentRepository
     /**
      * @param \DateTime $datePeriodStart
      * @param \DateTime $datePeriodEnd
+     * @param string $INN
+     *
      * @return array
      */
-    public function findByPeriod($datePeriodStart, $datePeriodEnd)
+    public function findByPeriod(\DateTime $datePeriodStart, \DateTime $datePeriodEnd, string $INN)
     {
-        $Expr1_1 = new Expr();
-        $Expr1_1->field('datetime')
-            ->gte($datePeriodStart);
-
-        $Expr1_2 = new Expr();
-        $Expr1_2->field('datetime')
-            ->lte($datePeriodEnd);
-
-        $ExprAnd = new Expr();
-        $ExprAnd->addAnd($Expr1_1)
-            ->addAnd($Expr1_2);
-
         $query = $this->createQueryBuilder()
-            ->field('state')->equals('new')
-            ->addAnd($ExprAnd)
-            ->getQuery()
+            ->field('state')
+                ->equals('new')
+            ->field('datetime')
+                ->lte($datePeriodEnd)
+            ->field('datetime')
+                ->gte($datePeriodStart)
         ;
 
-        return $query->toArray();
+        if ($INN !== ReportByPeriodFormType::ALL_ORGANIZATION) {
+            $query->field('INN')
+                ->equals($INN)
+            ;
+        }
+
+        return $query->getQuery()->toArray();
     }
 }

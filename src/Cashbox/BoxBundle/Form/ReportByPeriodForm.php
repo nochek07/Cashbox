@@ -8,14 +8,19 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 class ReportByPeriodForm
 {
     /**
-     * @var \DateTime $dateStart
+     * @var \DateTime
      */
     private $dateStart;
 
     /**
-     * @var \DateTime $dateEnd
+     * @var \DateTime
      */
     private $dateEnd;
+
+    /**
+     * @var string
+     */
+    private $INN;
 
     /**
      * @return \DateTime
@@ -52,6 +57,24 @@ class ReportByPeriodForm
         $this->dateEnd = $dateEnd;
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getINN()
+    {
+        return $this->INN;
+    }
+
+    /**
+     * @param string $INN
+     * @return self
+     */
+    public function setINN($INN)
+    {
+        $this->INN = $INN;
+        return $this;
+    }
     
     /**
      * @param ExecutionContextInterface $context
@@ -63,9 +86,10 @@ class ReportByPeriodForm
             ->diff($this->getDateEnd());
 
         if ($diffDate->invert == 1) {
-            $context->buildViolation('Ошибка задания периода')
+            $context->buildViolation('period.error')
                 ->atPath('dateEnd')
-                ->addViolation();
+                ->addViolation()
+            ;
         }
     }
 }
