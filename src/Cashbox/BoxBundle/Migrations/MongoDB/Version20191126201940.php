@@ -22,13 +22,13 @@ class Version20191126201940 extends AbstractMigration
         $list = $collection->find();
         while ($document = $list->getNext()) {
             if (!isset($document['type'])) {
-                $newdata = [
+                $newData = [
                     '$set' => [
                         'type' => PaymentTypes::PAYMENT_TYPE_SBERBANK,
                         'action' => 'send'
                     ]
                 ];
-                $collection->update(['_id' => $document['_id']], $newdata);
+                $collection->update(['_id' => $document['_id']], $newData);
             }
         }
     }

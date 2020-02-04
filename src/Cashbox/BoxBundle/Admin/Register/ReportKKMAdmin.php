@@ -41,6 +41,7 @@ class ReportKKMAdmin extends AbstractAdmin
             )
             ->add('typePayment')
             ->add('state')
+            ->add('action')
             ->add('type')
         ;
     }
@@ -92,6 +93,7 @@ class ReportKKMAdmin extends AbstractAdmin
                     },
                 ]
             )
+            ->add('action')
             ->add('state')
         ;
     }
@@ -114,6 +116,7 @@ class ReportKKMAdmin extends AbstractAdmin
                'label' => 'INN'
             ])
             ->add('state')
+            ->add('action')
             ->add('uuid', null, [
                'label' => 'UUID'
             ])

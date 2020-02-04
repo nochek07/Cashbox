@@ -13,12 +13,12 @@ class Version20191201111548 extends AbstractMigration
      */
     public function getDescription()
     {
-        return "Repair type payment of ReportKKM";
+        return "Repair type payment of ReportKomtet";
     }
 
     public function up(Database $db)
     {
-        $collection = $db->selectCollection('ReportKKM');
+        $collection = $db->selectCollection('ReportKomtet');
         $list = $collection->find();
         while ($document = $list->getNext()) {
             if (!isset($document['typePayment'])) {
@@ -35,13 +35,13 @@ class Version20191201111548 extends AbstractMigration
                     default:
                         $value = "";
                 }
-                $newdata = [
+                $newData = [
                     '$set' => [
                         "type" => KKMTypes::KKM_TYPE_KOMTET,
                         "typePayment" => $value
                     ]
                 ];
-                $collection->update(['_id' => $document['_id']], $newdata);
+                $collection->update(['_id' => $document['_id']], $newData);
             }
         }
     }

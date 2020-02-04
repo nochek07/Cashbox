@@ -55,12 +55,8 @@ class Version20191121151241 extends AbstractMigration
             if (isset($document[$oldName])) {
                 $value = $document[$oldName];
                 settype($value, $params['type']);
-                $newdata = [
-                    '$set' => [
-                        $params['newName'] => $value
-                    ]
-                ];
-                $collection->update(['_id' => $document['_id']], $newdata);
+
+                $collection->update(['_id' => $document['_id']], ['$set' => [$params['newName'] => $value]]);
                 $collection->update(['_id' => $document['_id']], ['$unset' => [$oldName => true]]);
             }
         }

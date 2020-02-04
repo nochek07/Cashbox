@@ -12,7 +12,7 @@ class Version20191119211905 extends AbstractMigration
      */
     public function getDescription()
     {
-        return "Repair type of INN";
+        return "Repair type of INN to Organization";
     }
 
     public function up(Database $db)
@@ -39,12 +39,7 @@ class Version20191119211905 extends AbstractMigration
             if (isset($document['INN'])) {
                 $value = $document['INN'];
                 settype($value, $type);
-                $newdata = [
-                    '$set' => [
-                        "INN" => $value
-                    ]
-                ];
-                $collection->update(['_id' => $document['_id']], $newdata);
+                $collection->update(['_id' => $document['_id']], ['$set' => ["INN" => $value]]);
             }
         }
     }

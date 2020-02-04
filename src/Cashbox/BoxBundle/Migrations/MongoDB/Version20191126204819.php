@@ -22,12 +22,15 @@ class Version20191126204819 extends AbstractMigration
 
         $collectionYandex = $db->selectCollection('YandexTransaction');
         $list = $collectionYandex->find();
-        while ($document = $list->getNext()) {
-            $newdata = $document;
-            $newdata['type'] = PaymentTypes::PAYMENT_TYPE_YANDEX;
-            unset($newdata['_id']);
-
-            $collection->insert($newdata);
+        if ($list->count()>0) {
+            $transactions = [];
+            while ($document = $list->getNext()) {
+                $newData = $document;
+                $newData['type'] = PaymentTypes::PAYMENT_TYPE_YANDEX;
+                unset($newData['_id']);
+                $transactions[] = $newData;
+            }
+            $collection->batchInsert($transactions);
         }
     }
 

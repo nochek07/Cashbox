@@ -48,7 +48,7 @@ class Komtet extends AbstractKKM
      * [
      *      "order"  => "1224",
      *      "email"  => "1@mail.ru",
-     *      "action" => "sale",
+     *      "action" => "action" (sale|refund),
      *      "kkm"    => [
      *          "positions" => [
      *              0 => [
@@ -71,7 +71,7 @@ class Komtet extends AbstractKKM
         return [
             "order" => $param['order'],
             "email" => $param['email'],
-            "action" => 'sale',
+            "action" => KKMTypes::KKM_ACTION_SALE,
             "kkm" => [
                 "positions" => [
                     0 => [
@@ -99,10 +99,10 @@ class Komtet extends AbstractKKM
 
         $tax_system = $komtet['tax_system'];
         switch ($data["action"]) {
-            case "sale":
+            case KKMTypes::KKM_ACTION_SALE:
                 $check = Check::createSell($data["order"], $data["email"], $tax_system);
                 break;
-            case "refund":
+            case KKMTypes::KKM_ACTION_REFUND:
                 $check = Check::createSellReturn($data["order"], $data["email"], $tax_system);
                 break;
             default:
@@ -139,18 +139,18 @@ class Komtet extends AbstractKKM
 
         $INN = $this->organizationDocument->getINN();
 
-        // Добавляем чек в очередь.
+        // Добавляем чек в очередь
         try {
             $request = $this->QueueManager->putCheck($check);
             if (isset($res['state'])) {
-
                 $this->getReport()->add(new KKMReport(), [
                     'type' => $this->name,
                     'typePayment' => $type,
                     'state' => $request['state'],
                     'dataKKM' => $request,
                     'dataPost' => $data,
-                    'inn' => $INN
+                    'action' => $data['action'],
+                    'INN' => $INN
                 ]);
 
                 $this->sendMail($data, $type);
@@ -159,25 +159,25 @@ class Komtet extends AbstractKKM
                 $this->getReport()->add(new KKMReport(), [
                     'type' => $this->name,
                     'typePayment' => $type,
-                    'state' => 'otherError',
+                    'state' => KKMTypes::KKM_STATE_OTHER_ERROR,
                     'dataKKM' => $request,
-                    'inn' => $INN
+                    'action' => KKMTypes::KKM_ACTION_ERROR,
+                    'INN' => $INN
                 ]);
             }
         } catch (\Exception $error) {
-
             $this->getReport()->add(new KKMReport(), [
                 'type' => $this->name,
                 'typePayment' => $type,
-                'state' => 'error',
+                'state' => KKMTypes::KKM_STATE_ERROR,
                 'dataKKM' => ["error_description" => $error->getMessage()],
-                'inn' => $INN
+                'action' => KKMTypes::KKM_ACTION_ERROR,
+                'INN' => $INN
             ]);
-
             return $error->getMessage();
         }
 
-        return 'otherError';
+        return KKMTypes::KKM_STATE_OTHER_ERROR;
     }
 
     /**

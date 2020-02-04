@@ -20,7 +20,7 @@ class Version20191201212039 extends AbstractMigration
         $dbName = $db->getName();
         $mongo = $db->getConnection()->getMongoClient();
         $mongo->admin->command([
-            "renameCollection" => "{$dbName}.ReportKKM",
+            "renameCollection" => "{$dbName}.ReportKomtet",
             "to" => "{$dbName}.ReportKKM"
         ]);
     }
