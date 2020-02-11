@@ -11,3 +11,7 @@
     padding-right: 15px;
     vertical-align: top;
 }
+
+.sonata-ba-list-field-error {
+    color: red;
+}

@@ -9,3 +9,7 @@ Payment: Платежная система
 Organization: Организация
 Type: Тип ККМ
 Sum: Сумма
+
+sale: Продажа
+refund: Возврат
+error: Ошибка

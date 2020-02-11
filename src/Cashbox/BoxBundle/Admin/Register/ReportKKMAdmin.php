@@ -13,6 +13,7 @@ class ReportKKMAdmin extends AbstractAdmin
 {
     protected $translationDomain = 'BoxBundle';
     protected $choicesOrganizations = [];
+    protected $choicesActions = [];
 
     protected $datagridValues = [
         '_page' => 1,
@@ -26,6 +27,7 @@ class ReportKKMAdmin extends AbstractAdmin
     protected function configureListFields(ListMapper $listMapper)
     {
         $this->setChoiceOrganization();
+        $this->setChoiceAction();
         
         $listMapper
             ->addIdentifier('id', null, [
@@ -41,7 +43,10 @@ class ReportKKMAdmin extends AbstractAdmin
             )
             ->add('typePayment')
             ->add('state')
-            ->add('action')
+            ->add('action', 'choice', [
+                'choices' => $this->choicesActions,
+                'template' => 'BoxBundle:Admin/sonataproject/CRUD:error_field.html.twig'
+            ])
             ->add('type')
         ;
     }
@@ -93,7 +98,13 @@ class ReportKKMAdmin extends AbstractAdmin
                     },
                 ]
             )
-            ->add('action')
+            ->add('action', null, [
+                ], 'choice', [
+                    'choices' => array_keys($this->choicesActions),
+                    'choice_label' => function($type) {
+                        return $type;
+                    },
+            ])
             ->add('state')
         ;
     }
@@ -127,6 +138,9 @@ class ReportKKMAdmin extends AbstractAdmin
         ;
     }
 
+    /**
+     * Set Organizations for Choice
+     */
     protected function setChoiceOrganization()
     {
         $this->choicesOrganizations = OrganizationModel::setChoiceOrganization(
@@ -134,5 +148,20 @@ class ReportKKMAdmin extends AbstractAdmin
                 ->getContainer()
                 ->get('doctrine_mongodb')
         );
+    }
+
+    /**
+     * Set Actions for Choice
+     */
+    protected function setChoiceAction()
+    {
+        $translator = $this->getConfigurationPool()
+            ->getContainer()
+            ->get('translator');
+        $this->choicesActions = [
+            KKMTypes::KKM_ACTION_SALE => $translator->trans(KKMTypes::KKM_ACTION_SALE, [], 'messages'),
+            KKMTypes::KKM_ACTION_REFUND => $translator->trans(KKMTypes::KKM_ACTION_REFUND, [], 'messages'),
+            KKMTypes::KKM_ACTION_ERROR => $translator->trans(KKMTypes::KKM_ACTION_ERROR, [], 'messages')
+        ];
     }
 }    
