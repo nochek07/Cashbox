@@ -14,6 +14,7 @@ class KKMTypes extends AbstractTypes
     const KKM_ACTION_REFUND = "refund";
     const KKM_ACTION_ERROR = "error";
 
+    const KKM_STATE_NEW = 'new';
     const KKM_STATE_ERROR = 'error';
     const KKM_STATE_OTHER_ERROR = 'otherError';
 

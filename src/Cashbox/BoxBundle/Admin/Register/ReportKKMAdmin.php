@@ -14,6 +14,7 @@ class ReportKKMAdmin extends AbstractAdmin
     protected $translationDomain = 'BoxBundle';
     protected $choicesOrganizations = [];
     protected $choicesActions = [];
+    protected $choicesStates = [];
 
     protected $datagridValues = [
         '_page' => 1,
@@ -28,7 +29,8 @@ class ReportKKMAdmin extends AbstractAdmin
     {
         $this->setChoiceOrganization();
         $this->setChoiceAction();
-        
+        $this->setChoiceState();
+
         $listMapper
             ->addIdentifier('id', null, [
                 'label' => 'ID'
@@ -42,7 +44,9 @@ class ReportKKMAdmin extends AbstractAdmin
                 ]
             )
             ->add('typePayment')
-            ->add('state')
+            ->add('state', 'choice', [
+                'choices' => $this->choicesStates,
+            ])
             ->add('action', 'choice', [
                 'choices' => $this->choicesActions,
                 'template' => 'BoxBundle:Admin/sonataproject/CRUD:error_field.html.twig'
@@ -105,7 +109,13 @@ class ReportKKMAdmin extends AbstractAdmin
                         return $type;
                     },
             ])
-            ->add('state')
+            ->add('state', null, [
+                ], 'choice', [
+                    'choices' => array_keys($this->choicesStates),
+                    'choice_label' => function($type) {
+                        return $type;
+                    },
+            ])
         ;
     }
 
@@ -155,13 +165,22 @@ class ReportKKMAdmin extends AbstractAdmin
      */
     protected function setChoiceAction()
     {
-        $translator = $this->getConfigurationPool()
-            ->getContainer()
-            ->get('translator');
         $this->choicesActions = [
-            KKMTypes::KKM_ACTION_SALE => $translator->trans(KKMTypes::KKM_ACTION_SALE, [], 'messages'),
-            KKMTypes::KKM_ACTION_REFUND => $translator->trans(KKMTypes::KKM_ACTION_REFUND, [], 'messages'),
-            KKMTypes::KKM_ACTION_ERROR => $translator->trans(KKMTypes::KKM_ACTION_ERROR, [], 'messages')
+            KKMTypes::KKM_ACTION_SALE => $this->trans(KKMTypes::KKM_ACTION_SALE, [], 'messages'),
+            KKMTypes::KKM_ACTION_REFUND => $this->trans(KKMTypes::KKM_ACTION_REFUND, [], 'messages'),
+            KKMTypes::KKM_ACTION_ERROR => $this->trans(KKMTypes::KKM_ACTION_ERROR, [], 'messages')
+        ];
+    }
+
+    /**
+     * Set States for Choice
+     */
+    protected function setChoiceState()
+    {
+        $this->choicesStates = [
+            KKMTypes::KKM_STATE_NEW => $this->trans(KKMTypes::KKM_STATE_NEW, [], 'messages'),
+            KKMTypes::KKM_STATE_ERROR => $this->trans(KKMTypes::KKM_STATE_ERROR, [], 'messages'),
+            KKMTypes::KKM_STATE_OTHER_ERROR => $this->trans(KKMTypes::KKM_STATE_OTHER_ERROR, [], 'messages')
         ];
     }
 }    

@@ -146,7 +146,7 @@ class Komtet extends AbstractKKM
                 $this->getReport()->add(new KKMReport(), [
                     'type' => $this->name,
                     'typePayment' => $type,
-                    'state' => $request['state'],
+                    'state' => KKMTypes::KKM_STATE_NEW,
                     'dataKKM' => $request,
                     'dataPost' => $data,
                     'action' => $data['action'],
