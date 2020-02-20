@@ -74,6 +74,7 @@ class ReportKKMAdmin extends AbstractAdmin
         $datagridMapper
             ->add('datetime')
             ->add('typePayment', null, [
+                    'show_filter' => true,
                 ], 'choice', [
                     'choices' => array_keys(array_merge(PaymentTypes::getArrayForAdmin(), OtherTypes::getArrayForAdmin())),
                     'choice_label' => function($type) {
@@ -82,6 +83,7 @@ class ReportKKMAdmin extends AbstractAdmin
                 ]
             )
             ->add('type', null, [
+                    'show_filter' => true,
                 ], 'choice', [
                     'choices' => array_keys(KKMTypes::getArrayForAdmin()),
                     'choice_label' => function($type) {
@@ -91,6 +93,7 @@ class ReportKKMAdmin extends AbstractAdmin
             )
             ->add('INN', null, [
                     'label' => 'Organization',
+                    'show_filter' => true,
                 ], 'choice', [
                     'choices' => array_keys($choicesOrganizations),
                     'choice_label' => function($INN) use ($choicesOrganizations) {

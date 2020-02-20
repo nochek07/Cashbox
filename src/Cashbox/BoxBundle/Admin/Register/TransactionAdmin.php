@@ -67,6 +67,7 @@ class TransactionAdmin extends AbstractAdmin
             ->add('customerNumber')
             ->add('datetime')
             ->add('type', null, [
+                    'show_filter' => true,
                 ], 'choice', [
                     'choices' => array_keys(PaymentTypes::getArrayForAdmin()),
                     'choice_label' => function($type) {
@@ -76,6 +77,7 @@ class TransactionAdmin extends AbstractAdmin
             )
             ->add('INN', null, [
                     'label' => 'Organization',
+                    'show_filter' => true,
                 ], 'choice', [
                     'choices' => array_keys($choicesOrganizations),
                     'choice_label' => function($INN) use ($choicesOrganizations) {
