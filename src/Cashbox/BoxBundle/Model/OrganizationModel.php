@@ -29,11 +29,15 @@ class OrganizationModel
         }
 
         if (!is_null($INN) && !empty($INN)) {
-            return $managerMongoDB->getManager()
-                ->getRepository('BoxBundle:Organization')
+            /**
+             * @var Organization $organization
+             */
+            $organization = $managerMongoDB->getManager()
+                ->getRepository(Organization::class)
                 ->findOneBy([
                     'INN' => (int)$INN
                 ]);
+            return $organization;
         }
 
         return null;

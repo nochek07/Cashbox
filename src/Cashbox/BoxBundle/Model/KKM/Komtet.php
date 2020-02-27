@@ -19,19 +19,19 @@ class Komtet extends AbstractKKM
     /**
      * @var QueueManager
      */
-    private $QueueManager = null;
+    private $queueManager = null;
 
     /**
      * {@inheritDoc}
      */
     public function connect()
     {
-        if (is_null($this->QueueManager)) {
+        if (is_null($this->queueManager)) {
             try {
                 $komtet = $this->kkmDocument->getData();
                 $client = new Client($komtet['shop_id'], $komtet['secret']);
-                $this->QueueManager = new QueueManager($client);
-                $this->QueueManager->registerQueue($komtet['queue_name'], $komtet['queue_id']);
+                $this->queueManager = new QueueManager($client);
+                $this->queueManager->registerQueue($komtet['queue_name'], $komtet['queue_id']);
             } catch (\Exception $e) {
                 return false;
             }
@@ -95,7 +95,7 @@ class Komtet extends AbstractKKM
     public function send(array $data, string $type)
     {
         $komtet = $this->kkmDocument->getData();
-        $this->QueueManager->setDefaultQueue($komtet['queue_name']);
+        $this->queueManager->setDefaultQueue($komtet['queue_name']);
 
         $tax_system = $komtet['tax_system'];
         switch ($data["action"]) {
@@ -141,7 +141,7 @@ class Komtet extends AbstractKKM
 
         // Добавляем чек в очередь
         try {
-            $request = $this->QueueManager->putCheck($check);
+            $request = $this->queueManager->putCheck($check);
             if (isset($res['state'])) {
                 $this->getReport()->add(new KKMReport(), [
                     'type' => $this->name,
@@ -214,14 +214,16 @@ class Komtet extends AbstractKKM
      */
 	public function isQueueActive($name): bool
     {
-        if (!is_null($this->QueueManager)) {
-            return $this->QueueManager->isQueueActive($name);
+        if ($this->queueManager instanceof QueueManager) {
+            return $this->queueManager->isQueueActive($name);
         } else {
             return false;
         }
 	}
 
     /**
+     * Check Komtet Queue
+     *
      * @return false
      */
     public function checkKKM(): bool

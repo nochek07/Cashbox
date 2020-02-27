@@ -23,25 +23,25 @@ class For1CController extends AbstractController
      */
     public function send1cAction(Request $request, Box $box)
     {
-        $For1CPayment = new For1CPayment();
+        $for1CPayment = new For1CPayment();
         if ($request->isMethod(Request::METHOD_POST)) {
             if ($request->getContentType() === 'json') {
                 $data = json_decode($request->getContent(), true);
-                if (!is_null($data)) {
-                    $For1CPayment->setDataJSON($data);
+                if (!is_null($data) && is_array($data)) {
+                    $for1CPayment->setDataJSON($data);
 
                     $box->setOrganizationTextError(
-                        $For1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR_INN)
+                        $for1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR_INN)
                     );
                     return new Response(
-                        $box->send($request, $For1CPayment)
+                        $box->send($request, $for1CPayment)
                     );
                 }
             }
         }
 
         return new Response(
-            $For1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR)
+            $for1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR)
         );
     }
 
@@ -57,25 +57,25 @@ class For1CController extends AbstractController
      */
     public function chek1cAction(Request $request, Box $box)
     {
-        $For1CPayment = new For1CPayment();
+        $for1CPayment = new For1CPayment();
         if ($request->isMethod(Request::METHOD_POST)) {
             if ($request->getContentType() === 'json') {
                 $data = json_decode($request->getContent(), true);
                 if (!is_null($data)) {
-                    $For1CPayment->setDataJSON($data);
+                    $for1CPayment->setDataJSON($data);
 
                     $box->setOrganizationTextError(
-                        $For1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR_INN)
+                        $for1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR_INN)
                     );
                     return new Response(
-                        $box->check($request, $For1CPayment)
+                        $box->check($request, $for1CPayment)
                     );
                 }
             }
         }
 
         return new Response(
-            $For1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR)
+            $for1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR)
         );
     }
 }

@@ -3,9 +3,7 @@
 namespace Cashbox\BoxBundle\Model\Payment;
 
 use Cashbox\BoxBundle\Document\Payment;
-use Cashbox\BoxBundle\Model\KKM\{KKMInterface, KKMMessages};
-use Cashbox\BoxBundle\Model\Report\TransactionReport;
-use Cashbox\BoxBundle\Model\Type\PaymentTypes;
+use Cashbox\BoxBundle\Model\{KKM\KKMInterface, KKM\KKMMessages, Report\TransactionReport, Type\PaymentTypes};
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -29,11 +27,11 @@ class YandexPayment extends AbstractPayment
     public function send(Request $request)
     {
         $payment = $this->getDesiredPayment(
-            $this->Organization->getPayments()
+            $this->organization->getPayments()
         );
         if ($payment instanceof Payment) {
             $yandex = $payment->getData();
-            $responseText = $this->processRequest($request, $yandex, $this->Organization->getSecret());
+            $responseText = $this->processRequest($request, $yandex, $this->organization->getSecret());
             if ($responseText == '') {
                 $email = $request->get('email');
                 $orderSum = (float)$request->get('orderSumAmount');
@@ -45,7 +43,7 @@ class YandexPayment extends AbstractPayment
                     'orderSum' => $orderSum,
                     'customerNumber' => $order,
                     'email' => $email,
-                    'inn' => $this->Organization->getINN(),
+                    'inn' => $this->organization->getINN(),
                     'data' => $request->request->all()
                 ]);
 
@@ -76,12 +74,12 @@ class YandexPayment extends AbstractPayment
     public function check(Request $request)
     {
         $payment = $this->getDesiredPayment(
-            $this->Organization->getPayments()
+            $this->organization->getPayments()
         );
         if ($payment instanceof Payment) {
             $yandex = $payment->getData();
 
-            $responseText = $this->processRequest($request, $yandex, $this->Organization->getSecret());
+            $responseText = $this->processRequest($request, $yandex, $this->organization->getSecret());
             if ($responseText == '') {
                 $kkm = $this->getKkmByPayment($payment);
                 if ($kkm instanceof KKMInterface) {
@@ -102,7 +100,7 @@ class YandexPayment extends AbstractPayment
                     'orderSum' => (float)$request->get('orderSumAmount'),
                     'customerNumber' => $request->get('customerNumber'),
                     'email' => $request->get('email'),
-                    'inn' => $this->Organization->getINN(),
+                    'inn' => $this->organization->getINN(),
                     'data' => $request->request->all()
                 ]);
 
@@ -182,10 +180,9 @@ class YandexPayment extends AbstractPayment
     {
         try {
             $performedDatetime = self::formatDate(new \DateTime());
-            $response = '<?xml version="1.0" encoding="UTF-8"?><' . $functionName . 'Response performedDatetime="' . $performedDatetime .
+            return '<?xml version="1.0" encoding="UTF-8"?><' . $functionName . 'Response performedDatetime="' . $performedDatetime .
                 '" code="' . $result_code . '" ' . (!is_null($message) ? 'message="' . $message . '"' : "") . ' invoiceId="' . $invoiceId .
                 '" shopId="' . $shopId . '"/>';
-            return $response;
         } catch (\Exception $error) {
             return '';
         }

@@ -70,7 +70,7 @@ class TransactionAdmin extends AbstractAdmin
                     'show_filter' => true,
                 ], 'choice', [
                     'choices' => array_keys(PaymentTypes::getArrayForAdmin()),
-                    'choice_label' => function($type) {
+                    'choice_label' => function ($type) {
                         return $type;
                     },
                 ]
@@ -80,7 +80,7 @@ class TransactionAdmin extends AbstractAdmin
                     'show_filter' => true,
                 ], 'choice', [
                     'choices' => array_keys($choicesOrganizations),
-                    'choice_label' => function($INN) use ($choicesOrganizations) {
+                    'choice_label' => function ($INN) use ($choicesOrganizations) {
                         if (isset($choicesOrganizations[$INN])) {
                             return $choicesOrganizations[$INN]->getName();
                         } else {

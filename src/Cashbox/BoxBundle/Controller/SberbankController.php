@@ -44,13 +44,13 @@ class SberbankController extends AbstractController
      */
     public function restSberbankAction(Request $request, $box)
     {
-        $SberbankPayment = new SberbankPayment();
-        $url = $SberbankPayment->getSiteUrl($request, 0);
+        $sberbankPayment = new SberbankPayment();
+        $url = $sberbankPayment->getSiteUrl($request, 0);
         if ($request->isMethod(Request::METHOD_GET)) {
             $box->defineOrganization($request);
             if ($box->getOrganization() instanceof Organization) {
-                $box->setOptionsPayment($SberbankPayment);
-                $url = $SberbankPayment->getRedirectUrl($request, $url);
+                $box->setOptionsPayment($sberbankPayment);
+                $url = $sberbankPayment->getRedirectUrl($request, $url);
             }
         }
         return $this->redirect($url);

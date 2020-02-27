@@ -20,8 +20,6 @@ class KKMReport implements ReportInterface
 
         if (isset($params['dataKKM'])) {
             $Report->setDataKomtet($params['dataKKM']);
-        } else {
-            $Report->setDataKomtet([]);
         }
 
         if (isset($params['dataPost'])) {
@@ -30,8 +28,6 @@ class KKMReport implements ReportInterface
             if (isset($dataPost["uuid"])) {
                 $Report->setUuid($params['dataPost']["uuid"]);
             }
-        } else {
-            $Report->setDataPost([]);
         }
 
         return $Report;

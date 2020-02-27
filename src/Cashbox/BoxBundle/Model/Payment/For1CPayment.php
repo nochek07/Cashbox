@@ -3,8 +3,7 @@
 namespace Cashbox\BoxBundle\Model\Payment;
 
 use Cashbox\BoxBundle\Document\Payment;
-use Cashbox\BoxBundle\Model\Type\OtherTypes;
-use Cashbox\BoxBundle\Model\KKM\{KKMInterface, KKMMessages};
+use Cashbox\BoxBundle\Model\{KKM\KKMInterface, KKM\KKMMessages, Type\OtherTypes};
 use Symfony\Component\HttpFoundation\Request;
 
 class For1CPayment extends YandexPayment
@@ -24,10 +23,10 @@ class For1CPayment extends YandexPayment
     public function send(Request $request)
     {
         $payment = $this->getDesiredPayment(
-            $this->Organization->getOthers()
+            $this->organization->getOthers()
         );
         if ($payment instanceof Payment) {
-            if ($this->check1cMD5($this->dataJSON, $this->Organization->getSecret())) {
+            if ($this->check1cMD5($this->dataJSON, $this->organization->getSecret())) {
                 $kkm = $this->getKkmByPayment($payment);
                 if ($kkm instanceof KKMInterface) {
                     if (!$kkm->checkKKM()) {
@@ -36,7 +35,7 @@ class For1CPayment extends YandexPayment
                 }
 
                 $repository = $this->getManager()
-                    ->getRepository('BoxBundle:ReportKKMp');
+                    ->getRepository('BoxBundle:ReportKKM');
                 $report = $repository->findOneBy([
                     'type' => OtherTypes::PAYMENT_TYPE_1C,
                     'action' => $this->dataJSON["action"],
@@ -63,7 +62,7 @@ class For1CPayment extends YandexPayment
     public function check(Request $request)
     {
         $payment = $this->getDesiredPayment(
-            $this->Organization->getOthers()
+            $this->organization->getOthers()
         );
         if ($payment instanceof Payment) {
             $kkm = $this->getKkmByPayment($payment);

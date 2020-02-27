@@ -50,12 +50,12 @@ class ReportKKM
     /**
      * @MongoDB\Field(type="hash")
      */
-    protected $dataKomtet;
+    protected $dataKomtet = [];
 
     /**
      * @MongoDB\Field(type="hash")
      */
-    protected $dataPost;
+    protected $dataPost = [];
 
     /**
      * @MongoDB\Field(type="string")
@@ -117,7 +117,7 @@ class ReportKKM
     }
 
     /**
-     * Set type pyament
+     * Set type payment
      *
      * @param string $typePayment
      *

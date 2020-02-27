@@ -3,9 +3,7 @@
 namespace Cashbox\BoxBundle\Model\Payment;
 
 use Cashbox\BoxBundle\Document\Payment;
-use Cashbox\BoxBundle\Model\KKM\KKMInterface;
-use Cashbox\BoxBundle\Model\Report\TransactionReport;
-use Cashbox\BoxBundle\Model\Type\PaymentTypes;
+use Cashbox\BoxBundle\Model\{Type\PaymentTypes, Report\TransactionReport, KKM\KKMInterface};
 use Symfony\Component\HttpFoundation\Request;
 
 class SberbankPayment extends AbstractPayment
@@ -34,7 +32,7 @@ class SberbankPayment extends AbstractPayment
     public function send(Request $request)
     {
         $payment = $this->getDesiredPayment(
-            $this->Organization->getPayments()
+            $this->organization->getPayments()
         );
         if ($payment instanceof Payment) {
             $sberbank = $payment->getData();
@@ -66,7 +64,7 @@ class SberbankPayment extends AbstractPayment
                         'orderSum' => $orderSum,
                         'customerNumber' => $customerNumber,
                         'email' => $email,
-                        'inn' => $this->Organization->getINN(),
+                        'inn' => $this->organization->getINN(),
                         'data' => $response
                     ]);
 
@@ -160,16 +158,16 @@ class SberbankPayment extends AbstractPayment
      */
     public function getRedirectUrl(Request $request, string $failUrl)
     {
-        $redirect_url = $failUrl;
+        $redirectUrl = $failUrl;
         $payment = $this->getDesiredPayment(
-            $this->Organization->getPayments()
+            $this->organization->getPayments()
         );
         if ($payment instanceof Payment) {
-            if ($this->otherCheckMD5($request, $this->Organization->getSecret())) {
+            if ($this->otherCheckMD5($request, $this->organization->getSecret())) {
                 $kkm = $this->getKkmByPayment($payment);
                 if ($kkm instanceof KKMInterface) {
                     if (!$kkm->checkKKM()) {
-                        return $redirect_url;
+                        return $redirectUrl;
                     }
                 }
 
@@ -201,18 +199,18 @@ class SberbankPayment extends AbstractPayment
                     if ($response['errorCode'] == 0) {
                         // Произведена полная оплата
                         if ($response['orderStatus'] == 2) {
-                            $redirect_url = $successUrl;
+                            $redirectUrl = $successUrl;
                         } else {
                             $id = $response['attributes'][0]['value'];
-                            $redirect_url = self::FORM_URL . '?mdOrder=' . $id;
+                            $redirectUrl = self::FORM_URL . '?mdOrder=' . $id;
                         }
                     }
                 } elseif (isset($answer['formUrl'])) {
-                    $redirect_url = $answer['formUrl'];
+                    $redirectUrl = $answer['formUrl'];
                 }
             }
         }
-        return $redirect_url;
+        return $redirectUrl;
     }
 
     /**

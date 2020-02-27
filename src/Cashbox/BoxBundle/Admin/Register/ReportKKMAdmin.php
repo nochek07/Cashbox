@@ -77,7 +77,7 @@ class ReportKKMAdmin extends AbstractAdmin
                     'show_filter' => true,
                 ], 'choice', [
                     'choices' => array_keys(array_merge(PaymentTypes::getArrayForAdmin(), OtherTypes::getArrayForAdmin())),
-                    'choice_label' => function($type) {
+                    'choice_label' => function ($type) {
                         return $type;
                     },
                 ]
@@ -86,7 +86,7 @@ class ReportKKMAdmin extends AbstractAdmin
                     'show_filter' => true,
                 ], 'choice', [
                     'choices' => array_keys(KKMTypes::getArrayForAdmin()),
-                    'choice_label' => function($type) {
+                    'choice_label' => function ($type) {
                         return $type;
                     },
                 ]
@@ -96,7 +96,7 @@ class ReportKKMAdmin extends AbstractAdmin
                     'show_filter' => true,
                 ], 'choice', [
                     'choices' => array_keys($choicesOrganizations),
-                    'choice_label' => function($INN) use ($choicesOrganizations) {
+                    'choice_label' => function ($INN) use ($choicesOrganizations) {
                         if (isset($choicesOrganizations[$INN])) {
                             return $choicesOrganizations[$INN]->getName();
                         } else {
@@ -108,14 +108,14 @@ class ReportKKMAdmin extends AbstractAdmin
             ->add('action', null, [
                 ], 'choice', [
                     'choices' => array_keys($this->choicesActions),
-                    'choice_label' => function($type) {
+                    'choice_label' => function ($type) {
                         return $type;
                     },
             ])
             ->add('state', null, [
                 ], 'choice', [
                     'choices' => array_keys($this->choicesStates),
-                    'choice_label' => function($type) {
+                    'choice_label' => function ($type) {
                         return $type;
                     },
             ])

@@ -4,8 +4,7 @@ namespace Cashbox\BoxBundle\Model\Payment;
 
 use Cashbox\BoxBundle\Service\{KKMBuilder, Report};
 use Cashbox\BoxBundle\Document\{KKM, Organization, AbstractPaymentDocument};
-use Cashbox\BoxBundle\Model\KKM\{AbstractKKM, KKMInterface};
-use Cashbox\BoxBundle\Model\Type\KKMTypes;
+use Cashbox\BoxBundle\Model\{KKM\AbstractKKM, KKM\KKMInterface, Type\KKMTypes};
 use Doctrine\Common\Collections\{Collection, ArrayCollection};
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +21,7 @@ abstract class AbstractPayment implements PaymentInterface
     /**
      * @var Organization
      */
-    protected $Organization;
+    protected $organization;
 
     /**
      * @var Report
@@ -47,11 +46,11 @@ abstract class AbstractPayment implements PaymentInterface
     /**
      * Set Organization
      *
-     * @param Organization $Organization
+     * @param Organization $organization
      */
-    public function setOrganization(Organization $Organization)
+    public function setOrganization(Organization $organization)
     {
-        $this->Organization = $Organization;
+        $this->organization = $organization;
     }
 
     /**
@@ -118,14 +117,14 @@ abstract class AbstractPayment implements PaymentInterface
      * Additional check
      *
      * @param Request $request
-     * @param String $handling_secret - secret word
+     * @param String $handlingSecret - secret word
      *
      * @return bool
      */
-    public function otherCheckMD5(Request $request, $handling_secret)
+    public function otherCheckMD5(Request $request, $handlingSecret)
     {
         return ($request->get('h') != md5($request->get('customerNumber') . "_"
-                . $request->get('orderSumAmount') . "_" . $handling_secret));
+                . $request->get('orderSumAmount') . "_" . $handlingSecret));
     }
 
     /**
@@ -163,7 +162,7 @@ abstract class AbstractPayment implements PaymentInterface
             /**
              * @var ArrayCollection $mongoPersistCollection
              */
-            $mongoPersistCollection = $this->Organization->getKKMs();
+            $mongoPersistCollection = $this->organization->getKKMs();
             $kkms = $mongoPersistCollection->filter(
                 function (KKM $entry) use ($kkmDocument) {
                     return $entry->getId() === $kkmDocument->getId();
@@ -175,7 +174,7 @@ abstract class AbstractPayment implements PaymentInterface
                 $classKKM = KKMTypes::$arrayKkmModelClass[$kkmDocument->getType()];
 
                 $kkmManager = $this->kkmBuilder
-                    ->create($classKKM, $this->Organization, $kkmDocument);
+                    ->create($classKKM, $this->organization, $kkmDocument);
                 if ($kkmManager instanceof AbstractKKM) {
                     return $this->kkmBuilder->getKKMWithOptions($kkmManager);
                 }

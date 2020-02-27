@@ -22,7 +22,8 @@ class OrganizationAdmin extends AbstractAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
-        $KKMs = $this->getSubject()->getKKMs()->toArray();
+        $KKMs = $this->getSubject()
+            ->getKKMs()->toArray();
 
         $formMapper
             ->tab('Basic')
