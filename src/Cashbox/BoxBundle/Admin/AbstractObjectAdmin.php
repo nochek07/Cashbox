@@ -9,7 +9,6 @@ use Sonata\AdminBundle\Form\FormMapper;
 abstract class AbstractObjectAdmin extends AbstractAdmin
 {
     protected $translationDomain = 'BoxBundle';
-
     protected $listModes = [];
 
     /**

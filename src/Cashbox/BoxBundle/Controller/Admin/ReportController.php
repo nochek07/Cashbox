@@ -24,6 +24,7 @@ class ReportController extends CoreController
      * @Route("/period", name="_period")
      *
      * @param Request $request
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function periodAction(Request $request)

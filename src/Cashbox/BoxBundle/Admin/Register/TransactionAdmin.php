@@ -80,11 +80,11 @@ class TransactionAdmin extends AbstractAdmin
                     'show_filter' => true,
                 ], 'choice', [
                     'choices' => array_keys($choicesOrganizations),
-                    'choice_label' => function ($INN) use ($choicesOrganizations) {
-                        if (isset($choicesOrganizations[$INN])) {
-                            return $choicesOrganizations[$INN]->getName();
+                    'choice_label' => function ($inn) use ($choicesOrganizations) {
+                        if (isset($choicesOrganizations[$inn])) {
+                            return $choicesOrganizations[$inn]->getName();
                         } else {
-                            return $INN;
+                            return $inn;
                         }
                     },
                 ]

@@ -32,11 +32,11 @@ class ReportByPeriodFormType extends AbstractType
             ])
             ->add('INN', ChoiceType::class, [
                 'choices' => $keyChoicesOrganizations,
-                'choice_label' => function($INN) use ($choicesOrganizations) {
-                    if (isset($choicesOrganizations[$INN]) && $choicesOrganizations[$INN] instanceof Organization) {
-                        return $choicesOrganizations[$INN]->getName();
+                'choice_label' => function ($inn) use ($choicesOrganizations) {
+                    if (isset($choicesOrganizations[$inn]) && $choicesOrganizations[$inn] instanceof Organization) {
+                        return $choicesOrganizations[$inn]->getName();
                     } else {
-                        return $INN;
+                        return $inn;
                     }
                 },
                 'attr' => [

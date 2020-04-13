@@ -20,22 +20,22 @@ class OrganizationModel
     {
         if ($request instanceof Request ) {
             if ($request->isMethod(Request::METHOD_POST)) {
-                $INN = $request->get('inn');
+                $inn = $request->get('inn');
             } else {
-                $INN = $request->query->get('inn');
+                $inn = $request->query->get('inn');
             }
         } else {
-            $INN = $request['inn'];
+            $inn = $request['inn'];
         }
 
-        if (!is_null($INN) && !empty($INN)) {
+        if (!is_null($inn) && !empty($inn)) {
             /**
              * @var Organization $organization
              */
             $organization = $managerMongoDB->getManager()
                 ->getRepository(Organization::class)
                 ->findOneBy([
-                    'INN' => (int)$INN
+                    'INN' => (int)$inn
                 ]);
             return $organization;
         }

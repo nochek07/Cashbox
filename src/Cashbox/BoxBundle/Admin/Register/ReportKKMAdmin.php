@@ -76,7 +76,9 @@ class ReportKKMAdmin extends AbstractAdmin
             ->add('typePayment', null, [
                     'show_filter' => true,
                 ], 'choice', [
-                    'choices' => array_keys(array_merge(PaymentTypes::getArrayForAdmin(), OtherTypes::getArrayForAdmin())),
+                    'choices' => array_keys(
+                        array_merge(PaymentTypes::getArrayForAdmin(), OtherTypes::getArrayForAdmin())
+                    ),
                     'choice_label' => function ($type) {
                         return $type;
                     },

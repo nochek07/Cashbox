@@ -235,17 +235,17 @@ class SberbankPayment extends AbstractPayment
     /**
      * Replace Sum
      *
-     * @param string $Sum
+     * @param string $sum
      *
      * @return string
      */
-    private function replaceSum(string $Sum)
+    private function replaceSum(string $sum)
     {
-        $pos1 = strpos($Sum, '.');
-        $pos2 = strpos($Sum, ',');
+        $pos1 = strpos($sum, '.');
+        $pos2 = strpos($sum, ',');
         if ($pos1 === false && $pos2 === false) {
-            $Sum .= '00';
+            $sum .= '00';
         }
-        return str_replace(' ', '', str_replace(',', '', str_replace('.', '', $Sum)));
+        return str_replace(' ', '', str_replace(',', '', str_replace('.', '', $sum)));
     }
 }

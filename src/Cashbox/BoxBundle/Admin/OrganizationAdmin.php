@@ -14,7 +14,6 @@ use Sonata\CoreBundle\Validator\ErrorElement;
 class OrganizationAdmin extends AbstractAdmin
 {
     protected $translationDomain = 'BoxBundle';
-
     protected $listModes = [];
     
     /**
@@ -22,7 +21,7 @@ class OrganizationAdmin extends AbstractAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
-        $KKMs = $this->getSubject()
+        $kkms = $this->getSubject()
             ->getKKMs()->toArray();
 
         $formMapper
@@ -67,7 +66,7 @@ class OrganizationAdmin extends AbstractAdmin
 //                        'inline' => 'table',
                         'admin_code' => 'admin.payment',
                         'template' => 'BoxBundle:Admin/sonataproject/Form:form_admin_fields.html.twig',
-                        'kkms' => $KKMs
+                        'kkms' => $kkms
                     ])
                 ->end()
             ->end()
@@ -82,7 +81,7 @@ class OrganizationAdmin extends AbstractAdmin
 //                        'inline' => 'table',
                         'admin_code' => 'admin.other',
                         'template' => 'BoxBundle:Admin/sonataproject/Form:form_admin_fields.html.twig',
-                        'kkms' => $KKMs
+                        'kkms' => $kkms
                     ])
                 ->end()
             ->end()
@@ -277,7 +276,7 @@ class OrganizationAdmin extends AbstractAdmin
     }
 
     /**
-     * @return mixed
+     * {@inheritDoc}
      */
     public function getNewInstance()
     {

@@ -2,7 +2,6 @@
 
 namespace Cashbox\BoxBundle\Service;
 
-use Swift_Mailer;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
 class Mailer
@@ -18,7 +17,7 @@ class Mailer
     private $templating;
 
     /**
-     * @var Swift_Mailer
+     * @var \Swift_Mailer
      */
     private $mailer;
 
@@ -27,9 +26,9 @@ class Mailer
      *
      * @param string $mailer_user
      * @param EngineInterface $templating
-     * @param Swift_Mailer $mailer
+     * @param \Swift_Mailer $mailer
      */
-    public function __construct(string $mailer_user, EngineInterface $templating, Swift_Mailer $mailer)
+    public function __construct(string $mailer_user, EngineInterface $templating, \Swift_Mailer $mailer)
     {
         $this->mailer_user = $mailer_user;
         $this->templating = $templating;
@@ -47,7 +46,8 @@ class Mailer
     public function send(string $email, array $data)
     {
         try {
-            $message = \Swift_Message::newInstance()
+            $message = new \Swift_Message();
+            $message
                 ->setSubject('Кассовая операция')
                 ->setFrom($this->mailer_user)
                 ->setTo($email)

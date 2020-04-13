@@ -137,7 +137,7 @@ class Komtet extends AbstractKKM
             $check->addPayment($payment);
         }
 
-        $INN = $this->organizationDocument->getINN();
+        $inn = $this->organizationDocument->getINN();
 
         // Добавляем чек в очередь
         try {
@@ -150,7 +150,7 @@ class Komtet extends AbstractKKM
                     'dataKKM' => $request,
                     'dataPost' => $data,
                     'action' => $data['action'],
-                    'INN' => $INN
+                    'INN' => $inn
                 ]);
 
                 $this->sendMail($data, $type);
@@ -162,7 +162,7 @@ class Komtet extends AbstractKKM
                     'state' => KKMTypes::KKM_STATE_OTHER_ERROR,
                     'dataKKM' => $request,
                     'action' => KKMTypes::KKM_ACTION_ERROR,
-                    'INN' => $INN
+                    'INN' => $inn
                 ]);
             }
         } catch (\Exception $error) {
@@ -172,7 +172,7 @@ class Komtet extends AbstractKKM
                 'state' => KKMTypes::KKM_STATE_ERROR,
                 'dataKKM' => ["error_description" => $error->getMessage()],
                 'action' => KKMTypes::KKM_ACTION_ERROR,
-                'INN' => $INN
+                'INN' => $inn
             ]);
             return $error->getMessage();
         }
