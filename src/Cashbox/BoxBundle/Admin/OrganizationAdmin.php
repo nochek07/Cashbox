@@ -2,9 +2,9 @@
 
 namespace Cashbox\BoxBundle\Admin;
 
-use Cashbox\BoxBundle\Document\{AbstractObjectDocument, Organization, KKM, Other, Payment};
-use Doctrine\Common\Collections\{Collection, ArrayCollection};
+use Cashbox\BoxBundle\Document\{AbstractObjectDocument, KKM, Organization, Other, Payment};
 use Cashbox\BoxBundle\Model\Type;
+use Doctrine\Common\Collections\{ArrayCollection, Collection};
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -43,44 +43,41 @@ class OrganizationAdmin extends AbstractAdmin
             ->end()
 
             ->tab('KKMs')
-                ->with('KKMs', ['label' => false, 'class' => 'col-md-6'])
+                ->with('KKMs', ['label' => false, 'class' => 'box-tabs col-md-6'])
                     ->add('KKMs', 'sonata_type_collection', [
                         'label' => false,
                         'by_reference' => true,
                     ], [
                         'edit' => 'inline',
-//                        'inline' => 'table',
+                        //'inline' => 'table',
                         'admin_code' => 'admin.kkm',
-                        'template' => 'BoxBundle:Admin/sonataproject/Form:form_admin_fields.html.twig',
                     ])
                 ->end()
             ->end()
 
             ->tab('Payments')
-                ->with('Payments', ['label' => false, 'class' => 'col-md-12'])
+                ->with('Payments', ['label' => false, 'class' => 'box-tabs col-md-6'])
                     ->add('payments', 'sonata_type_collection', [
                         'label' => false,
                         'by_reference' => true,
                     ], [
                         'edit' => 'inline',
-//                        'inline' => 'table',
+                        //'inline' => 'table',
                         'admin_code' => 'admin.payment',
-                        'template' => 'BoxBundle:Admin/sonataproject/Form:form_admin_fields.html.twig',
                         'kkms' => $kkms
                     ])
                 ->end()
             ->end()
 
             ->tab('Others')
-                ->with('Others', ['label' => false, 'class' => 'col-md-12'])
+                ->with('Others', ['label' => false, 'class' => 'box-tabs col-md-6'])
                     ->add('others', 'sonata_type_collection', [
                         'label' => false,
                         'by_reference' => true,
                     ], [
                         'edit' => 'inline',
-//                        'inline' => 'table',
+                        //'inline' => 'table',
                         'admin_code' => 'admin.other',
-                        'template' => 'BoxBundle:Admin/sonataproject/Form:form_admin_fields.html.twig',
                         'kkms' => $kkms
                     ])
                 ->end()
@@ -270,9 +267,9 @@ class OrganizationAdmin extends AbstractAdmin
      */
     protected function configureRoutes(RouteCollection $collection)
     {
-//        $collection->remove('edit');
-//        $collection->remove('delete');
-//        $collection->remove('create');
+        //$collection->remove('edit');
+        //$collection->remove('delete');
+        //$collection->remove('create');
     }
 
     /**

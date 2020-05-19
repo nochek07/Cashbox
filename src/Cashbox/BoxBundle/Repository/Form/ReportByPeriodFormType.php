@@ -2,9 +2,9 @@
 
 namespace Cashbox\BoxBundle\Repository\Form;
 
-use Symfony\Component\Form\{AbstractType, FormBuilderInterface};
 use Cashbox\BoxBundle\Document\Organization;
 use Cashbox\BoxBundle\Form\ReportByPeriodForm;
+use Symfony\Component\Form\{AbstractType, FormBuilderInterface};
 use Symfony\Component\Form\Extension\Core\Type\{ChoiceType, DateType, SubmitType};
 use Symfony\Component\OptionsResolver\OptionsResolver;
 

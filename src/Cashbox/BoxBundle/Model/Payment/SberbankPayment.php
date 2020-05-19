@@ -3,7 +3,7 @@
 namespace Cashbox\BoxBundle\Model\Payment;
 
 use Cashbox\BoxBundle\Document\Payment;
-use Cashbox\BoxBundle\Model\{Type\PaymentTypes, Report\TransactionReport, KKM\KKMInterface};
+use Cashbox\BoxBundle\Model\{KKM\KKMInterface, Report\TransactionReport, Type\PaymentTypes};
 use Symfony\Component\HttpFoundation\Request;
 
 class SberbankPayment extends AbstractPayment

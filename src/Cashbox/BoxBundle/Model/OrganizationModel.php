@@ -2,9 +2,9 @@
 
 namespace Cashbox\BoxBundle\Model;
 
+use Cashbox\BoxBundle\Document\Organization;
 use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
-use Cashbox\BoxBundle\Document\Organization;
 
 class OrganizationModel
 {

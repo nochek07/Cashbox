@@ -3,9 +3,9 @@
 namespace Cashbox\BoxBundle\Model\Payment;
 
 use Cashbox\BoxBundle\Service\{KKMBuilder, Report};
-use Cashbox\BoxBundle\Document\{KKM, Organization, AbstractPaymentDocument};
+use Cashbox\BoxBundle\Document\{AbstractPaymentDocument, KKM, Organization};
 use Cashbox\BoxBundle\Model\{KKM\AbstractKKM, KKM\KKMInterface, Type\KKMTypes};
-use Doctrine\Common\Collections\{Collection, ArrayCollection};
+use Doctrine\Common\Collections\{ArrayCollection, Collection};
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 

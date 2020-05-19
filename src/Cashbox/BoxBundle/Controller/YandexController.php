@@ -2,11 +2,11 @@
 
 namespace Cashbox\BoxBundle\Controller;
 
-use Cashbox\BoxBundle\Service\Box;
 use Cashbox\BoxBundle\Model\Payment\YandexPayment;
-use Symfony\Component\Routing\Annotation\Route;
+use Cashbox\BoxBundle\Service\Box;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request, Response};
+use Symfony\Component\Routing\Annotation\Route;
 
 class YandexController extends AbstractController
 {

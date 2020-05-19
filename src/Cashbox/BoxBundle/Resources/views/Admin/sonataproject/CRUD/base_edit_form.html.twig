@@ -129,6 +129,28 @@
                 </div>
             {% endblock formactions %}
         </form>
+
+        <script type="text/javascript">
+            jQuery(document).ready(function() {
+                jQuery(document).on('click', '.box-tabs .nav-tabs-custom li', function () {
+                    var parent = jQuery(this).closest('.nav-tabs-custom');
+                    jQuery('.tab-content', parent).slideToggle();
+                });
+
+                jQuery(document).on('change', '.box-tabs input[name $= "[name]"]', function () {
+                    setNameElementTabs(this);
+                });
+
+                jQuery('.box-tabs input[name $= "[name]"]').each(function () {
+                    setNameElementTabs(this);
+                });
+
+                function setNameElementTabs(element) {
+                    var parent = jQuery(element).closest('.nav-tabs-custom');
+                    jQuery('.nav-tab-li-name', parent).text(jQuery(element).val());
+                }
+            });
+        </script>
     {% endif%}
 
     {{ sonata_block_render_event('sonata.admin.edit.form.bottom', { 'admin': admin, 'object': object }) }}

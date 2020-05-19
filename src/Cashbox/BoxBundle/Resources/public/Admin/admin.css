@@ -15,3 +15,22 @@
 .sonata-ba-list-field-error {
     color: red;
 }
+
+.box-tabs .nav-tabs-custom>.nav-tabs>li {
+    width: 100%;
+    margin-right: 0;
+    cursor: pointer;
+}
+
+.box-tabs .nav-tabs-custom>.nav-tabs>li {
+    background-color: #cfeaf9;
+    margin-right: 0;
+    cursor: pointer;
+    border-top: 3px solid #3c8dbc;
+    line-height: 2em;
+    padding: 5px 20px;
+}
+
+.box-tabs .nav-tabs-custom>.nav-tabs>li:hover {
+    background-color: #96c5e0;
+}

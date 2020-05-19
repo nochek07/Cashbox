@@ -2,12 +2,12 @@
 
 namespace Cashbox\BoxBundle\Controller;
 
-use Cashbox\BoxBundle\Service\Box;
 use Cashbox\BoxBundle\Document\Organization;
 use Cashbox\BoxBundle\Model\Payment\SberbankPayment;
-use Symfony\Component\Routing\Annotation\Route;
+use Cashbox\BoxBundle\Service\Box;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request, Response};
+use Symfony\Component\Routing\Annotation\Route;
 
 class SberbankController extends AbstractController
 {

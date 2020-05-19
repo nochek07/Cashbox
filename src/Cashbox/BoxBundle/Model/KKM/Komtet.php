@@ -2,9 +2,9 @@
 
 namespace Cashbox\BoxBundle\Model\KKM;
 
+use Cashbox\BoxBundle\Model\Report\KKMReport;
 use Cashbox\BoxBundle\Model\Type\KKMTypes;
 use Cashbox\BoxBundle\Service\Mailer;
-use Cashbox\BoxBundle\Model\Report\KKMReport;
 use Komtet\KassaSdk\{Check, Client, Payment, Position, QueueManager, Vat};
 
 /**

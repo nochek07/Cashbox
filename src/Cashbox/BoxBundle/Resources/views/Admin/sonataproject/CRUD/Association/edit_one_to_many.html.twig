@@ -24,7 +24,6 @@ file that was distributed with this source code.
                 {% elseif form.children|length > 0 %}
                     {% set associationAdmin = sonata_admin.field_description.associationadmin %}
                     {% include '@Box/Admin/sonataproject/CRUD/Association/edit_one_to_many_inline_tabs.html.twig' %}
-
                 {% endif %}
             {% else %}
                 {{ form_widget(form) }}
@@ -69,7 +68,7 @@ file that was distributed with this source code.
             {% endif %}
 
             {# include association code #}
-            {% include '@SonataAdmin/CRUD/Association/edit_one_script.html.twig' %}
+            {% include '@Box/Admin/sonataproject/CRUD/Association/edit_one_script.html.twig' %}
 
         {% else %}
             <span id="field_actions_{{ id }}" >

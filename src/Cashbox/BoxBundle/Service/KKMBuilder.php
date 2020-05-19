@@ -2,8 +2,8 @@
 
 namespace Cashbox\BoxBundle\Service;
 
-use Cashbox\BoxBundle\Document\{Organization, KKM};
-use Cashbox\BoxBundle\Model\KKM\{KKMInterface, AbstractKKM};
+use Cashbox\BoxBundle\Document\{KKM, Organization};
+use Cashbox\BoxBundle\Model\KKM\{AbstractKKM, KKMInterface};
 
 class KKMBuilder
 {

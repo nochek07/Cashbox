@@ -2,8 +2,8 @@
 
 namespace Cashbox\BoxBundle\Model\KKM;
 
+use Cashbox\BoxBundle\Document\{KKM, Organization};
 use Cashbox\BoxBundle\Service\{Mailer, Report};
-use Cashbox\BoxBundle\Document\{Organization, KKM};
 
 abstract class AbstractKKM implements KKMInterface
 {

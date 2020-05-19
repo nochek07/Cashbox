@@ -3,9 +3,9 @@
 namespace Cashbox\BoxBundle\Controller\Admin;
 
 use APY\DataGridBundle\Grid\{Column, Export, Source\Vector};
-use Cashbox\BoxBundle\Model\OrganizationModel;
 use Cashbox\BoxBundle\Document\ReportKKM;
 use Cashbox\BoxBundle\Form\ReportByPeriodForm;
+use Cashbox\BoxBundle\Model\OrganizationModel;
 use Cashbox\BoxBundle\Repository\Form\ReportByPeriodFormType;
 use Sonata\AdminBundle\Controller\CoreController;
 use Symfony\Component\Form\FormInterface;

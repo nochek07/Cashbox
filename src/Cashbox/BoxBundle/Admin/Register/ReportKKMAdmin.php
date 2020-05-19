@@ -3,7 +3,7 @@
 namespace Cashbox\BoxBundle\Admin\Register;
 
 use Cashbox\BoxBundle\Model\OrganizationModel;
-use Cashbox\BoxBundle\Model\Type\{PaymentTypes, OtherTypes, KKMTypes};
+use Cashbox\BoxBundle\Model\Type\{KKMTypes, OtherTypes, PaymentTypes};
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\{DatagridMapper, ListMapper};
 use Sonata\AdminBundle\Show\ShowMapper;

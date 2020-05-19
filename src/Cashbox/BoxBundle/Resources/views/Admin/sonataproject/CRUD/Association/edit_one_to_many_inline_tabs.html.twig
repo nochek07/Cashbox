@@ -15,19 +15,19 @@ file that was distributed with this source code.
                 <ul class="nav nav-tabs">
                     {% for name, form_group in associationAdmin.formgroups %}
                         <li class="{% if loop.first %}active{% endif %}">
-                            <a
-                                href="#{{ id }}_{{ loop.parent.loop.index }}_{{ loop.index }}"
-                                data-toggle="tab"
-                            >
+{#                            <a#}
+{#                                href="#{{ id }}_{{ loop.parent.loop.index }}_{{ loop.index }}"#}
+{#                                data-toggle="tab"#}
+{#                            >#}
                                 <i class="icon-exclamation-sign has-errors hide"></i>
 {#                                {{ associationAdmin.trans(name, {}, form_group.translation_domain) }}#}
-                                №{{ loop.parent.loop.index }}
-                            </a>
+                            №{{ loop.parent.loop.index }} <span class="nav-tab-li-name"></span>
+{#                            </a>#}
                         </li>
                     {% endfor %}
                 </ul>
 
-                <div class="tab-content">
+                <div class="tab-content" style="display:none;">
                     {% for name, form_group in associationAdmin.formgroups %}
                         <div
                             class="tab-pane {% if loop.first %}active{% endif %}"
@@ -53,12 +53,12 @@ file that was distributed with this source code.
                             </fieldset>
                         </div>
                     {% endfor %}
+
+                    {% if nested_group_field['_delete'] is defined %}
+                        {{ form_row(nested_group_field['_delete'], {'label': 'action_delete', 'translation_domain': 'SonataAdminBundle'}) }}
+                    {% endif %}
                 </div>
             </div>
-
-            {% if nested_group_field['_delete'] is defined %}
-                {{ form_row(nested_group_field['_delete'], {'label': 'action_delete', 'translation_domain': 'SonataAdminBundle'}) }}
-            {% endif %}
         </div>
     {% endfor %}
 </div>
