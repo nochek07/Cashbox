@@ -2,7 +2,7 @@
     "name": "nochek/cashbox",
     "type": "project",
     "license": "MIT",
-    "version": "1.5",
+    "version": "1.6",
     "authors": [
         { "name": "nochek", "email": "nochek07@gmail.com" }
     ],
@@ -18,7 +18,7 @@
         }
     },
     "require": {
-        "php": ">=7.0",
+        "php": ">=7.2",
         "ext-curl": "*",
         "ext-json": "*",
         "alcaeus/mongo-php-adapter": "^1.1",

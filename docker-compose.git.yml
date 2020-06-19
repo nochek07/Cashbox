@@ -10,12 +10,12 @@ services:
       - ./docker/nginx/cashbox.conf:/etc/nginx/conf.d/default.conf
     working_dir: /var/www/cashbox
     depends_on:
-      - php7.0-fpm-mongo
+      - php7.2-fpm-mongo
     container_name: nginxCashbox
     networks:
       - mongo_network
 
-  php7.0-fpm-mongo:
+  php7.2-fpm-mongo:
     build:
       context: docker/php-fpm
     volumes:
@@ -24,7 +24,7 @@ services:
     working_dir: /var/www/cashbox
     depends_on:
       - mongo_cashbox
-    container_name: php7.0-fpm-mongo
+    container_name: php7.2-fpm-mongo
     networks:
       - mongo_network
 
@@ -53,6 +53,3 @@ networks:
   mongo_network:
     driver: bridge
     name: mongo_network
-    ipam:
-      config:
-        - subnet: "172.26.0.0/16"
