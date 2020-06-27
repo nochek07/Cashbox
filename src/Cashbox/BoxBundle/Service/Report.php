@@ -4,7 +4,7 @@
 namespace Cashbox\BoxBundle\Service;
 
 use Cashbox\BoxBundle\Model\Report\ReportInterface;
-use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 class Report
 {

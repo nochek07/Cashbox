@@ -3,7 +3,7 @@
 namespace Cashbox\BoxBundle\Model;
 
 use Cashbox\BoxBundle\Document\Organization;
-use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 
 class OrganizationModel

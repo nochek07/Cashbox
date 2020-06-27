@@ -93,7 +93,6 @@ abstract class AbstractObjectDocument
         if (array_key_exists($name, $this->getArrayForAdmin())) {
             if ($this->getType() === $name) {
                 return $this->getData();
-
             } else {
                 return [];
             }

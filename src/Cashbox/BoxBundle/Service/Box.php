@@ -5,7 +5,7 @@ namespace Cashbox\BoxBundle\Service;
 use Cashbox\BoxBundle\Document\Organization;
 use Cashbox\BoxBundle\Model\OrganizationModel;
 use Cashbox\BoxBundle\Model\Payment\AbstractPayment;
-use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 
 class Box

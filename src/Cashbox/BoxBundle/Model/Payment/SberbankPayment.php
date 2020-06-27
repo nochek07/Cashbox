@@ -133,19 +133,19 @@ class SberbankPayment extends AbstractPayment
      */
     private function gateway(string $method, array $data)
     {
-        $curl = curl_init(); // Инициализируем запрос
+        $curl = curl_init();
         curl_setopt_array($curl, [
             CURLOPT_URL => self::GATEWAY_URL . $method, // Полный адрес метода
             CURLOPT_RETURNTRANSFER => true, // Возвращать ответ
-            CURLOPT_POST => true, // Метод POST
+            CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => http_build_query($data) // Данные в запросе
         ]);
-        $response = curl_exec($curl); // Выполненяем запрос
+        $response = curl_exec($curl);
 
-        $response = json_decode($response, true); // Декодируем из JSON в массив
-        curl_close($curl); // Закрываем соединение
+        $response = json_decode($response, true);
+        curl_close($curl);
 
-        return $response; // Возвращаем ответ
+        return $response;
     }
 
     /**
