@@ -7,7 +7,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 abstract class AbstractPaymentDocument extends AbstractObjectDocument
 {
     /**
-     * @MongoDB\ReferenceOne(targetDocument="KKM", nullable=true)
+     * @MongoDB\ReferenceOne(targetDocument="Cashbox\BoxBundle\Document\KKM", nullable=true)
      */
     protected $kkm = null;
 

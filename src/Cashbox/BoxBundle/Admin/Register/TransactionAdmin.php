@@ -8,6 +8,7 @@ use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\{DatagridMapper, ListMapper};
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class TransactionAdmin extends AbstractAdmin
 {
@@ -34,7 +35,7 @@ class TransactionAdmin extends AbstractAdmin
             ->add('datetime', 'datetime', [
                 'format' => 'd.m.Y H:i:s'
             ])
-            ->add('INN', 'choice', [
+            ->add('INN', ChoiceType::class, [
                     'label' => 'Organization',
                     'choices' => $this->choicesOrganizations
                 ]
@@ -68,7 +69,7 @@ class TransactionAdmin extends AbstractAdmin
             ->add('datetime')
             ->add('type', null, [
                     'show_filter' => true,
-                ], 'choice', [
+                ], ChoiceType::class, [
                     'choices' => array_keys(PaymentTypes::getArrayForAdmin()),
                     'choice_label' => function ($type) {
                         return $type;
@@ -78,7 +79,7 @@ class TransactionAdmin extends AbstractAdmin
             ->add('INN', null, [
                     'label' => 'Organization',
                     'show_filter' => true,
-                ], 'choice', [
+                ], ChoiceType::class, [
                     'choices' => array_keys($choicesOrganizations),
                     'choice_label' => function ($inn) use ($choicesOrganizations) {
                         if (isset($choicesOrganizations[$inn])) {

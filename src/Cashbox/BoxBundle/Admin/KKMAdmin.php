@@ -5,6 +5,7 @@ namespace Cashbox\BoxBundle\Admin;
 use Cashbox\BoxBundle\Model\Type;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Form\Type\ChoiceFieldMaskType;
 use Sonata\AdminBundle\Route\RouteCollection;
 
 class KKMAdmin extends AbstractObjectAdmin
@@ -19,7 +20,7 @@ class KKMAdmin extends AbstractObjectAdmin
             ->add('name', null, [
                 'trim' => true
             ])
-            ->add('type', 'sonata_type_choice_field_mask', [
+            ->add('type', ChoiceFieldMaskType::class, [
                 'choices' => $params['choices'],
                 'map' => $params['map'],
                 'required' => true,

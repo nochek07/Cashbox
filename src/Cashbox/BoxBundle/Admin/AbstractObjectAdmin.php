@@ -5,6 +5,7 @@ namespace Cashbox\BoxBundle\Admin;
 use Cashbox\BoxBundle\Model\Type\AbstractTypes;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\Form\Type\ImmutableArrayType;
 
 abstract class AbstractObjectAdmin extends AbstractAdmin
 {
@@ -35,7 +36,7 @@ abstract class AbstractObjectAdmin extends AbstractAdmin
             $keys = $type::getNewKeys($value);
             if (0 < sizeof($keys)) {
                 $formMapper
-                    ->add($key, 'sonata_type_immutable_array', [
+                    ->add($key, ImmutableArrayType::class, [
                         'mapped' => true,
                         'required' => false,
                         'keys' => $keys,

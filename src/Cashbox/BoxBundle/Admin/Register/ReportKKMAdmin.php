@@ -8,6 +8,7 @@ use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\{DatagridMapper, ListMapper};
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class ReportKKMAdmin extends AbstractAdmin
 {
@@ -38,16 +39,16 @@ class ReportKKMAdmin extends AbstractAdmin
             ->add('datetime', 'datetime', [
                 'format' => 'd.m.Y H:i:s'
             ])
-            ->add('INN', 'choice', [
+            ->add('INN', ChoiceType::class, [
                     'label' => 'Organization',
                     'choices' => $this->choicesOrganizations
                 ]
             )
             ->add('typePayment')
-            ->add('state', 'choice', [
+            ->add('state', ChoiceType::class, [
                 'choices' => $this->choicesStates,
             ])
-            ->add('action', 'choice', [
+            ->add('action', ChoiceType::class, [
                 'choices' => $this->choicesActions,
                 'template' => 'BoxBundle:Admin/sonataproject/CRUD:error_field.html.twig'
             ])
@@ -75,7 +76,7 @@ class ReportKKMAdmin extends AbstractAdmin
             ->add('datetime')
             ->add('typePayment', null, [
                     'show_filter' => true,
-                ], 'choice', [
+                ], ChoiceType::class, [
                     'choices' => array_keys(
                         array_merge(PaymentTypes::getArrayForAdmin(), OtherTypes::getArrayForAdmin())
                     ),
@@ -86,7 +87,7 @@ class ReportKKMAdmin extends AbstractAdmin
             )
             ->add('type', null, [
                     'show_filter' => true,
-                ], 'choice', [
+                ], ChoiceType::class, [
                     'choices' => array_keys(KKMTypes::getArrayForAdmin()),
                     'choice_label' => function ($type) {
                         return $type;
@@ -96,7 +97,7 @@ class ReportKKMAdmin extends AbstractAdmin
             ->add('INN', null, [
                     'label' => 'Organization',
                     'show_filter' => true,
-                ], 'choice', [
+                ], ChoiceType::class, [
                     'choices' => array_keys($choicesOrganizations),
                     'choice_label' => function ($INN) use ($choicesOrganizations) {
                         if (isset($choicesOrganizations[$INN])) {
@@ -108,14 +109,14 @@ class ReportKKMAdmin extends AbstractAdmin
                 ]
             )
             ->add('action', null, [
-                ], 'choice', [
+                ], ChoiceType::class, [
                     'choices' => array_keys($this->choicesActions),
                     'choice_label' => function ($type) {
                         return $type;
                     },
             ])
             ->add('state', null, [
-                ], 'choice', [
+                ], ChoiceType::class, [
                     'choices' => array_keys($this->choicesStates),
                     'choice_label' => function ($type) {
                         return $type;

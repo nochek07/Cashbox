@@ -48,14 +48,14 @@ class For1CController extends AbstractController
     /**
      * Checking a site/queue from 1C
      *
-     * @Route("/chek1c", schemes={"https"})
+     * @Route("/check1c", schemes={"https"})
      *
      * @param Request $request
      * @param Box $box
      *
      * @return Response
      */
-    public function chek1cAction(Request $request, Box $box)
+    public function check1cAction(Request $request, Box $box)
     {
         $for1CPayment = new For1CPayment();
         if ($request->isMethod(Request::METHOD_POST)) {

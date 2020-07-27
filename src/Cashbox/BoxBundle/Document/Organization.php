@@ -41,17 +41,17 @@ class Organization
     protected $patternNomenclature;
 
     /**
-     * @MongoDB\EmbedMany(targetDocument="Payment")
+     * @MongoDB\EmbedMany(targetDocument="Cashbox\BoxBundle\Document\Payment")
      */
     protected $payments;
 
     /**
-     * @MongoDB\EmbedMany(targetDocument="KKM")
+     * @MongoDB\EmbedMany(targetDocument="Cashbox\BoxBundle\Document\KKM")
      */
     protected $KKMs;
 
     /**
-     * @MongoDB\EmbedMany(targetDocument="Other")
+     * @MongoDB\EmbedMany(targetDocument="Cashbox\BoxBundle\Document\Other")
      */
     protected $others;
 

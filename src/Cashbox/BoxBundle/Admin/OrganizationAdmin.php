@@ -9,6 +9,7 @@ use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
+use Sonata\Form\Type\CollectionType;
 use Sonata\Form\Validator\ErrorElement;
 
 class OrganizationAdmin extends AbstractAdmin
@@ -44,7 +45,7 @@ class OrganizationAdmin extends AbstractAdmin
 
             ->tab('KKMs')
                 ->with('KKMs', ['label' => false, 'class' => 'box-tabs col-md-6'])
-                    ->add('KKMs', 'sonata_type_collection', [
+                    ->add('KKMs', CollectionType::class, [
                         'label' => false,
                         'by_reference' => true,
                     ], [
@@ -57,7 +58,7 @@ class OrganizationAdmin extends AbstractAdmin
 
             ->tab('Payments')
                 ->with('Payments', ['label' => false, 'class' => 'box-tabs col-md-6'])
-                    ->add('payments', 'sonata_type_collection', [
+                    ->add('payments', CollectionType::class, [
                         'label' => false,
                         'by_reference' => true,
                     ], [
@@ -71,7 +72,7 @@ class OrganizationAdmin extends AbstractAdmin
 
             ->tab('Others')
                 ->with('Others', ['label' => false, 'class' => 'box-tabs col-md-6'])
-                    ->add('others', 'sonata_type_collection', [
+                    ->add('others', CollectionType::class, [
                         'label' => false,
                         'by_reference' => true,
                     ], [
