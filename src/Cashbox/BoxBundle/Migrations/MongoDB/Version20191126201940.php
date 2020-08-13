@@ -4,7 +4,7 @@ namespace Cashbox\BoxBundle\Migrations\MongoDB;
 
 use AntiMattr\MongoDB\Migrations\AbstractMigration;
 use Cashbox\BoxBundle\Model\Type\PaymentTypes;
-use Doctrine\MongoDB\Database;
+use MongoDB\Database;
 
 class Version20191126201940 extends AbstractMigration
 {

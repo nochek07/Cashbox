@@ -3,7 +3,7 @@
 namespace Cashbox\BoxBundle\Migrations\MongoDB;
 
 use AntiMattr\MongoDB\Migrations\AbstractMigration;
-use Doctrine\MongoDB\Database;
+use MongoDB\Database;
 
 class Version20191128202642 extends AbstractMigration
 {
