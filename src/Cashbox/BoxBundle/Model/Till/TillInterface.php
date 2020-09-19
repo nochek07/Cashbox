@@ -1,15 +1,13 @@
 <?php
 
-namespace Cashbox\BoxBundle\Model\KKM;
+namespace Cashbox\BoxBundle\Model\Till;
 
-interface KKMInterface
+interface TillInterface
 {
     /**
-     * KKM connect
-     *
-     * @return bool
+     * Connect to Till
      */
-    public function connect();
+    public function connect(): bool;
 
     /**
      * Building data for fiscalization
@@ -23,8 +21,8 @@ interface KKMInterface
     /**
      * Sending data
      *
-     * @param array $data
-     * @param string $type - type of payment
+     * @param array $data data of payment
+     * @param string $type type of payment
      *
      * @return mixed
      */
@@ -33,8 +31,8 @@ interface KKMInterface
     /**
      * Sending a receipt to mail
      *
-     * @param array $data
-     * @param string $type - type of payment
+     * @param array $data data of payment
+     * @param string $type type of payment
      *
      * @return bool
      */
@@ -51,8 +49,6 @@ interface KKMInterface
 
     /**
      * Checking the availability of cash
-     *
-     * @return bool
      */
-    public function checkKKM(): bool;
+    public function checkTill(): bool;
 }

@@ -2,36 +2,36 @@
 
 namespace Cashbox\BoxBundle\Model\Type;
 
-use Cashbox\BoxBundle\Model\KKM;
+use Cashbox\BoxBundle\Model\Till;
 use Sonata\Form\Type\BooleanType;
 use Symfony\Component\Form\Extension\Core\Type\{ChoiceType, IntegerType, TextType};
 
-class KKMTypes extends AbstractTypes
+class TillTypes extends AbstractTypes
 {
-    const KKM_TYPE_KOMTET = "Komtet";
+    const TILL_TYPE_KOMTET = "Komtet";
 
-    const KKM_ACTION_SALE = "sale";
-    const KKM_ACTION_REFUND = "refund";
-    const KKM_ACTION_ERROR = "error";
+    const TILL_ACTION_SALE = "sale";
+    const TILL_ACTION_REFUND = "refund";
+    const TILL_ACTION_ERROR = "error";
 
-    const KKM_STATE_NEW = 'new';
-    const KKM_STATE_ERROR = 'error';
-    const KKM_STATE_OTHER_ERROR = 'otherError';
+    const TILL_STATE_NEW = 'new';
+    const TILL_STATE_ERROR = 'error';
+    const TILL_STATE_OTHER_ERROR = 'otherError';
 
     /**
      * @var array
      */
-    public static $arrayKkmModelClass = [
-        self::KKM_TYPE_KOMTET => KKM\Komtet::class,
+    public static $arrayTillModelClass = [
+        self::TILL_TYPE_KOMTET => Till\Komtet::class,
     ];
 
     /**
      * {@inheritDoc}
      */
-    public static function getArrayForAdmin()
+    public static function getArrayForAdmin(): array
     {
         return [
-            self::KKM_TYPE_KOMTET => [
+            self::TILL_TYPE_KOMTET => [
                 'shop_id' => ['shop_id', TextType::class, [
                     'required' => true,
                     'label' => 'Shop ID',
@@ -55,13 +55,13 @@ class KKMTypes extends AbstractTypes
                 'tax_system' => ['tax_system', ChoiceType::class, [
                     'required' => true,
                     'label' => 'Tax system',
-                    'choices' => KKM\TaxSystem::$choices,
+                    'choices' => Till\TaxSystem::$choices,
                     'translation_domain' => self::$translationDomain,
                 ]],
                 'vat' => ['vat', ChoiceType::class, [
                     'required' => true,
                     'label' => 'Vat',
-                    'choices' => KKM\Vat::$choices,
+                    'choices' => Till\Vat::$choices,
                     'translation_domain' => self::$translationDomain
                 ]],
                 'cancel_action' => ['cancel_action', BooleanType::class, [

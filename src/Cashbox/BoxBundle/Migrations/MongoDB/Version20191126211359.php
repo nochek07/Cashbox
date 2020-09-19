@@ -7,10 +7,7 @@ use MongoDB\Database;
 
 class Version20191126211359 extends AbstractMigration
 {
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): string 
     {
         return "Drop YandexTransaction";
     }

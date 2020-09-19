@@ -20,59 +20,38 @@ class ReportByPeriodForm
     /**
      * @var string
      */
-    private $INN;
+    private $tin;
 
-    /**
-     * @return \DateTime
-     */
-    public function getDateStart()
+    public function getDateStart(): ?\DateTime
     {
         return $this->dateStart;
     }
 
-    /**
-     * @param \DateTime $dateStart
-     * @return self
-     */
-    public function setDateStart($dateStart)
+    public function setDateStart(\DateTime $dateStart): self
     {
         $this->dateStart = $dateStart;
         return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getDateEnd()
+    public function getDateEnd(): ?\DateTime
     {
         return $this->dateEnd;
     }
 
-    /**
-     * @param \DateTime $dateEnd
-     * @return self
-     */
-    public function setDateEnd($dateEnd)
+    public function setDateEnd(\DateTime $dateEnd): self
     {
         $this->dateEnd = $dateEnd;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getINN()
+    public function getTin(): ?string
     {
-        return $this->INN;
+        return $this->tin;
     }
 
-    /**
-     * @param string $INN
-     * @return self
-     */
-    public function setINN($INN)
+    public function setTin(string $tin): self
     {
-        $this->INN = $INN;
+        $this->tin = $tin;
         return $this;
     }
     

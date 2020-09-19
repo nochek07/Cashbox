@@ -1,9 +1,9 @@
 <?php
 
-namespace Cashbox\BoxBundle\Model\KKM;
+namespace Cashbox\BoxBundle\Model\Till;
 
-use Cashbox\BoxBundle\Model\Report\KKMReport;
-use Cashbox\BoxBundle\Model\Type\KKMTypes;
+use Cashbox\BoxBundle\Model\Report\TillModelReport;
+use Cashbox\BoxBundle\Model\Type\TillTypes;
 use Cashbox\BoxBundle\Service\Mailer;
 use Komtet\KassaSdk\{Check, Client, Payment, Position, QueueManager, Vat};
 
@@ -12,9 +12,9 @@ use Komtet\KassaSdk\{Check, Client, Payment, Position, QueueManager, Vat};
  *
  * @see https://github.com/Komtet/komtet-kassa-php-sdk
  */
-class Komtet extends AbstractKKM
+class Komtet extends AbstractTill
 {
-    protected $name = KKMTypes::KKM_TYPE_KOMTET;
+    protected $name = TillTypes::TILL_TYPE_KOMTET;
 
     /**
      * @var QueueManager
@@ -24,11 +24,11 @@ class Komtet extends AbstractKKM
     /**
      * {@inheritDoc}
      */
-    public function connect()
+    public function connect(): bool
     {
         if (is_null($this->queueManager)) {
             try {
-                $komtet = $this->kkmDocument->getData();
+                $komtet = $this->tillDocument->getData();
                 $client = new Client($komtet['shop_id'], $komtet['secret']);
                 $this->queueManager = new QueueManager($client);
                 $this->queueManager->registerQueue($komtet['queue_name'], $komtet['queue_id']);
@@ -71,7 +71,7 @@ class Komtet extends AbstractKKM
         return [
             "order" => $param['order'],
             "email" => $param['email'],
-            "action" => KKMTypes::KKM_ACTION_SALE,
+            "action" => TillTypes::TILL_ACTION_SALE,
             "kkm" => [
                 "positions" => [
                     0 => [
@@ -94,15 +94,15 @@ class Komtet extends AbstractKKM
      */
     public function send(array $data, string $type)
     {
-        $komtet = $this->kkmDocument->getData();
+        $komtet = $this->tillDocument->getData();
         $this->queueManager->setDefaultQueue($komtet['queue_name']);
 
         $tax_system = $komtet['tax_system'];
         switch ($data["action"]) {
-            case KKMTypes::KKM_ACTION_SALE:
+            case TillTypes::TILL_ACTION_SALE:
                 $check = Check::createSell($data["order"], $data["email"], $tax_system);
                 break;
-            case KKMTypes::KKM_ACTION_REFUND:
+            case TillTypes::TILL_ACTION_REFUND:
                 $check = Check::createSellReturn($data["order"], $data["email"], $tax_system);
                 break;
             default:
@@ -121,7 +121,6 @@ class Komtet extends AbstractKKM
                 (float)$value["price"],
                 (int)$value["quantity"],
                 (float)$value["orderSum"],
-                (float)$value["discount"],
                 $vat
             );
             $check->addPosition($position);
@@ -137,47 +136,47 @@ class Komtet extends AbstractKKM
             $check->addPayment($payment);
         }
 
-        $inn = $this->organizationDocument->getINN();
+        $tin = $this->organizationDocument->getTin();
 
         // Добавляем чек в очередь
         try {
             $request = $this->queueManager->putCheck($check);
             if (isset($res['state'])) {
-                $this->getReport()->add(new KKMReport(), [
+                $this->getReport()->add(new TillModelReport(), [
                     'type' => $this->name,
                     'typePayment' => $type,
-                    'state' => KKMTypes::KKM_STATE_NEW,
-                    'dataKKM' => $request,
+                    'state' => TillTypes::TILL_STATE_NEW,
+                    'dataTill' => $request,
                     'dataPost' => $data,
                     'action' => $data['action'],
-                    'INN' => $inn
+                    'tin' => $tin
                 ]);
 
                 $this->sendMail($data, $type);
                 return '';
             } else {
-                $this->getReport()->add(new KKMReport(), [
+                $this->getReport()->add(new TillModelReport(), [
                     'type' => $this->name,
                     'typePayment' => $type,
-                    'state' => KKMTypes::KKM_STATE_OTHER_ERROR,
-                    'dataKKM' => $request,
-                    'action' => KKMTypes::KKM_ACTION_ERROR,
-                    'INN' => $inn
+                    'state' => TillTypes::TILL_STATE_OTHER_ERROR,
+                    'dataTill' => $request,
+                    'action' => TillTypes::TILL_ACTION_ERROR,
+                    'tin' => $tin
                 ]);
             }
         } catch (\Exception $error) {
-            $this->getReport()->add(new KKMReport(), [
+            $this->getReport()->add(new TillModelReport(), [
                 'type' => $this->name,
                 'typePayment' => $type,
-                'state' => KKMTypes::KKM_STATE_ERROR,
-                'dataKKM' => ["error_description" => $error->getMessage()],
-                'action' => KKMTypes::KKM_ACTION_ERROR,
-                'INN' => $inn
+                'state' => TillTypes::TILL_STATE_ERROR,
+                'dataTill' => ["error_description" => $error->getMessage()],
+                'action' => TillTypes::TILL_ACTION_ERROR,
+                'tin' => $tin
             ]);
             return $error->getMessage();
         }
 
-        return KKMTypes::KKM_STATE_OTHER_ERROR;
+        return TillTypes::TILL_STATE_OTHER_ERROR;
     }
 
     /**
@@ -226,9 +225,9 @@ class Komtet extends AbstractKKM
      *
      * @return false
      */
-    public function checkKKM(): bool
+    public function checkTill(): bool
     {
-        $komtet = $this->kkmDocument->getData();
+        $komtet = $this->tillDocument->getData();
         if ($komtet['cancel_action'] == 1) {
             if ($this->connect()) {
                 if (!$this->isQueueActive($komtet['queue_name'])) {

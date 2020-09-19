@@ -4,24 +4,47 @@ namespace Cashbox\BoxBundle\Migrations\MongoDB;
 
 use AntiMattr\MongoDB\Migrations\AbstractMigration;
 use MongoDB\Database;
+use Symfony\Component\DependencyInjection\{ContainerAwareInterface, ContainerInterface};
 
-class Version20191128202642 extends AbstractMigration
+class Version20191128202642 extends AbstractMigration implements ContainerAwareInterface
 {
     /**
-     * @return string
+     * @var ContainerInterface
      */
-    public function getDescription()
+    private $container;
+
+    public function setContainer(ContainerInterface $container = null)
     {
-        return "Rename SberbankTransaction collection";
+        $this->container = $container;
+    }
+
+    public function getDescription(): string
+    {
+        return "Rename collections";
     }
 
     public function up(Database $db)
     {
-        $dbName = $db->getName();
-        $mongo = $db->getConnection()->getMongoClient();
-        $mongo->admin->command([
+        $manager = $this->container->get("doctrine_mongodb.odm.document_manager");
+        $connection = $manager->getClient();
+        $dbName = $db->getDatabaseName();
+        $connection->selectDatabase($dbName);
+
+        $connection->admin->command([
             "renameCollection" => "{$dbName}.SberbankTransaction",
-            "to" => "{$dbName}.Transaction"
+            "to" => "{$dbName}.transactions"
+        ]);
+        $connection->admin->command([
+            "renameCollection" => "{$dbName}.ReportKomtet",
+            "to" => "{$dbName}.tillReports"
+        ]);
+        $connection->admin->command([
+            "renameCollection" => "{$dbName}.Organization",
+            "to" => "{$dbName}.organizations"
+        ]);
+        $connection->admin->command([
+            "renameCollection" => "{$dbName}.User",
+            "to" => "{$dbName}.users"
         ]);
     }
 

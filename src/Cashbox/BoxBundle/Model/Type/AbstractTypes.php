@@ -11,10 +11,8 @@ abstract class AbstractTypes
 
     /**
      * Get ArrayForAdmin
-     *
-     * @return array
      */
-    abstract public static function getArrayForAdmin();
+    abstract public static function getArrayForAdmin(): array;
 
     /**
      * Get new keys or array for admin
@@ -23,7 +21,7 @@ abstract class AbstractTypes
      *
      * @return array
      */
-    public static function getNewKeys(array $value)
+    public static function getNewKeys(array $value): array
     {
         foreach ($value as &$children) {
             $children[2]['required'] = false;
@@ -40,7 +38,7 @@ abstract class AbstractTypes
      *
      * @return string
      */
-    public static function getTextValidation(string $type, array $value, TranslatorInterface $translator)
+    public static function getTextValidation(string $type, array $value, TranslatorInterface $translator): string
     {
         $textError = "";
         foreach (static::getArrayForAdmin()[$type] as $key => $child) {

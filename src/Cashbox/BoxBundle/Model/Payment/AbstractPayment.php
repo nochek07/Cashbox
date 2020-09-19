@@ -2,9 +2,9 @@
 
 namespace Cashbox\BoxBundle\Model\Payment;
 
-use Cashbox\BoxBundle\Service\{KKMBuilder, Report};
-use Cashbox\BoxBundle\Document\{AbstractPaymentDocument, KKM, Organization};
-use Cashbox\BoxBundle\Model\{KKM\AbstractKKM, KKM\KKMInterface, Type\KKMTypes};
+use Cashbox\BoxBundle\Service\{Report, TillBuilder};
+use Cashbox\BoxBundle\Document\{AbstractPaymentDocument, Organization, Till};
+use Cashbox\BoxBundle\Model\{Till\AbstractTill, Till\TillInterface, Type\TillTypes};
 use Doctrine\Common\Collections\{ArrayCollection, Collection};
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,9 +29,9 @@ abstract class AbstractPayment implements PaymentInterface
     private $report;
 
     /**
-     * @var KKMBuilder
+     * @var TillBuilder
      */
-    private $kkmBuilder;
+    private $tillBuilder;
 
     /**
      * {@inheritDoc}
@@ -94,34 +94,34 @@ abstract class AbstractPayment implements PaymentInterface
     }
 
     /**
-     * Set KKMBuilder
+     * Set Till Builder
      *
-     * @param KKMBuilder $kkmBuilder
+     * @param TillBuilder $tillBuilder
      */
-    public function setKKMBuilder(KKMBuilder $kkmBuilder)
+    public function setTillBuilder(TillBuilder $tillBuilder)
     {
-        $this->kkmBuilder = $kkmBuilder;
+        $this->tillBuilder = $tillBuilder;
     }
 
     /**
-     * Get KKMBuilder
+     * Get Till Builder
      *
-     * @return KKMBuilder
+     * @return TillBuilder
      */
-    public function getKKMBuilder()
+    public function getTillBuilder()
     {
-        return $this->kkmBuilder;
+        return $this->tillBuilder;
     }
 
     /**
      * Additional check
      *
      * @param Request $request
-     * @param String $handlingSecret - secret word
+     * @param string $handlingSecret secret word
      *
      * @return bool
      */
-    public function otherCheckMD5(Request $request, $handlingSecret)
+    public function otherCheckMD5(Request $request, string $handlingSecret): bool
     {
         return ($request->get('h') != md5($request->get('customerNumber') . "_"
                 . $request->get('orderSumAmount') . "_" . $handlingSecret));
@@ -134,7 +134,7 @@ abstract class AbstractPayment implements PaymentInterface
      *
      * @return AbstractPaymentDocument|null
      */
-    public function getDesiredPayment(Collection $mongoPersistCollection)
+    public function getDesiredPayment(Collection $mongoPersistCollection): ?AbstractPaymentDocument
     {
         $payments = $mongoPersistCollection->filter(
             function (AbstractPaymentDocument $entry) {
@@ -149,34 +149,34 @@ abstract class AbstractPayment implements PaymentInterface
     }
 
     /**
-     * Get KKM By Payment
+     * Get Till by Payment
      *
-     * @param AbstractPaymentDocument $payments
+     * @param AbstractPaymentDocument $payment
      *
-     * @return KKMInterface|null
+     * @return TillInterface|null
      */
-    public function getKkmByPayment(AbstractPaymentDocument $payments)
+    public function getTillByPayment(AbstractPaymentDocument $payment): ?TillInterface
     {
-        $kkmDocument = $payments->getKkm();
-        if ($kkmDocument instanceof KKM) {
+        $tillDocument = $payment->getTill();
+        if ($tillDocument instanceof Till) {
             /**
              * @var ArrayCollection $mongoPersistCollection
              */
-            $mongoPersistCollection = $this->organization->getKKMs();
-            $kkms = $mongoPersistCollection->filter(
-                function (KKM $entry) use ($kkmDocument) {
-                    return $entry->getId() === $kkmDocument->getId();
+            $mongoPersistCollection = $this->organization->getTills();
+            $tills = $mongoPersistCollection->filter(
+                function (Till $entry) use ($tillDocument) {
+                    return $entry->getId() === $tillDocument->getId();
                 }
             );
 
-            if ($kkms->count() > 0) {
-                $kkmDocument = $kkms->first();
-                $classKKM = KKMTypes::$arrayKkmModelClass[$kkmDocument->getType()];
+            if ($tills->count() > 0) {
+                $tillDocument = $tills->first();
+                $tillClass = TillTypes::$arrayTillModelClass[$tillDocument->getType()];
 
-                $kkmManager = $this->kkmBuilder
-                    ->create($classKKM, $this->organization, $kkmDocument);
-                if ($kkmManager instanceof AbstractKKM) {
-                    return $this->kkmBuilder->getKKMWithOptions($kkmManager);
+                $tillManager = $this->tillBuilder
+                    ->create($tillClass, $this->organization, $tillDocument);
+                if ($tillManager instanceof AbstractTill) {
+                    return $this->tillBuilder->getTillWithOptions($tillManager);
                 }
             }
         }

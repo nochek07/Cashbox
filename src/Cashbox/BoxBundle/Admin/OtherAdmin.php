@@ -15,12 +15,12 @@ class OtherAdmin extends AbstractObjectAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
-        $params = $this->addImmutableArray($formMapper, new Type\OtherTypes, ['type', 'kkm']);
+        $params = $this->addImmutableArray($formMapper, new Type\OtherTypes, ['type', 'till']);
         $formMapper
-            ->add('kkm', ModelType::class, [
+            ->add('till', ModelType::class, [
                 'btn_add' => false,
                 'required' => false,
-                'choices' => $this->getParentFieldDescription()->getOption('kkms')
+                'choices' => $this->getParentFieldDescription()->getOption('tills')
             ])
             ->add('type', ChoiceFieldMaskType::class, [
                 'choices' => $params['choices'],

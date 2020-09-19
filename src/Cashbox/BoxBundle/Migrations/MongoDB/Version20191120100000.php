@@ -7,23 +7,25 @@ use MongoDB\Database;
 
 class Version20191120100000 extends AbstractMigration
 {
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): string
     {
-        return "Repair INN to ReportKomtet";
+        return "Repair TIN to ReportKomtet";
     }
 
     public function up(Database $db)
     {
         $collection = $db->selectCollection('ReportKomtet');
-        $list = $collection->find();
-        while ($document = $list->getNext()) {
+        $cursor = $collection->find();
+        $it = new \IteratorIterator($cursor);
+        $it->rewind();
+        while ($document = $it->current()) {
             if (isset($document['inn'])) {
-                $collection->update(['_id' => $document['_id']], ['$set' => ["INN" => $document['inn']]]);
-                $collection->update(['_id' => $document['_id']], ['$unset' => ['inn' => true]]);
+                $value = $document['inn'];
+                settype($value, 'string');
+                $collection->updateOne(['_id' => $document['_id']], ['$set' => ["tin" => $value]]);
+                $collection->updateOne(['_id' => $document['_id']], ['$unset' => ['inn' => true]]);
             }
+            $it->next();
         }
     }
 

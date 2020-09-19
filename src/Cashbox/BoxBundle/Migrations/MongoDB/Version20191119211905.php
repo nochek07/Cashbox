@@ -7,40 +7,40 @@ use MongoDB\Database;
 
 class Version20191119211905 extends AbstractMigration
 {
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): string
     {
-        return "Repair type of INN to Organization";
+        return "Repair type of TIN to Organization";
     }
 
     public function up(Database $db)
     {
-        $this->repairINN($db, 'string');
+        $this->repairTin($db, 'string');
     }
 
     public function down(Database $db)
     {
-        $this->repairINN($db, 'int');
     }
 
     /**
-     * Repair type of INN
+     * Repair type of TIN
      *
      * @param Database $db
      * @param string $type
      */
-    private function repairINN(Database $db, string $type)
+    private function repairTin(Database $db, string $type)
     {
         $collection = $db->selectCollection('Organization');
-        $list = $collection->find();
-        while ($document = $list->getNext()) {
+        $cursor = $collection->find();
+        $it = new \IteratorIterator($cursor);
+        $it->rewind();
+        while ($document = $it->current()) {
             if (isset($document['INN'])) {
                 $value = $document['INN'];
                 settype($value, $type);
-                $collection->update(['_id' => $document['_id']], ['$set' => ["INN" => $value]]);
+                $collection->updateOne(['_id' => $document['_id']], ['$set' => ["tin" => $value]]);
+                $collection->updateOne(['_id' => $document['_id']], ['$unset' => ['INN' => true]]);
             }
+            $it->next();
         }
     }
 }

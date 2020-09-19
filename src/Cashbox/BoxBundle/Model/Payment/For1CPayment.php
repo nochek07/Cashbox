@@ -3,7 +3,7 @@
 namespace Cashbox\BoxBundle\Model\Payment;
 
 use Cashbox\BoxBundle\Document\Payment;
-use Cashbox\BoxBundle\Model\{KKM\KKMInterface, KKM\KKMMessages, Type\OtherTypes};
+use Cashbox\BoxBundle\Model\{Till\TillInterface, Till\TillMessages, Type\OtherTypes};
 use Symfony\Component\HttpFoundation\Request;
 
 class For1CPayment extends YandexPayment
@@ -27,31 +27,31 @@ class For1CPayment extends YandexPayment
         );
         if ($payment instanceof Payment) {
             if ($this->check1cMD5($this->dataJSON, $this->organization->getSecret())) {
-                $kkm = $this->getKkmByPayment($payment);
-                if ($kkm instanceof KKMInterface) {
-                    if (!$kkm->checkKKM()) {
-                        return $this->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_CASHBOX_UNAV);
+                $till = $this->getTillByPayment($payment);
+                if ($till instanceof TillInterface) {
+                    if (!$till->checkTill()) {
+                        return $this->buildResponse('For1C', 0, 100, null, TillMessages::MSG_CASHBOX_UNAV);
                     }
                 }
 
                 $repository = $this->getManager()
-                    ->getRepository('BoxBundle:ReportKKM');
+                    ->getRepository('BoxBundle:TillReport');
                 $report = $repository->findOneBy([
                     'type' => OtherTypes::PAYMENT_TYPE_1C,
                     'action' => $this->dataJSON["action"],
                     'uuid' => $this->dataJSON["uuid"]
                 ]);
 
-                if (is_null($report) && $kkm instanceof KKMInterface) {
-                    $error = $kkm->send($this->dataJSON, OtherTypes::PAYMENT_TYPE_1C);
+                if (is_null($report) && $till instanceof TillInterface) {
+                    $error = $till->send($this->dataJSON, OtherTypes::PAYMENT_TYPE_1C);
                 } else {
-                    $error = KKMMessages::MSG_ERROR_CHECK;
+                    $error = TillMessages::MSG_ERROR_CHECK;
                 }
 
                 return $this->buildResponse('For1C', 0, 100, null, $error);
             }
         }
-        return $this->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR_HASH);
+        return $this->buildResponse('For1C', 0, 100, null, TillMessages::MSG_ERROR_HASH);
     }
 
     /**
@@ -65,10 +65,10 @@ class For1CPayment extends YandexPayment
             $this->organization->getOthers()
         );
         if ($payment instanceof Payment) {
-            $kkm = $this->getKkmByPayment($payment);
-            if ($kkm instanceof KKMInterface) {
-                if (!$kkm->checkKKM()) {
-                    return $this->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_CASHBOX_UNAV);
+            $till = $this->getTillByPayment($payment);
+            if ($till instanceof TillInterface) {
+                if (!$till->checkTill()) {
+                    return $this->buildResponse('For1C', 0, 100, null, TillMessages::MSG_CASHBOX_UNAV);
                 }
             }
         }
@@ -83,22 +83,18 @@ class For1CPayment extends YandexPayment
      *
      * @return bool true if MD5 hash is correct
      */
-    private function check1cMD5(array $data, string $secret)
+    private function check1cMD5(array $data, string $secret): bool
     {
         $hash = $data["action"] . ';' . $secret . ';';
-        if (isset($data["kkm"]["payment"]["card"])) {
-            $hash .= $data["kkm"]["payment"]["card"] . ';';
+        if (isset($data["till"]["payment"]["card"])) {
+            $hash .= $data["till"]["payment"]["card"] . ';';
         }
-        if (isset($data["kkm"]["payment"]["cash"])) {
-            $hash .= $data["kkm"]["payment"]["cash"] . ';';
+        if (isset($data["till"]["payment"]["cash"])) {
+            $hash .= $data["till"]["payment"]["cash"] . ';';
         }
         $hash .= $data["order"] . ';' . $data["inn"] . ';';
 
-        if (strtolower(md5($hash)) === $data["hash"]) {
-            return true;
-        } else {
-            return false;
-        }
+        return (strtolower(md5($hash)) === $data["hash"]);
     }
 
     /**
@@ -108,7 +104,7 @@ class For1CPayment extends YandexPayment
      *
      * @return self
      */
-    public function setDataJSON(array $data)
+    public function setDataJSON(array $data): self
     {
         $this->dataJSON = $data;
         return $this;

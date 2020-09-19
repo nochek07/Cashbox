@@ -26,7 +26,7 @@ abstract class AbstractObjectAdmin extends AbstractAdmin
         $result = [
             'order' => $order,
             'map' => [],
-            '$choices' => [],
+            'choices' => [],
         ];
         foreach ($type::getArrayForAdmin() as $key => $value) {
             $result['choices'][$key] = $key;

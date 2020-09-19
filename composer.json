@@ -21,6 +21,7 @@
         "php": ">=7.2",
         "ext-curl": "*",
         "ext-json": "*",
+        "ext-mongodb": "*",
         "alcaeus/mongo-php-adapter": "^1.1",
         "apy/datagrid-bundle": "^3.2",
         "doctrine/doctrine-bundle": "^1.12",

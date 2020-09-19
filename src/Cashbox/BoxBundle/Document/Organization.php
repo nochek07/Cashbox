@@ -6,7 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 
 /**
- * @MongoDB\Document(collection="Organization")
+ * @MongoDB\Document(collection="organizations")
  */
 class Organization
 {
@@ -23,7 +23,7 @@ class Organization
     /**
      * @MongoDB\Field(type="string")
      */
-    protected $INN;
+    protected $tin;
 
     /**
      * @MongoDB\Field(type="string")
@@ -46,9 +46,9 @@ class Organization
     protected $payments;
 
     /**
-     * @MongoDB\EmbedMany(targetDocument="Cashbox\BoxBundle\Document\KKM")
+     * @MongoDB\EmbedMany(targetDocument="Cashbox\BoxBundle\Document\Till")
      */
-    protected $KKMs;
+    protected $tills;
 
     /**
      * @MongoDB\EmbedMany(targetDocument="Cashbox\BoxBundle\Document\Other")
@@ -61,16 +61,14 @@ class Organization
     public function __construct()
     {
         $this->payments = new ArrayCollection();
-        $this->KKMs = new ArrayCollection();
+        $this->tills = new ArrayCollection();
         $this->others = new ArrayCollection();
     }
 
     /**
-     * Get id
-     *
-     * @return MongoDB\id $id
+     * Get ID
      */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
@@ -82,7 +80,7 @@ class Organization
      *
      * @return self
      */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->name = $name;
         return $this;
@@ -90,35 +88,31 @@ class Organization
 
     /**
      * Get name
-     *
-     * @return string $name
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
     /**
-     * Set INN
+     * Set TIN
      *
-     * @param integer $INN
+     * @param string $tin
      *
      * @return self
      */
-    public function setINN($INN)
+    public function setTin(string $tin): self
     {
-        $this->INN = $INN;
+        $this->tin = $tin;
         return $this;
     }
 
     /**
-     * Get INN
-     *
-     * @return integer $inn
+     * Get TIN
      */
-    public function getINN()
+    public function getTin(): string
     {
-        return $this->INN;
+        return $this->tin;
     }
 
     /**
@@ -128,7 +122,7 @@ class Organization
      *
      * @return self
      */
-    public function setAdminEmail($adminEmail)
+    public function setAdminEmail(string $adminEmail): self
     {
         $this->adminEmail = $adminEmail;
         return $this;
@@ -136,10 +130,8 @@ class Organization
 
     /**
      * Get adminEmail
-     *
-     * @return string $adminEmail
      */
-    public function getAdminEmail()
+    public function getAdminEmail(): string
     {
         return $this->adminEmail;
     }
@@ -151,7 +143,7 @@ class Organization
      *
      * @return self
      */
-    public function setSecret($secret)
+    public function setSecret(string $secret): self
     {
         $this->secret = $secret;
         return $this;
@@ -159,22 +151,20 @@ class Organization
 
     /**
      * Get secret
-     *
-     * @return string $secret
      */
-    public function getSecret()
+    public function getSecret(): string
     {
         return $this->secret;
     }
 
     /**
-     * Set patternNomenclature
+     * Set Nomenclature pattern
      *
      * @param string $patternNomenclature
      *
      * @return self
      */
-    public function setPatternNomenclature($patternNomenclature)
+    public function setPatternNomenclature(string $patternNomenclature): self
     {
         $this->patternNomenclature = $patternNomenclature;
         return $this;
@@ -182,10 +172,8 @@ class Organization
 
     /**
      * Get patternNomenclature
-     *
-     * @return string $patternNomenclature
      */
-    public function getPatternNomenclature()
+    public function getPatternNomenclature(): string
     {
         return $this->patternNomenclature;
     }
@@ -195,7 +183,7 @@ class Organization
      *
      * @param $payment
      */
-    public function addPayment($payment)
+    public function addPayment($payment): void
     {
         $this->payments[] = $payment;
     }
@@ -205,7 +193,7 @@ class Organization
      *
      * @param $payment
      */
-    public function removePayment($payment)
+    public function removePayment($payment): void
     {
         $this->payments->removeElement($payment);
     }
@@ -213,7 +201,7 @@ class Organization
     /**
      * Get payments
      *
-     * @return ArrayCollection $payments
+     * @return ArrayCollection
      */
     public function getPayments()
     {
@@ -221,33 +209,33 @@ class Organization
     }
 
     /**
-     * Add KKM
+     * Add Till
      *
-     * @param $KKM
+     * @param $till
      */
-    public function addKKM($KKM)
+    public function addTill($till): void
     {
-        $this->KKMs[] = $KKM;
+        $this->tills[] = $till;
     }
 
     /**
-     * Remove $KKM
+     * Remove Till
      *
-     * @param $KKM
+     * @param $till
      */
-    public function removeKKM($KKM)
+    public function removeTill($till): void
     {
-        $this->KKMs->removeElement($KKM);
+        $this->tills->removeElement($till);
     }
 
     /**
-     * Get KKMs
+     * Get Tills
      *
-     * @return ArrayCollection $KKMs
+     * @return ArrayCollection
      */
-    public function getKKMs()
+    public function getTills()
     {
-        return $this->KKMs;
+        return $this->tills;
     }
 
     /**
@@ -255,17 +243,17 @@ class Organization
      *
      * @param $other
      */
-    public function addOther($other)
+    public function addOther($other): void
     {
         $this->others[] = $other;
     }
 
     /**
-     * Remove $others
+     * Remove others
      *
      * @param $other
      */
-    public function removeOther($other)
+    public function removeOther($other): void
     {
         $this->others->removeElement($other);
     }
@@ -273,17 +261,14 @@ class Organization
     /**
      * Get others
      *
-     * @return ArrayCollection $others
+     * @return ArrayCollection
      */
     public function getOthers()
     {
         return $this->others;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getName() ?? '-';
     }

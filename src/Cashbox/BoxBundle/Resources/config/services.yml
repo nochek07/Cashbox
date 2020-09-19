@@ -44,17 +44,17 @@ services:
               label: "label.organization.other"
               show_mosaic_button: false
 
-    admin.kkm:
-        class: Cashbox\BoxBundle\Admin\KKMAdmin
+    admin.till:
+        class: Cashbox\BoxBundle\Admin\TillAdmin
         arguments:
             - ~
-            - Cashbox\BoxBundle\Document\KKM
+            - Cashbox\BoxBundle\Document\Till
             - ~
         tags:
             - name: sonata.admin
               manager_type: doctrine_mongodb
-              group: "group.organization.KKM"
-              label: "label.organization.KKM"
+              group: "group.organization.till"
+              label: "label.organization.till"
               show_mosaic_button: false
 
     #
@@ -73,17 +73,17 @@ services:
               label: "label.transactions"
               show_mosaic_button: false
 
-    admin.report.kkm:
-        class: Cashbox\BoxBundle\Admin\Register\ReportKKMAdmin
+    admin.report.till:
+        class: Cashbox\BoxBundle\Admin\Register\TillReportAdmin
         arguments:
             - ~
-            - Cashbox\BoxBundle\Document\ReportKKM
+            - Cashbox\BoxBundle\Document\TillReport
             - ~
         tags:
             - name: sonata.admin
               manager_type: doctrine_mongodb
               group: "group.register"
-              label: "label.KKM.report"
+              label: "label.till.report"
               show_mosaic_button: false
 
     #

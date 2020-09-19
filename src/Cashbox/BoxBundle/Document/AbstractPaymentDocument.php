@@ -7,30 +7,28 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 abstract class AbstractPaymentDocument extends AbstractObjectDocument
 {
     /**
-     * @MongoDB\ReferenceOne(targetDocument="Cashbox\BoxBundle\Document\KKM", nullable=true)
+     * @MongoDB\ReferenceOne(targetDocument="Cashbox\BoxBundle\Document\Till", nullable=true)
      */
-    protected $kkm = null;
+    protected $till = null;
 
     /**
-     * Set KKM
+     * Set Till
      *
-     * @param KKM|null $kkm
+     * @param Till|null $till
      *
-     * @return $this
+     * @return self
      */
-    public function setKkm($kkm)
+    public function setTill(?Till $till): self
     {
-        $this->kkm = $kkm;
+        $this->till = $till;
         return $this;
     }
 
     /**
-     * Get KKM
-     *
-     * @return KKM|null $kkm
+     * Get Till
      */
-    public function getKkm()
+    public function getTill(): ?Till
     {
-        return $this->kkm;
+        return $this->till;
     }
 }

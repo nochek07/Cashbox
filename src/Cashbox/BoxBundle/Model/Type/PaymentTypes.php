@@ -12,7 +12,7 @@ class PaymentTypes extends AbstractTypes
     /**
      * {@inheritDoc}
      */
-    public static function getArrayForAdmin()
+    public static function getArrayForAdmin(): array
     {
         return [
             self::PAYMENT_TYPE_YANDEX => [

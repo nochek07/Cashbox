@@ -5,7 +5,7 @@ namespace Cashbox\BoxBundle\Document;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 
 /**
- * @MongoDB\Document(collection="Transaction")
+ * @MongoDB\Document(collection="transactions")
  */
 class Transaction
 {
@@ -47,7 +47,7 @@ class Transaction
     /**
      * @MongoDB\Field(type="string")
      */
-    protected $INN;
+    protected $tin;
 
     /**
      * @MongoDB\Field(type="string")
@@ -55,21 +55,17 @@ class Transaction
     protected $type;
 
     /**
-     * Get id
-     *
-     * @return MongoDB\id $id
+     * Get ID
      */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
 
     /**
      * Set datetime
-     *
-     * @return self
      */
-    public function setDatetime()
+    public function setDatetime(): self
     {
         $this->datetime = new \DateTime();
         return $this;
@@ -77,10 +73,8 @@ class Transaction
 
     /**
      * Get datetime
-     *
-     * @return \DateTime $datetime
      */
-    public function getDatetime()
+    public function getDatetime(): \DateTime
     {
         return $this->datetime;
     }
@@ -92,7 +86,7 @@ class Transaction
      *
      * @return self
      */
-    public function setAction($action)
+    public function setAction(string $action): self
     {
         $this->action = $action;
         return $this;
@@ -100,10 +94,8 @@ class Transaction
 
     /**
      * Get action
-     *
-     * @return string $action
      */
-    public function getAction()
+    public function getAction(): string
     {
         return $this->action;
     }
@@ -115,7 +107,7 @@ class Transaction
      *
      * @return self
      */
-    public function setSum($Sum)
+    public function setSum(float $Sum): self
     {
         $this->Sum = $Sum;
         return $this;
@@ -123,35 +115,31 @@ class Transaction
 
     /**
      * Get Sum
-     *
-     * @return float $Sum
      */
-    public function getSum()
+    public function getSum(): float
     {
         return $this->Sum;
     }
 
     /**
-     * Set customerNumber
+     * Set customer Number
      *
      * @param string $customerNumber
      *
      * @return self
      */
-    public function setCustomerNumber($customerNumber)
+    public function setCustomerNumber(string $customerNumber): self
     {
         $this->customerNumber = $customerNumber;
         return $this;
     }
 
     /**
-     * Get customerNumber
-     *
-     * @return string $customerNumber
+     * Get customer Number
      */
-    public function getCustomerNumber()
+    public function getCustomerNumber(): string
     {
-        return $this->customerNumber;
+        return $this->customerNumber ?? '-';
     }
 
     /**
@@ -161,7 +149,7 @@ class Transaction
      *
      * @return self
      */
-    public function setEmail($email)
+    public function setEmail(string $email): self
     {
         $this->email = $email;
         return $this;
@@ -169,10 +157,8 @@ class Transaction
 
     /**
      * Get email
-     *
-     * @return string $email
      */
-    public function getEmail()
+    public function getEmail(): string
     {
         return $this->email;
     }
@@ -184,7 +170,7 @@ class Transaction
      *
      * @return self
      */
-    public function setDataPost($dataPost)
+    public function setDataPost(array $dataPost): self
     {
         $this->dataPost = $dataPost;
         return $this;
@@ -192,35 +178,31 @@ class Transaction
 
     /**
      * Get dataPost
-     *
-     * @return array $dataPost
      */
-    public function getDataPost()
+    public function getDataPost(): array
     {
         return $this->dataPost;
     }
 
     /**
-     * Set INN
+     * Set TIN
      *
-     * @param string $INN
+     * @param string $tin
      *
      * @return self
      */
-    public function setInn($INN)
+    public function setTin(string $tin): self
     {
-        $this->INN = $INN;
+        $this->tin = $tin;
         return $this;
     }
 
     /**
-     * Get INN
-     *
-     * @return string $INN
+     * Get TIN
      */
-    public function getInn()
+    public function getTin(): string
     {
-        return $this->INN;
+        return $this->tin;
     }
 
     /**
@@ -230,7 +212,7 @@ class Transaction
      *
      * @return self
      */
-    public function setType($type)
+    public function setType(string $type): string
     {
         $this->type = $type;
         return $this;
@@ -238,18 +220,13 @@ class Transaction
 
     /**
      * Get type
-     *
-     * @return string $type
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
 
-    /**
-     * @return MongoDB\Id|string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getId() ?? '-';
     }

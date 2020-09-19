@@ -2,13 +2,13 @@
 
 namespace Cashbox\BoxBundle\Document;
 
-use Cashbox\BoxBundle\Model\Type\KKMTypes;
+use Cashbox\BoxBundle\Model\Type\TillTypes;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 
 /**
 * @MongoDB\EmbeddedDocument
 */
-class KKM extends AbstractObjectDocument
+class Till extends AbstractObjectDocument
 {
     /**
      * @MongoDB\Field(type="string")
@@ -20,9 +20,9 @@ class KKM extends AbstractObjectDocument
      *
      * @param string $name
      *
-     * @return $this
+     * @return self
      */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->name = $name;
         return $this;
@@ -30,24 +30,19 @@ class KKM extends AbstractObjectDocument
 
     /**
      * Get name
-     *
-     * @return string $name
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return ($this->getName() ?? '-') . ' (' . ($this->getType() ?? '-') . ')';
     }
 
     public function getArrayForAdmin(): array
     {
-        return KKMTypes::getArrayForAdmin();
+        return TillTypes::getArrayForAdmin();
     }
 }

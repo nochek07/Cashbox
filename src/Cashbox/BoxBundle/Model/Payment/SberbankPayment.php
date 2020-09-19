@@ -3,7 +3,7 @@
 namespace Cashbox\BoxBundle\Model\Payment;
 
 use Cashbox\BoxBundle\Document\Payment;
-use Cashbox\BoxBundle\Model\{KKM\KKMInterface, Report\TransactionReport, Type\PaymentTypes};
+use Cashbox\BoxBundle\Model\{Report\TransactionModelReport, Till\TillInterface, Type\PaymentTypes};
 use Symfony\Component\HttpFoundation\Request;
 
 class SberbankPayment extends AbstractPayment
@@ -58,25 +58,25 @@ class SberbankPayment extends AbstractPayment
 
                     $orderSum = ((float)$response['amount']) / 100;
 
-                    $this->getReport()->add(new TransactionReport(), [
+                    $this->getReport()->add(new TransactionModelReport(), [
                         'type' => $this->name,
                         'action' => 'send',
                         'orderSum' => $orderSum,
                         'customerNumber' => $customerNumber,
                         'email' => $email,
-                        'inn' => $this->organization->getINN(),
+                        'tin' => $this->organization->getTin(),
                         'data' => $response
                     ]);
 
-                    $kkm = $this->getKkmByPayment($payment);
-                    if ($kkm instanceof KKMInterface) {
-                        if ($kkm->connect()) {
-                            $dataKKM = $kkm->buildData([
+                    $till = $this->getTillByPayment($payment);
+                    if ($till instanceof TillInterface) {
+                        if ($till->connect()) {
+                            $tillData = $till->buildData([
                                 "order" => $customerNumber,
                                 "email" => $email,
                                 "orderSum" => $orderSum
                             ]);
-                            $kkm->send($dataKKM, PaymentTypes::PAYMENT_TYPE_SBERBANK);
+                            $till->send($tillData, PaymentTypes::PAYMENT_TYPE_SBERBANK);
                         }
                     }
                 }
@@ -103,7 +103,7 @@ class SberbankPayment extends AbstractPayment
      *
      * @return bool
      */
-    private function checkCallback(Request $request, array $param)
+    private function checkCallback(Request $request, array $param): bool
     {
         $params = $request->query->all();
         ksort($params);
@@ -115,7 +115,7 @@ class SberbankPayment extends AbstractPayment
             }
         }
 
-        if ($str!=='') {
+        if ($str !== '') {
             if (strtolower(hash_hmac('sha256', $str, $param['secret'])) == strtolower($params['checksum'])) {
                 return true;
             }
@@ -135,10 +135,10 @@ class SberbankPayment extends AbstractPayment
     {
         $curl = curl_init();
         curl_setopt_array($curl, [
-            CURLOPT_URL => self::GATEWAY_URL . $method, // Полный адрес метода
-            CURLOPT_RETURNTRANSFER => true, // Возвращать ответ
+            CURLOPT_URL => self::GATEWAY_URL . $method,
+            CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => http_build_query($data) // Данные в запросе
+            CURLOPT_POSTFIELDS => http_build_query($data)
         ]);
         $response = curl_exec($curl);
 
@@ -152,11 +152,11 @@ class SberbankPayment extends AbstractPayment
      * Get Redirect Url
      *
      * @param Request $request
-     * @param string $failUrl - error url of page
+     * @param string $failUrl error url of page
      *
      * @return string
      */
-    public function getRedirectUrl(Request $request, string $failUrl)
+    public function getRedirectUrl(Request $request, string $failUrl): string
     {
         $redirectUrl = $failUrl;
         $payment = $this->getDesiredPayment(
@@ -164,9 +164,9 @@ class SberbankPayment extends AbstractPayment
         );
         if ($payment instanceof Payment) {
             if ($this->otherCheckMD5($request, $this->organization->getSecret())) {
-                $kkm = $this->getKkmByPayment($payment);
-                if ($kkm instanceof KKMInterface) {
-                    if (!$kkm->checkKKM()) {
+                $till = $this->getTillByPayment($payment);
+                if ($till instanceof TillInterface) {
+                    if (!$till->checkTill()) {
                         return $redirectUrl;
                     }
                 }
@@ -197,7 +197,7 @@ class SberbankPayment extends AbstractPayment
                     $response = $this->gateway('getOrderStatusExtended.do', $data);
 
                     if ($response['errorCode'] == 0) {
-                        // Произведена полная оплата
+                        // Full payment has been made
                         if ($response['orderStatus'] == 2) {
                             $redirectUrl = $successUrl;
                         } else {
@@ -221,7 +221,7 @@ class SberbankPayment extends AbstractPayment
      *
      * @return string
      */
-    public function getSiteUrl(Request $request, int $success = 0)
+    public function getSiteUrl(Request $request, int $success = 0): string
     {
         $referer = Request::create(
             $request->headers->get('referer'),
@@ -239,7 +239,7 @@ class SberbankPayment extends AbstractPayment
      *
      * @return string
      */
-    private function replaceSum(string $sum)
+    private function replaceSum(string $sum): string
     {
         $pos1 = strpos($sum, '.');
         $pos2 = strpos($sum, ',');

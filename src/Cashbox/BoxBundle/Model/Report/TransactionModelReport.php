@@ -4,7 +4,7 @@ namespace Cashbox\BoxBundle\Model\Report;
 
 use Cashbox\BoxBundle\Document\Transaction;
 
-class TransactionReport implements ReportInterface
+class TransactionModelReport implements ReportInterface
 {
     /**
      * {@inheritDoc}
@@ -17,7 +17,7 @@ class TransactionReport implements ReportInterface
         $transaction->setCustomerNumber($params['customerNumber']);
         $transaction->setEmail($params['email']);
         $transaction->setDataPost($params['data']);
-        $transaction->setInn($params['inn']);
+        $transaction->setTin($params['tin']);
         $transaction->setAction($params['action']);
         $transaction->setType($params['type']);
 

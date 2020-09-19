@@ -9,33 +9,33 @@ use Symfony\Component\HttpFoundation\Request;
 class OrganizationModel
 {
     /**
-     * Get Organization by INN
+     * Get Organization by TIN
      *
      * @param Request|array $request
      * @param ManagerRegistry $managerMongoDB
      *
      * @return Organization|null
      */
-    public static function getOrganization($request, ManagerRegistry $managerMongoDB)
+    public static function getOrganization($request, ManagerRegistry $managerMongoDB): ?Organization
     {
         if ($request instanceof Request ) {
             if ($request->isMethod(Request::METHOD_POST)) {
-                $inn = $request->get('inn');
+                $tin = $request->get('inn');
             } else {
-                $inn = $request->query->get('inn');
+                $tin = $request->query->get('inn');
             }
         } else {
-            $inn = $request['inn'];
+            $tin = $request['inn'];
         }
 
-        if (!is_null($inn) && !empty($inn)) {
+        if (!is_null($tin) && !empty($tin)) {
             /**
              * @var Organization $organization
              */
             $organization = $managerMongoDB->getManager()
                 ->getRepository(Organization::class)
                 ->findOneBy([
-                    'INN' => (int)$inn
+                    'tin' => $tin
                 ]);
             return $organization;
         }
@@ -44,26 +44,26 @@ class OrganizationModel
     }
 
     /**
-     * Set choice or organizations
+     * Set choice of organizations
      *
      * @param ManagerRegistry $manager
      *
      * @return array
      */
-    public static function setChoiceOrganization(ManagerRegistry $manager)
+    public static function setChoiceOrganization(ManagerRegistry $manager): array
     {
-        $choicesOrganizations = [];
+        $choiceOrganizations = [];
         /**
-         * @var Organization[] $Organizations
+         * @var Organization[] $organizations
          */
-        $Organizations = $manager->getManager()
+        $organizations = $manager->getManager()
             ->getRepository(Organization::class)
             ->findAll();
 
-        foreach ($Organizations as $Organization) {
-            $choicesOrganizations[$Organization->getINN()] = $Organization;
+        foreach ($organizations as $organization) {
+            $choiceOrganizations[$organization->getTin()] = $organization;
         }
 
-        return $choicesOrganizations;
+        return $choiceOrganizations;
     }
 }

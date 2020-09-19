@@ -28,11 +28,9 @@ abstract class AbstractObjectDocument
     protected $additional = [];
 
     /**
-     * Get id
-     *
-     * @return MongoDB\id $id
+     * Get ID
      */
-    public function getId()
+    public function getId(): string 
     {
         return $this->id;
     }
@@ -44,7 +42,7 @@ abstract class AbstractObjectDocument
      *
      * @return self
      */
-    public function setType($type)
+    public function setType(string $type): self
     {
         $this->type = $type;
         return $this;
@@ -52,10 +50,8 @@ abstract class AbstractObjectDocument
 
     /**
      * Get type
-     *
-     * @return string $type
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
@@ -67,7 +63,7 @@ abstract class AbstractObjectDocument
      *
      * @return self
      */
-    public function setData($data)
+    public function setData(array $data): self
     {
         $this->data = $data;
         return $this;
@@ -75,10 +71,8 @@ abstract class AbstractObjectDocument
 
     /**
      * Get data
-     *
-     * @return array $data
      */
-    public function getData()
+    public function getData(): array
     {
         return $this->data;
     }
@@ -88,7 +82,7 @@ abstract class AbstractObjectDocument
      *
      * @return array
      */
-    public function __get($name)
+    public function __get($name): array
     {
         if (array_key_exists($name, $this->getArrayForAdmin())) {
             if ($this->getType() === $name) {
@@ -106,7 +100,7 @@ abstract class AbstractObjectDocument
      *
      * @return self
      */
-    public function __set($name, $data)
+    public function __set($name, array $data): self
     {
         if (array_key_exists($name, $this->getArrayForAdmin())) {
             $this->additional[$name] = $data;
@@ -117,10 +111,8 @@ abstract class AbstractObjectDocument
 
     /**
      * Get Additional
-     *
-     * @return array
      */
-    public function getAdditional()
+    public function getAdditional(): array
     {
         return $this->additional;
     }

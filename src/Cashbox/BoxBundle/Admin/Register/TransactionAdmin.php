@@ -13,7 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 class TransactionAdmin extends AbstractAdmin
 {
     protected $translationDomain = 'BoxBundle';
-    protected $choicesOrganizations = [];
+    protected $choiceOrganizations = [];
 
     protected $datagridValues = [
         '_page' => 1,
@@ -35,9 +35,9 @@ class TransactionAdmin extends AbstractAdmin
             ->add('datetime', 'datetime', [
                 'format' => 'd.m.Y H:i:s'
             ])
-            ->add('INN', ChoiceType::class, [
+            ->add('tin', 'choice', [
                     'label' => 'Organization',
-                    'choices' => $this->choicesOrganizations
+                    'choices' => $this->choiceOrganizations
                 ]
             )
             ->add('Sum')
@@ -63,7 +63,7 @@ class TransactionAdmin extends AbstractAdmin
      */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
-        $choicesOrganizations = $this->choicesOrganizations;
+        $choiceOrganizations = $this->choiceOrganizations;
         $datagridMapper
             ->add('customerNumber')
             ->add('datetime')
@@ -76,16 +76,16 @@ class TransactionAdmin extends AbstractAdmin
                     },
                 ]
             )
-            ->add('INN', null, [
+            ->add('tin', null, [
                     'label' => 'Organization',
                     'show_filter' => true,
                 ], ChoiceType::class, [
-                    'choices' => array_keys($choicesOrganizations),
-                    'choice_label' => function ($inn) use ($choicesOrganizations) {
-                        if (isset($choicesOrganizations[$inn])) {
-                            return $choicesOrganizations[$inn]->getName();
+                    'choices' => array_map(function ($value) {return (string)$value;}, array_keys($choiceOrganizations)),
+                    'choice_label' => function ($tin) use ($choiceOrganizations) {
+                        if (isset($choiceOrganizations[$tin])) {
+                            return $choiceOrganizations[$tin]->getName();
                         } else {
-                            return $inn;
+                            return $tin;
                         }
                     },
                 ]
@@ -106,8 +106,8 @@ class TransactionAdmin extends AbstractAdmin
             ->add('datetime', 'datetime', [
                'format' => 'd.m.Y H:i:s'
             ])
-            ->add('INN', null, [
-               'label' => 'INN'
+            ->add('tin', null, [
+               'label' => 'Tin'
             ])
             ->add('Sum')
             ->add('action')
@@ -119,7 +119,7 @@ class TransactionAdmin extends AbstractAdmin
 
     protected function setChoiceOrganization()
     {
-        $this->choicesOrganizations = OrganizationModel::setChoiceOrganization(
+        $this->choiceOrganizations = OrganizationModel::setChoiceOrganization(
             $this->getConfigurationPool()
                 ->getContainer()
                 ->get('doctrine_mongodb')

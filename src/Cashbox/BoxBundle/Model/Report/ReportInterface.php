@@ -5,11 +5,11 @@ namespace Cashbox\BoxBundle\Model\Report;
 interface ReportInterface
 {
     /**
-     * Create data
+     * Create document
      *
      * @param array $params
      *
-     * @return ReportInterface
+     * @return mixed
      */
     public function create(array $params);
 }

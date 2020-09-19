@@ -8,10 +8,7 @@ use MongoDB\Database;
 
 class Version20191126204819 extends AbstractMigration
 {
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): string
     {
         return "Transaction pooling";
     }
@@ -21,16 +18,20 @@ class Version20191126204819 extends AbstractMigration
         $collection = $db->selectCollection('SberbankTransaction');
 
         $collectionYandex = $db->selectCollection('YandexTransaction');
-        $list = $collectionYandex->find();
-        if ($list->count()>0) {
+        $cursor = $collectionYandex->find();
+        $it = new \IteratorIterator($cursor);
+        $it->rewind();
+
+        if ($collectionYandex->countDocuments() > 0) {
             $transactions = [];
-            while ($document = $list->getNext()) {
+            while ($document = $it->current()) {
                 $newData = $document;
                 $newData['type'] = PaymentTypes::PAYMENT_TYPE_YANDEX;
                 unset($newData['_id']);
                 $transactions[] = $newData;
+                $it->next();
             }
-            $collection->batchInsert($transactions);
+            $collection->insertMany($transactions);
         }
     }
 

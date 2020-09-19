@@ -2,7 +2,7 @@
 
 namespace Cashbox\BoxBundle\Controller;
 
-use Cashbox\BoxBundle\Model\KKM\KKMMessages;
+use Cashbox\BoxBundle\Model\Till\TillMessages;
 use Cashbox\BoxBundle\Model\Payment\For1CPayment;
 use Cashbox\BoxBundle\Service\Box;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,7 +31,7 @@ class For1CController extends AbstractController
                     $for1CPayment->setDataJSON($data);
 
                     $box->setOrganizationTextError(
-                        $for1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR_INN)
+                        $for1CPayment->buildResponse('For1C', 0, 100, null, TillMessages::MSG_ERROR_TIN)
                     );
                     return new Response(
                         $box->send($request, $for1CPayment)
@@ -41,7 +41,7 @@ class For1CController extends AbstractController
         }
 
         return new Response(
-            $for1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR)
+            $for1CPayment->buildResponse('For1C', 0, 100, null, TillMessages::MSG_ERROR)
         );
     }
 
@@ -65,7 +65,7 @@ class For1CController extends AbstractController
                     $for1CPayment->setDataJSON($data);
 
                     $box->setOrganizationTextError(
-                        $for1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR_INN)
+                        $for1CPayment->buildResponse('For1C', 0, 100, null, TillMessages::MSG_ERROR_TIN)
                     );
                     return new Response(
                         $box->check($request, $for1CPayment)
@@ -75,7 +75,7 @@ class For1CController extends AbstractController
         }
 
         return new Response(
-            $for1CPayment->buildResponse('For1C', 0, 100, null, KKMMessages::MSG_ERROR)
+            $for1CPayment->buildResponse('For1C', 0, 100, null, TillMessages::MSG_ERROR)
         );
     }
 }

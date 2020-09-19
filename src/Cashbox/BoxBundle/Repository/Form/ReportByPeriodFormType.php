@@ -30,13 +30,13 @@ class ReportByPeriodFormType extends AbstractType
                     'class' => 'form-control',
                 ],
             ])
-            ->add('INN', ChoiceType::class, [
+            ->add('tin', ChoiceType::class, [
                 'choices' => $keyChoicesOrganizations,
-                'choice_label' => function ($inn) use ($choicesOrganizations) {
-                    if (isset($choicesOrganizations[$inn]) && $choicesOrganizations[$inn] instanceof Organization) {
-                        return $choicesOrganizations[$inn]->getName();
+                'choice_label' => function ($tin) use ($choicesOrganizations) {
+                    if (isset($choicesOrganizations[$tin]) && $choicesOrganizations[$tin] instanceof Organization) {
+                        return $choicesOrganizations[$tin]->getName();
                     } else {
-                        return $inn;
+                        return $tin;
                     }
                 },
                 'attr' => [

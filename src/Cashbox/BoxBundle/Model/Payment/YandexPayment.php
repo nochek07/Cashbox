@@ -3,7 +3,7 @@
 namespace Cashbox\BoxBundle\Model\Payment;
 
 use Cashbox\BoxBundle\Document\Payment;
-use Cashbox\BoxBundle\Model\{KKM\KKMInterface, KKM\KKMMessages, Report\TransactionReport, Type\PaymentTypes};
+use Cashbox\BoxBundle\Model\{Report\TransactionModelReport, Till\TillInterface, Till\TillMessages, Type\PaymentTypes};
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -37,25 +37,25 @@ class YandexPayment extends AbstractPayment
                 $orderSum = (float)$request->get('orderSumAmount');
                 $order = $request->get('customerNumber');
 
-                $this->getReport()->add(new TransactionReport(), [
+                $this->getReport()->add(new TransactionModelReport(), [
                     'type' => $this->name,
                     'action' => $request->get('action'),
                     'orderSum' => $orderSum,
                     'customerNumber' => $order,
                     'email' => $email,
-                    'inn' => $this->organization->getINN(),
+                    'tin' => $this->organization->getTin(),
                     'data' => $request->request->all()
                 ]);
 
-                $kkm = $this->getKkmByPayment($payment);
-                if ($kkm instanceof KKMInterface) {
-                    if ($kkm->connect()) {
-                        $dataKKM = $kkm->buildData([
+                $till = $this->getTillByPayment($payment);
+                if ($till instanceof TillInterface) {
+                    if ($till->connect()) {
+                        $tillData = $till->buildData([
                             "order" => $order,
                             "email" => $email,
                             "orderSum" => $orderSum
                         ]);
-                        $kkm->send($dataKKM, PaymentTypes::PAYMENT_TYPE_YANDEX);
+                        $till->send($tillData, PaymentTypes::PAYMENT_TYPE_YANDEX);
                     }
                 }
 
@@ -81,26 +81,26 @@ class YandexPayment extends AbstractPayment
 
             $responseText = $this->processRequest($request, $yandex, $this->organization->getSecret());
             if ($responseText == '') {
-                $kkm = $this->getKkmByPayment($payment);
-                if ($kkm instanceof KKMInterface) {
-                    if (!$kkm->checkKKM()) {
+                $till = $this->getTillByPayment($payment);
+                if ($till instanceof TillInterface) {
+                    if (!$till->checkTill()) {
                         return $this->buildResponse(
                             $request->get('action'),
                             $request->get('invoiceId'),
                             100,
                             $yandex['shop_yandex_id'],
-                            KKMMessages::MSG_CASHBOX_UNAV
+                            TillMessages::MSG_CASHBOX_UNAV
                         );
                     }
                 }
 
-                $this->getReport()->add(new TransactionReport(), [
+                $this->getReport()->add(new TransactionModelReport(), [
                     'type' => $this->name,
                     'action' => $request->get('action'),
                     'orderSum' => (float)$request->get('orderSumAmount'),
                     'customerNumber' => $request->get('customerNumber'),
                     'email' => $request->get('email'),
-                    'inn' => $this->organization->getINN(),
+                    'tin' => $this->organization->getTin(),
                     'data' => $request->request->all()
                 ]);
 
@@ -120,9 +120,9 @@ class YandexPayment extends AbstractPayment
      *
      * @return string
      */
-    private function processRequest(Request $request, array $param, string $secret)
+    private function processRequest(Request $request, array $param, string $secret): string
     {
-        // Проверка
+        // Check
         if (!$this->checkMD5($request, $param, $secret)) {
             return $this->buildResponse($request->get('action'), $request->get('invoiceId'), 1, $param['yandex_id']);
         }
@@ -137,7 +137,7 @@ class YandexPayment extends AbstractPayment
      *
      * @return string
      */
-    private function getAnswer(Request $request, array $param)
+    private function getAnswer(Request $request, array $param): string
     {
         return $this->buildResponse($request->get('action'), $request->get('invoiceId'), 0, $param['yandex_id']);
     }
@@ -151,7 +151,7 @@ class YandexPayment extends AbstractPayment
      *
      * @return bool true if MD5 hash is correct
      */
-    private function checkMD5(Request $request, array $param, string $secret)
+    private function checkMD5(Request $request, array $param, string $secret): bool
     {
         $str = $request->get('action') . ";" .
             $request->get('orderSumAmount') . ";" . $request->get('orderSumCurrencyPaycash') . ";" .
@@ -176,7 +176,12 @@ class YandexPayment extends AbstractPayment
      *
      * @return string               prepared XML response
      */
-    public function buildResponse($functionName, $invoiceId, $result_code, $shopId = null, $message = null)
+    public function buildResponse(
+        string $functionName,
+        string $invoiceId,
+        string $result_code,
+        ?string $shopId = null,
+        ?string $message = null): string
     {
         try {
             $performedDatetime = self::formatDate(new \DateTime());
@@ -195,7 +200,7 @@ class YandexPayment extends AbstractPayment
      *
      * @return string
      */
-    private function formatDate(\DateTime $date)
+    private function formatDate(\DateTime $date): string
     {
         return $date->format("Y-m-d") . "T" . $date->format("H:i:s") . ".000" . $date->format("P");
     }

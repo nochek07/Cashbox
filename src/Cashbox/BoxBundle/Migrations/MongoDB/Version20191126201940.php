@@ -8,10 +8,7 @@ use MongoDB\Database;
 
 class Version20191126201940 extends AbstractMigration
 {
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): string
     {
         return "Repair Sberbank Transaction";
     }
@@ -19,8 +16,10 @@ class Version20191126201940 extends AbstractMigration
     public function up(Database $db)
     {
         $collection = $db->selectCollection('SberbankTransaction');
-        $list = $collection->find();
-        while ($document = $list->getNext()) {
+        $cursor = $collection->find();
+        $it = new \IteratorIterator($cursor);
+        $it->rewind();
+        while ($document = $it->current()) {
             if (!isset($document['type'])) {
                 $newData = [
                     '$set' => [
@@ -28,8 +27,9 @@ class Version20191126201940 extends AbstractMigration
                         'action' => 'send'
                     ]
                 ];
-                $collection->update(['_id' => $document['_id']], $newData);
+                $collection->updateOne(['_id' => $document['_id']], $newData);
             }
+            $it->next();
         }
     }
 

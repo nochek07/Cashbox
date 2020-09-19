@@ -40,7 +40,7 @@ security:
                 login_path: /admin/login
                 check_path: /admin/login_check
                 always_use_default_target_path: true
-                default_target_path:            /admin
+                default_target_path: /admin
             logout:
                 path: /admin/logout
                 target: /admin

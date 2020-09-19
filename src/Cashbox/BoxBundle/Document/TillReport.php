@@ -6,11 +6,11 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 
 /**
  * @MongoDB\Document(
- *     collection="ReportKKM",
- *     repositoryClass="Cashbox\BoxBundle\Repository\ReportKKMRepository"
+ *     collection="tillReports",
+ *     repositoryClass="Cashbox\BoxBundle\Repository\TillReportRepository"
  * )
  */
-class ReportKKM
+class TillReport
 {
     /**
      * @MongoDB\Id(strategy="AUTO")
@@ -50,7 +50,7 @@ class ReportKKM
     /**
      * @MongoDB\Field(type="hash")
      */
-    protected $dataKomtet = [];
+    protected $dataTill = [];
 
     /**
      * @MongoDB\Field(type="hash")
@@ -60,24 +60,20 @@ class ReportKKM
     /**
      * @MongoDB\Field(type="string")
      */
-    protected $INN;
+    protected $tin;
 
     /**
-     * Get id
-     *
-     * @return MongoDB\id $id
+     * Get ID
      */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
 
     /**
      * Set datetime
-     *
-     * @return self
      */
-    public function setDatetime()
+    public function setDatetime(): self
     {
         $this->datetime = new \DateTime();
         return $this;
@@ -85,10 +81,8 @@ class ReportKKM
 
     /**
      * Get Sum
-     *
-     * @return \DateTime $datetime
      */
-    public function getDatetime()
+    public function getDatetime(): \DateTime
     {
         return $this->datetime;
     }
@@ -100,7 +94,7 @@ class ReportKKM
      *
      * @return self
      */
-    public function setType($type)
+    public function setType(string $type): self
     {
         $this->type = $type;
         return $this;
@@ -108,10 +102,8 @@ class ReportKKM
 
     /**
      * Get type
-     *
-     * @return string $type
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
@@ -123,7 +115,7 @@ class ReportKKM
      *
      * @return self
      */
-    public function setTypePayment($typePayment)
+    public function setTypePayment(string $typePayment): self
     {
         $this->typePayment = $typePayment;
         return $this;
@@ -131,10 +123,8 @@ class ReportKKM
 
     /**
      * Get type payment
-     *
-     * @return string $typePayment
      */
-    public function getTypePayment()
+    public function getTypePayment(): string
     {
         return $this->typePayment;
     }
@@ -146,7 +136,7 @@ class ReportKKM
      *
      * @return self
      */
-    public function setState($state)
+    public function setState(string $state): self
     {
         $this->state = $state;
         return $this;
@@ -154,33 +144,29 @@ class ReportKKM
 
     /**
      * Get state
-     *
-     * @return string $state
      */
-    public function getState()
+    public function getState(): string
     {
         return $this->state;
     }
 
     /**
-     * Set uuid
+     * Set UUID
      *
      * @param string $uuid
      *
      * @return self
      */
-    public function setUuid($uuid)
+    public function setUuid(string $uuid): self
     {
         $this->uuid = $uuid;
         return $this;
     }
 
     /**
-     * Get uuid
-     *
-     * @return string $uuid
+     * Get UUID
      */
-    public function getUuid()
+    public function getUuid(): ?string
     {
         return $this->uuid;
     }
@@ -192,7 +178,7 @@ class ReportKKM
      *
      * @return self
      */
-    public function setAction($action)
+    public function setAction(string $action): self
     {
         $this->action = $action;
         return $this;
@@ -200,35 +186,31 @@ class ReportKKM
 
     /**
      * Get action
-     *
-     * @return string $action
      */
-    public function getAction()
+    public function getAction(): string
     {
         return $this->action;
     }
 
     /**
-     * Set dataKomtet
+     * Set dataTill
      *
-     * @param array $dataKomtet
+     * @param array $dataTill
      *
      * @return self
      */
-    public function setDataKomtet($dataKomtet)
+    public function setDataTill(array $dataTill): self
     {
-        $this->dataKomtet = $dataKomtet;
+        $this->dataTill = $dataTill;
         return $this;
     }
 
     /**
-     * Get dataKomtet
-     *
-     * @return array $dataKomtet
+     * Get dataTill
      */
-    public function getDataKomtet()
+    public function getDataTill(): array
     {
-        return $this->dataKomtet;
+        return $this->dataTill;
     }
 
     /**
@@ -238,7 +220,7 @@ class ReportKKM
      *
      * @return self
      */
-    public function setDataPost($dataPost)
+    public function setDataPost(array $dataPost): self
     {
         $this->dataPost = $dataPost;
         return $this;
@@ -246,41 +228,34 @@ class ReportKKM
 
     /**
      * Get dataPost
-     *
-     * @return array $dataPost
      */
-    public function getDataPost()
+    public function getDataPost(): array
     {
         return $this->dataPost;
     }
 
     /**
-     * Set INN
+     * Set TIN
      *
-     * @param string $INN
+     * @param string $tin
      *
      * @return self
      */
-    public function setInn($INN)
+    public function setTin(string $tin): self
     {
-        $this->INN = $INN;
+        $this->tin = $tin;
         return $this;
     }
 
     /**
-     * Get INN
-     *
-     * @return string $INN
+     * Get TIN
      */
-    public function getInn()
+    public function getTin(): string
     {
-        return $this->INN;
+        return $this->tin;
     }
 
-    /**
-     * @return MongoDB\Id|string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getId() ?? '-';
     }

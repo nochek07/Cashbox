@@ -3,7 +3,7 @@
 namespace Cashbox\BoxBundle\Controller\Admin;
 
 use APY\DataGridBundle\Grid\{Column, Export, Source\Vector};
-use Cashbox\BoxBundle\Document\ReportKKM;
+use Cashbox\BoxBundle\Document\TillReport;
 use Cashbox\BoxBundle\Form\ReportByPeriodForm;
 use Cashbox\BoxBundle\Model\OrganizationModel;
 use Cashbox\BoxBundle\Repository\Form\ReportByPeriodFormType;
@@ -54,7 +54,7 @@ class ReportController extends CoreController
                 'id' => 'typePayment', 'field' => 'typePayment', 'source' => true, 'title' => 'Payment'
             ]),
             new Column\TextColumn([
-                'id' => 'INN', 'field' => 'INN', 'source' => true, 'title' => 'Organization'
+                'id' => 'tin', 'field' => 'tin', 'source' => true, 'title' => 'Organization'
             ]),
             new Column\TextColumn([
                 'id' => 'type', 'field' => 'type', 'source' => true, 'title' => 'Type'
@@ -66,19 +66,20 @@ class ReportController extends CoreController
 
         $books = [];
         /**
-         * @var ReportKKM[] $records
+         * @var TillReport[] $records
          */
-        $records = $this->get('doctrine_mongodb')->getRepository(ReportKKM::class)
-            ->findByPeriod($dataForm->getDateStart(), $dataForm->getDateEnd(), $dataForm->getINN());
+        $records = $this->get('doctrine_mongodb')->getRepository(TillReport::class)
+            ->findByPeriod($dataForm->getDateStart(), $dataForm->getDateEnd(), $dataForm->getTin());
         foreach ($records as $record) {
             $dataPost = $record->getDataPost();
+            dump($dataPost);
             $orderSum = $dataPost['kkm']['payment']['cash'] ?? 0 + $dataPost['kkm']['payment']['card'] ?? 0;
 
-            $innRecord = $record->getInn();
+            $tinRecord = $record->getTin();
             $books[] = [
                 'date' => $record->getDatetime(),
                 'typePayment' => $record->getTypePayment(),
-                'INN' => (isset($choiceOrganization[$innRecord]) ? $choiceOrganization[$innRecord] : $innRecord),
+                'tin' => (isset($choiceOrganization[$tinRecord]) ? $choiceOrganization[$tinRecord] : $tinRecord),
                 'type' => $record->getType(),
                 'orderSum' => $orderSum,
             ];
@@ -116,28 +117,28 @@ class ReportController extends CoreController
         if ($form->isSubmitted() && $form->isValid()) {
             $datePeriodStart = $dataForm->getDateStart();
             $datePeriodEnd = $dataForm->getDateEnd();
-            $inn = $dataForm->getInn();
+            $tin = $dataForm->getTin();
 
             $session->set(self::SESSION_PARAM_BY_FORM . $form->getName(), [
                 'dateStart' => $datePeriodStart,
                 'dateEnd' => $datePeriodEnd,
-                'organization' => $inn
+                'organization' => $tin
             ]);
         } elseif (!$form->isSubmitted()) {
             $dataSheetSession = $session->get(self::SESSION_PARAM_BY_FORM . $form->getName());
             if (isset($dataSheetSession) && !is_null($dataSheetSession)) {
                 $datePeriodStart = $dataSheetSession['dateStart'];
                 $datePeriodEnd = $dataSheetSession['dateEnd'];
-                $inn = $dataSheetSession['organization'];
+                $tin = $dataSheetSession['organization'];
             } else {
                 $datePeriodStart = new \DateTime('first day of this month');
                 $datePeriodEnd = new \DateTime('last day of this month');
-                $inn = ReportByPeriodFormType::ALL_ORGANIZATION;
+                $tin = ReportByPeriodFormType::ALL_ORGANIZATION;
             }
 
             $dataForm->setDateStart($datePeriodStart);
             $dataForm->setDateEnd($datePeriodEnd);
-            $dataForm->setINN($inn);
+            $dataForm->setTin($tin);
             $form->setData($dataForm);
         }
     }

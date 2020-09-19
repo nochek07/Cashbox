@@ -1,11 +1,11 @@
 <?php
 
-namespace Cashbox\BoxBundle\Model\KKM;
+namespace Cashbox\BoxBundle\Model\Till;
 
-use Cashbox\BoxBundle\Document\{KKM, Organization};
+use Cashbox\BoxBundle\Document\{Organization, Till};
 use Cashbox\BoxBundle\Service\{Mailer, Report};
 
-abstract class AbstractKKM implements KKMInterface
+abstract class AbstractTill implements TillInterface
 {
     protected $name = '';
 
@@ -15,9 +15,9 @@ abstract class AbstractKKM implements KKMInterface
     protected $organizationDocument;
 
     /**
-     * @var KKM
+     * @var Till
      */
-    protected $kkmDocument;
+    protected $tillDocument;
 
     /**
      * @var Report
@@ -30,15 +30,15 @@ abstract class AbstractKKM implements KKMInterface
     private $mailer = null;
 
     /**
-     * AbstractKKM constructor.
+     * AbstractTill constructor.
      *
      * @param Organization $organizationDocument
-     * @param KKM $kkmDocument
+     * @param Till $tillDocument
      */
-    public function __construct(Organization $organizationDocument, KKM $kkmDocument)
+    public function __construct(Organization $organizationDocument, Till $tillDocument)
     {
         $this->organizationDocument = $organizationDocument;
-        $this->kkmDocument = $kkmDocument;
+        $this->tillDocument = $tillDocument;
     }
 
     /**
@@ -47,7 +47,7 @@ abstract class AbstractKKM implements KKMInterface
      * @param Report $report
      * @return self
      */
-    public function setReport(Report $report)
+    public function setReport(Report $report): self
     {
         $this->report = $report;
         return $this;
@@ -55,10 +55,8 @@ abstract class AbstractKKM implements KKMInterface
 
     /**
      * Get Report
-     *
-     * @return Report
      */
-    public function getReport()
+    public function getReport(): Report
     {
         return $this->report;
     }
@@ -70,7 +68,7 @@ abstract class AbstractKKM implements KKMInterface
      *
      * @return self
      */
-    public function setMailer(Mailer $mailer)
+    public function setMailer(Mailer $mailer): self
     {
         $this->mailer = $mailer;
         return $this;
@@ -78,10 +76,8 @@ abstract class AbstractKKM implements KKMInterface
 
     /**
      * Get Mailer
-     *
-     * @return Mailer|null
      */
-    public function getMailer()
+    public function getMailer(): ?Mailer
     {
         return $this->mailer;
     }
@@ -89,7 +85,7 @@ abstract class AbstractKKM implements KKMInterface
     /**
      * {@inheritDoc}
      */
-    abstract function connect();
+    abstract function connect(): bool;
 
     /**
      * {@inheritDoc}
@@ -114,5 +110,5 @@ abstract class AbstractKKM implements KKMInterface
     /**
      * {@inheritDoc}
      */
-    abstract function checkKKM(): bool;
+    abstract function checkTill(): bool;
 }

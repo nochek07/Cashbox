@@ -31,22 +31,22 @@ class Box
     private $report;
 
     /**
-     * @var KKMBuilder
+     * @var TillBuilder
      */
-    private $kkmBuilder;
+    private $tillBuilder;
 
     /**
      * Box constructor.
      * 
      * @param ManagerRegistry $manager
      * @param Report $report
-     * @param KKMBuilder $kkmBuilder
+     * @param TillBuilder $tillBuilder
      */
-    public function __construct(ManagerRegistry $manager, Report $report, KKMBuilder $kkmBuilder)
+    public function __construct(ManagerRegistry $manager, Report $report, TillBuilder $tillBuilder)
     {
         $this->manager = $manager;
         $this->report = $report;
-        $this->kkmBuilder = $kkmBuilder;
+        $this->tillBuilder = $tillBuilder;
     }
 
     /**
@@ -123,7 +123,7 @@ class Box
         $payment->setOrganization($this->getOrganization());
         $payment->setReport($this->report);
         $payment->setManager($this->manager);
-        $payment->setKKMBuilder($this->kkmBuilder);
+        $payment->setTillBuilder($this->tillBuilder);
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace Cashbox\BoxBundle\Model\KKM;
+namespace Cashbox\BoxBundle\Model\Till;
 
 class Vat extends \Komtet\KassaSdk\Vat
 {

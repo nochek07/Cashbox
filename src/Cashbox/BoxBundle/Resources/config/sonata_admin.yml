@@ -31,7 +31,7 @@ sonata_admin:
                 label: group.register
                 items:
                     - admin.transaction
-                    - admin.report.kkm
+                    - admin.report.till
 
             sonata.page.report:
                 keep_open: false

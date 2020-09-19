@@ -3,24 +3,23 @@
 namespace Cashbox\BoxBundle\Migrations\MongoDB;
 
 use AntiMattr\MongoDB\Migrations\AbstractMigration;
-use Cashbox\BoxBundle\Model\Type\{KKMTypes, OtherTypes, PaymentTypes};
+use Cashbox\BoxBundle\Model\Type\{OtherTypes, PaymentTypes, TillTypes};
 use MongoDB\Database;
 
 class Version20191201111548 extends AbstractMigration
 {
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): string
     {
-        return "Repair type payment of ReportKomtet";
+        return "Repair type payment of tillReports";
     }
 
     public function up(Database $db)
     {
-        $collection = $db->selectCollection('ReportKomtet');
-        $list = $collection->find();
-        while ($document = $list->getNext()) {
+        $collection = $db->selectCollection('tillReports');
+        $cursor = $collection->find();
+        $it = new \IteratorIterator($cursor);
+        $it->rewind();
+        while ($document = $it->current()) {
             if (!isset($document['typePayment'])) {
                 switch ($document["type"]) {
                     case "1c":
@@ -37,12 +36,13 @@ class Version20191201111548 extends AbstractMigration
                 }
                 $newData = [
                     '$set' => [
-                        "type" => KKMTypes::KKM_TYPE_KOMTET,
+                        "type" => TillTypes::TILL_TYPE_KOMTET,
                         "typePayment" => $value
                     ]
                 ];
-                $collection->update(['_id' => $document['_id']], $newData);
+                $collection->updateOne(['_id' => $document['_id']], $newData);
             }
+            $it->next();
         }
     }
 

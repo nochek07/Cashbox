@@ -1,6 +1,6 @@
 label.organization: Организации
-label.KKM: Устройства ККМ
-label.KKM.report: Сообщения ККМ
+label.till: Устройства ККМ
+label.till.report: Сообщения ККМ
 label.transactions: Транзакции
 
 Organization Create: Создать Организацию
@@ -20,15 +20,15 @@ rate.20: 20%
 
 Organization List: Организации
 Transaction List: Список транзакции
-Report K K M List: Сообщения ККМ
+Till Report List: Сообщения ККМ
 
-KKMs: Устройства ККМ
+Tills: Устройства ККМ
 Payments: Платежные системы
 Others: Другие системы
 
 ID: ID
 Name: Наименование
-INN: ИНН
+Tin: ИНН
 
 Basic: Основные настройки
 Sberbank: Сбербанк
@@ -39,7 +39,7 @@ Pattern Nomenclature: Шаблон номенклатуры
 Secret: Секретное слово
 Admin Email: Email администратора
 
-Kkm: ККМ
+Till: ККМ
 
 Username: Логин
 Password: Пароль
@@ -64,5 +64,5 @@ Data Post: Данные отправки
 Type: Тип
 State: Статус
 UUID: UUID
-Data KKM: Данные кассы
+Data Till: Данные кассы
 Type Payment: Платежная система

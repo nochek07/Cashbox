@@ -5,16 +5,16 @@ namespace Cashbox\BoxBundle\Repository;
 use Cashbox\BoxBundle\Repository\Form\ReportByPeriodFormType;
 use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 
-class ReportKKMRepository extends DocumentRepository
+class TillReportRepository extends DocumentRepository
 {
     /**
      * @param \DateTime $datePeriodStart
      * @param \DateTime $datePeriodEnd
-     * @param string $INN
+     * @param string $tin
      *
      * @return array
      */
-    public function findByPeriod(\DateTime $datePeriodStart, \DateTime $datePeriodEnd, string $INN)
+    public function findByPeriod(\DateTime $datePeriodStart, \DateTime $datePeriodEnd, string $tin): array
     {
         $query = $this->createQueryBuilder()
             ->field('state')
@@ -25,9 +25,9 @@ class ReportKKMRepository extends DocumentRepository
                 ->gte($datePeriodStart)
         ;
 
-        if ($INN !== ReportByPeriodFormType::ALL_ORGANIZATION) {
-            $query->field('INN')
-                ->equals($INN)
+        if ($tin !== ReportByPeriodFormType::ALL_ORGANIZATION) {
+            $query->field('tin')
+                ->equals($tin)
             ;
         }
 

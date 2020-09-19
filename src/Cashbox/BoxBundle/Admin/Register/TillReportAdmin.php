@@ -3,19 +3,19 @@
 namespace Cashbox\BoxBundle\Admin\Register;
 
 use Cashbox\BoxBundle\Model\OrganizationModel;
-use Cashbox\BoxBundle\Model\Type\{KKMTypes, OtherTypes, PaymentTypes};
+use Cashbox\BoxBundle\Model\Type\{OtherTypes, PaymentTypes, TillTypes};
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\{DatagridMapper, ListMapper};
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
-class ReportKKMAdmin extends AbstractAdmin
+class TillReportAdmin extends AbstractAdmin
 {
     protected $translationDomain = 'BoxBundle';
-    protected $choicesOrganizations = [];
-    protected $choicesActions = [];
-    protected $choicesStates = [];
+    protected $choiceOrganizations = [];
+    protected $choiceActions = [];
+    protected $choiceStates = [];
 
     protected $datagridValues = [
         '_page' => 1,
@@ -39,17 +39,17 @@ class ReportKKMAdmin extends AbstractAdmin
             ->add('datetime', 'datetime', [
                 'format' => 'd.m.Y H:i:s'
             ])
-            ->add('INN', ChoiceType::class, [
+            ->add('tin', 'choice', [
                     'label' => 'Organization',
-                    'choices' => $this->choicesOrganizations
+                    'choices' => $this->choiceOrganizations,
                 ]
             )
             ->add('typePayment')
-            ->add('state', ChoiceType::class, [
-                'choices' => $this->choicesStates,
+            ->add('state', 'choice', [
+                'choices' => $this->choiceStates,
             ])
-            ->add('action', ChoiceType::class, [
-                'choices' => $this->choicesActions,
+            ->add('action', 'choice', [
+                'choices' => $this->choiceActions,
                 'template' => 'BoxBundle:Admin/sonataproject/CRUD:error_field.html.twig'
             ])
             ->add('type')
@@ -71,7 +71,7 @@ class ReportKKMAdmin extends AbstractAdmin
      */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
-        $choicesOrganizations = $this->choicesOrganizations;
+        $choiceOrganizations = $this->choiceOrganizations;
         $datagridMapper
             ->add('datetime')
             ->add('typePayment', null, [
@@ -88,36 +88,36 @@ class ReportKKMAdmin extends AbstractAdmin
             ->add('type', null, [
                     'show_filter' => true,
                 ], ChoiceType::class, [
-                    'choices' => array_keys(KKMTypes::getArrayForAdmin()),
+                    'choices' => array_keys(TillTypes::getArrayForAdmin()),
                     'choice_label' => function ($type) {
                         return $type;
                     },
                 ]
             )
-            ->add('INN', null, [
+            ->add('tin', null, [
                     'label' => 'Organization',
                     'show_filter' => true,
                 ], ChoiceType::class, [
-                    'choices' => array_keys($choicesOrganizations),
-                    'choice_label' => function ($INN) use ($choicesOrganizations) {
-                        if (isset($choicesOrganizations[$INN])) {
-                            return $choicesOrganizations[$INN]->getName();
+                    'choices' => array_map(function ($value) {return (string)$value;}, array_keys($choiceOrganizations)),
+                    'choice_label' => function ($tin) use ($choiceOrganizations) {
+                        if (isset($choiceOrganizations[$tin])) {
+                            return $choiceOrganizations[$tin]->getName();
                         } else {
-                            return $INN;
+                            return $tin;
                         }
                     },
                 ]
             )
             ->add('action', null, [
                 ], ChoiceType::class, [
-                    'choices' => array_keys($this->choicesActions),
+                    'choices' => array_keys($this->choiceActions),
                     'choice_label' => function ($type) {
                         return $type;
                     },
             ])
             ->add('state', null, [
                 ], ChoiceType::class, [
-                    'choices' => array_keys($this->choicesStates),
+                    'choices' => array_keys($this->choiceStates),
                     'choice_label' => function ($type) {
                         return $type;
                     },
@@ -139,16 +139,16 @@ class ReportKKMAdmin extends AbstractAdmin
             ])
             ->add('typePayment')
             ->add('type')
-            ->add('INN', null, [
-               'label' => 'INN'
+            ->add('tin', null, [
+               'label' => 'Tin'
             ])
             ->add('state')
             ->add('action')
             ->add('uuid', null, [
                'label' => 'UUID'
             ])
-            ->add('dataKKM', null, [
-                'label' => 'Data KKM'
+            ->add('dataTill', null, [
+                'label' => 'Data Till'
             ])
             ->add('dataPost')
         ;
@@ -159,7 +159,7 @@ class ReportKKMAdmin extends AbstractAdmin
      */
     protected function setChoiceOrganization()
     {
-        $this->choicesOrganizations = OrganizationModel::setChoiceOrganization(
+        $this->choiceOrganizations = OrganizationModel::setChoiceOrganization(
             $this->getConfigurationPool()
                 ->getContainer()
                 ->get('doctrine_mongodb')
@@ -171,10 +171,10 @@ class ReportKKMAdmin extends AbstractAdmin
      */
     protected function setChoiceAction()
     {
-        $this->choicesActions = [
-            KKMTypes::KKM_ACTION_SALE => $this->trans(KKMTypes::KKM_ACTION_SALE, [], 'messages'),
-            KKMTypes::KKM_ACTION_REFUND => $this->trans(KKMTypes::KKM_ACTION_REFUND, [], 'messages'),
-            KKMTypes::KKM_ACTION_ERROR => $this->trans(KKMTypes::KKM_ACTION_ERROR, [], 'messages')
+        $this->choiceActions = [
+            TillTypes::TILL_ACTION_SALE => $this->trans(TillTypes::TILL_ACTION_SALE, [], 'messages'),
+            TillTypes::TILL_ACTION_REFUND => $this->trans(TillTypes::TILL_ACTION_REFUND, [], 'messages'),
+            TillTypes::TILL_ACTION_ERROR => $this->trans(TillTypes::TILL_ACTION_ERROR, [], 'messages')
         ];
     }
 
@@ -183,10 +183,10 @@ class ReportKKMAdmin extends AbstractAdmin
      */
     protected function setChoiceState()
     {
-        $this->choicesStates = [
-            KKMTypes::KKM_STATE_NEW => $this->trans(KKMTypes::KKM_STATE_NEW, [], 'messages'),
-            KKMTypes::KKM_STATE_ERROR => $this->trans(KKMTypes::KKM_STATE_ERROR, [], 'messages'),
-            KKMTypes::KKM_STATE_OTHER_ERROR => $this->trans(KKMTypes::KKM_STATE_OTHER_ERROR, [], 'messages')
+        $this->choiceStates = [
+            TillTypes::TILL_STATE_NEW => $this->trans(TillTypes::TILL_STATE_NEW, [], 'messages'),
+            TillTypes::TILL_STATE_ERROR => $this->trans(TillTypes::TILL_STATE_ERROR, [], 'messages'),
+            TillTypes::TILL_STATE_OTHER_ERROR => $this->trans(TillTypes::TILL_STATE_OTHER_ERROR, [], 'messages')
         ];
     }
 }    

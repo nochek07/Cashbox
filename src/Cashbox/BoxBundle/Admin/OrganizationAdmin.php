@@ -2,7 +2,7 @@
 
 namespace Cashbox\BoxBundle\Admin;
 
-use Cashbox\BoxBundle\Document\{AbstractObjectDocument, KKM, Organization, Other, Payment};
+use Cashbox\BoxBundle\Document\{AbstractObjectDocument, Organization, Other, Payment, Till};
 use Cashbox\BoxBundle\Model\Type;
 use Doctrine\Common\Collections\{ArrayCollection, Collection};
 use Sonata\AdminBundle\Admin\AbstractAdmin;
@@ -22,15 +22,15 @@ class OrganizationAdmin extends AbstractAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
-        $kkms = $this->getSubject()
-            ->getKKMs()->toArray();
+        $tills = $this->getSubject()
+            ->getTills()->toArray();
 
         $formMapper
             ->tab('Basic')
                 ->with('Basic', ['label' => false, 'class' => 'col-md-6'])
                     ->add('name')
-                    ->add('INN', null, [
-                        'label' => 'INN'
+                    ->add('tin', null, [
+                        'label' => 'Tin'
                     ])
                     ->add('patternNomenclature')
                         ->addHelp('patternNomenclature', 'Строка в чеке')
@@ -43,19 +43,19 @@ class OrganizationAdmin extends AbstractAdmin
                 ->end()
             ->end()
 
-            ->tab('KKMs')
-                ->with('KKMs', ['label' => false, 'class' => 'box-tabs col-md-6'])
-                    ->add('KKMs', CollectionType::class, [
+            ->tab('Tills')
+                ->with('Tills', ['label' => false, 'class' => 'box-tabs col-md-6'])
+                    ->add('tills', CollectionType::class, [
                         'label' => false,
                         'by_reference' => true,
                     ], [
                         'edit' => 'inline',
                         //'inline' => 'table',
-                        'admin_code' => 'admin.kkm',
+                        'admin_code' => 'admin.till',
                     ])
                 ->end()
             ->end()
-
+            
             ->tab('Payments')
                 ->with('Payments', ['label' => false, 'class' => 'box-tabs col-md-6'])
                     ->add('payments', CollectionType::class, [
@@ -65,7 +65,7 @@ class OrganizationAdmin extends AbstractAdmin
                         'edit' => 'inline',
                         //'inline' => 'table',
                         'admin_code' => 'admin.payment',
-                        'kkms' => $kkms
+                        'tills' => $tills
                     ])
                 ->end()
             ->end()
@@ -79,7 +79,7 @@ class OrganizationAdmin extends AbstractAdmin
                         'edit' => 'inline',
                         //'inline' => 'table',
                         'admin_code' => 'admin.other',
-                        'kkms' => $kkms
+                        'tills' => $tills
                     ])
                 ->end()
             ->end()
@@ -118,16 +118,16 @@ class OrganizationAdmin extends AbstractAdmin
 
         $translator = $this->getConfigurationPool()->getContainer()->get('translator');
 
-        $kkmsByPayment = new ArrayCollection();
+        $paymentTills = new ArrayCollection();
 
         $index = 0;
         /**
          * @var Payment $payment
          */
         foreach ($organization->getPayments() as $payment) {
-            $kkm = $payment->getKkm();
-            if ($kkm instanceof KKM && !$kkmsByPayment->contains($kkm)) {
-                $kkmsByPayment->add($kkm);
+            $till = $payment->getTill();
+            if ($till instanceof Till && !$paymentTills->contains($till)) {
+                $paymentTills->add($till);
             }
             if (is_array($payment->getData())) {
                 $index++;
@@ -148,9 +148,9 @@ class OrganizationAdmin extends AbstractAdmin
          * @var Other $other
          */
         foreach ($organization->getOthers() as $other) {
-            $kkm = $other->getKkm();
-            if ($kkm instanceof KKM && !$kkmsByPayment->contains($kkm)) {
-                $kkmsByPayment->add($kkm);
+            $till = $other->getTill();
+            if ($till instanceof Till && !$paymentTills->contains($till)) {
+                $paymentTills->add($till);
             }
             if (is_array($other->getData())) {
                 $index++;
@@ -167,16 +167,16 @@ class OrganizationAdmin extends AbstractAdmin
         }
 
         /**
-         * @var KKM $kkm
+         * @var Till $till
          */
-        foreach ($organization->getKKMs() as $kkm) {
-            $kkmsByPayment->removeElement($kkm);
+        foreach ($organization->getTills() as $till) {
+            $paymentTills->removeElement($till);
         }
-        if ($kkmsByPayment->count() > 0) {
-            foreach ($kkmsByPayment as $kkm) {
+        if ($paymentTills->count() > 0) {
+            foreach ($paymentTills as $till) {
                 $errorElement
-                    ->with('KKMs')
-                    ->addViolation("Невозможно удалить ККМ: \"{$kkm->getName()}\" ({$kkm->getType()})")
+                    ->with('Tills')
+                    ->addViolation("Невозможно удалить ККМ: \"{$till->getName()}\" ({$till->getType()})")
                     ->end()
                 ;
             }
@@ -185,16 +185,16 @@ class OrganizationAdmin extends AbstractAdmin
 
         $index = 0;
         /**
-         * @var KKM $kkm
+         * @var Till $till
          */
-        foreach ($organization->getKKMs() as $kkm) {
-            if (is_array($kkm->getData())) {
+        foreach ($organization->getTills() as $till) {
+            if (is_array($till->getData())) {
                 $index++;
-                $type = $kkm->getType();
-                $textError = Type\KKMTypes::getTextValidation($type, $kkm->getData(), $translator);
+                $type = $till->getType();
+                $textError = Type\TillTypes::getTextValidation($type, $till->getData(), $translator);
                 if (!empty($textError)) {
                     $errorElement
-                        ->with('KKMs')
+                        ->with('Tills')
                         ->addViolation("ККМ №{$index} \"{$type}\":<br>" . $textError)
                         ->end()
                     ;
@@ -212,7 +212,7 @@ class OrganizationAdmin extends AbstractAdmin
     {
         $this->setDataByAdditional($organization->getPayments());
         $this->setDataByAdditional($organization->getOthers());
-        $this->setDataByAdditional($organization->getKKMs());
+        $this->setDataByAdditional($organization->getTills());
     }
 
     /**
@@ -255,9 +255,9 @@ class OrganizationAdmin extends AbstractAdmin
                 'route' => ['name' => 'edit'],
                 'editable' => true
             ])
-            ->addIdentifier('INN', null, [
+            ->addIdentifier('tin', null, [
                 'route' => ['name' => 'edit'],
-                'label' => 'INN',
+                'label' => 'Tin',
                 'editable' => true
             ])
         ;

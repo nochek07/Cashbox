@@ -8,14 +8,14 @@ use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Form\Type\ChoiceFieldMaskType;
 use Sonata\AdminBundle\Route\RouteCollection;
 
-class KKMAdmin extends AbstractObjectAdmin
+class TillAdmin extends AbstractObjectAdmin
 {
     /**
      * @param FormMapper $formMapper
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
-        $params = $this->addImmutableArray($formMapper, new Type\KKMTypes, ['name', 'type']);
+        $params = $this->addImmutableArray($formMapper, new Type\TillTypes, ['name', 'type']);
         $formMapper
             ->add('name', null, [
                 'trim' => true
