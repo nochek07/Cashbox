@@ -1,8 +1,8 @@
-version: '3.7'
+version: "3.8"
 
 services:
-  nginx_cashbox:
-    image: nginx:latest
+  nginx-cashbox:
+    image: nginx:4.2
     ports:
       - "8003:80"
     volumes:
@@ -10,25 +10,30 @@ services:
       - ./docker/nginx/cashbox.conf:/etc/nginx/conf.d/default.conf
     working_dir: /var/www/cashbox
     depends_on:
-      - php7.2-fpm-mongo
-    container_name: nginxCashbox
+      - php7.4-fpm-cashbox
+    container_name: nginx-cashbox
     networks:
-      - mongo_network
+      - network-cashbox
 
-  php7.2-fpm-mongo:
+  php7.4-fpm-cashbox:
     build:
       context: docker/php-fpm
+      args:
+        PUID: 1000
+        PGID: 1000
+        USER: user
     volumes:
       - ./:/var/www/cashbox
       - ./docker/php-fpm/php.ini:/usr/local/etc/php/php.ini
     working_dir: /var/www/cashbox
     depends_on:
-      - mongo_cashbox
-    container_name: php7.2-fpm-mongo
+      - mongo-cashbox
+    container_name: php7.4-fpm-cashbox
+    user: "1000:1000"
     networks:
-      - mongo_network
+      - network-cashbox
 
-  mongo_cashbox:
+  mongo-cashbox:
     image: mongo:latest
     environment:
       MONGO_INITDB_DATABASE: test
@@ -36,20 +41,20 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: test
       MONGODB_DATA_DIR: /data/db
       MONDODB_LOG_DIR: /dev/null
-    container_name: mongoCashbox
+    container_name: mongo-cashbox
     ports:
       - "27017:27017"
     volumes:
       - ./docker/mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
       - persistent:/data/db
     networks:
-      - mongo_network
+      - network-cashbox
 
 volumes:
   persistent:
     name: mongoCashboxVolume
 
 networks:
-  mongo_network:
+  network-cashbox:
     driver: bridge
-    name: mongo_network
+    name: network-cashbox

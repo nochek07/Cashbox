@@ -1,3 +1,4 @@
+*.local
 /build/
 /phpunit.xml
 /app/config/parameters.yml
