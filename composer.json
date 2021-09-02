@@ -2,35 +2,28 @@
     "name": "nochek/cashbox",
     "type": "project",
     "license": "MIT",
-    "version": "1.7",
+    "version": "1.8",
     "authors": [
         { "name": "nochek", "email": "nochek07@gmail.com" }
     ],
-    "autoload": {
-        "psr-4": {
-            "": "src/"
-        },
-        "classmap": [ "app/AppKernel.php", "app/AppCache.php" ]
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Tests\\": "tests/"
-        }
+    "replace": {
+        "symfony/polyfill-php73": "*",
+        "symfony/polyfill-php74": "*"
     },
     "require": {
-        "php": ">=7.2",
+        "php": "^7.4",
         "ext-curl": "*",
         "ext-json": "*",
         "ext-mongodb": "*",
-        "alcaeus/mongo-php-adapter": "^1.1",
+        "alcaeus/mongo-php-adapter": "^1.2",
         "apy/datagrid-bundle": "^3.2",
         "doctrine/doctrine-bundle": "^1.12",
         "doctrine/doctrine-cache-bundle": "^1.4",
-        "doctrine/mongodb-odm": "^2.1",
-        "doctrine/mongodb-odm-bundle": "^4.0",
+        "doctrine/mongodb-odm": "^1.1",
+        "doctrine/mongodb-odm-bundle": "^3.6.2",
         "doctrine/orm": "^2.7",
         "doesntmattr/mongodb-migrations-bundle": "^3.0",
-        "friendsofsymfony/user-bundle": "2.x-dev",
+        "friendsofsymfony/user-bundle": "2.1.2",
         "incenteev/composer-parameter-handler": "^2.1",
         "komtet/kassa-sdk": "^6.2",
         "sensio/distribution-bundle": "^5.0",
@@ -43,8 +36,28 @@
         "twig/twig": "2.10"
     },
     "require-dev": {
-        "sensio/generator-bundle": "^3.0",
-        "symfony/phpunit-bridge": "^3.0"
+        "sensio/generator-bundle": "^3.1",
+        "symfony/phpunit-bridge": "^3.4"
+    },
+    "config": {
+        "platform": {
+            "php": "7.4"
+        },
+        "preferred-install": {
+            "*": "dist"
+        },
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "": "src/"
+        },
+        "classmap": [ "app/AppKernel.php", "app/AppCache.php" ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
     },
     "scripts": {
         "symfony-scripts": [
@@ -61,9 +74,6 @@
         "post-update-cmd": [
             "@symfony-scripts"
         ]
-    },
-    "config": {
-        "sort-packages": true
     },
     "provide" : {
         "ext-mongo": "*"
